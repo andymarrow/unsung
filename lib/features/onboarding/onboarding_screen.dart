@@ -26,7 +26,7 @@ const _beats = [
     '01 — Your library',
     'Every song you own is a',
     'karaoke track.',
-    'Unsung finds the music already on your phone. One tap lifts the vocals out and leaves the band.',
+    'Unsung finds the music on your phone, or brings a song in from a YouTube link. One tap lifts the vocals out and leaves the band.',
     UnsingBeatVisual(),
   ),
   _Beat(
