@@ -74,7 +74,7 @@ void main() {
         ),
         brightness: b,
       );
-      await tester.pump(const Duration(seconds: 1));
+      await settleFrames(tester);
       await expectLater(
           find.byType(Scaffold), matchesGoldenFile('stage_feed_${b.name}.png'));
     });
@@ -101,14 +101,14 @@ void main() {
         followingProvider.overrideWith((ref, id) async => false),
       ],
     );
-    await tester.pump(const Duration(seconds: 1));
+    await settleFrames(tester);
     await expectLater(
         find.byType(Scaffold), matchesGoldenFile('profile_dark.png'));
   });
 
   testWidgets('stage without a server', (tester) async {
     await pumpScreen(tester, const StageScreen());
-    await tester.pump(const Duration(seconds: 1));
+    await settleFrames(tester);
     await expectLater(
         find.byType(StageScreen), matchesGoldenFile('stage_offline_dark.png'));
   });
