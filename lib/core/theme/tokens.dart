@@ -160,8 +160,12 @@ abstract final class Radii {
 abstract final class Sizes {
   /// Minimum tap target.
   static const double tap = 48;
+  static const double chip = 40;
+  static const double sliderLabel = 104;
+  static const double button = 56;
   static const double artworkRow = 52;
   static const double artworkHero = 220;
+  static const double artworkSheet = 104;
   static const double avatarSm = 32;
   static const double avatarLg = 88;
   static const double recordButton = 64;
@@ -177,6 +181,7 @@ abstract final class Sizes {
   static const double strokeBold = 3;
   static const double waveformRow = 28;
   static const double waveformHero = 120;
+  static const double waveformCompact = 72;
   static const double pitchRibbon = 140;
   static const double maxContentWidth = 560;
 }

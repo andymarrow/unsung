@@ -44,6 +44,8 @@ class UnsungType extends ThemeExtension<UnsungType> {
     required this.lyricPast,
     required this.body,
     required this.bodyMuted,
+    required this.rowTitle,
+    required this.rowMeta,
     required this.label,
     required this.labelMuted,
     required this.numeral,
@@ -96,6 +98,8 @@ class UnsungType extends ThemeExtension<UnsungType> {
       lyricPast: display(22, 500, width: 90, color: c.inkFaint),
       body: display(16, 420, height: 1.45),
       bodyMuted: display(16, 420, height: 1.45, color: c.inkMuted),
+      rowTitle: display(17, 620, width: 92, height: 1.2),
+      rowMeta: display(13, 420, height: 1.3, color: c.inkMuted),
       label: mono(11, 600, tracking: 0.12),
       labelMuted: mono(11, 600, tracking: 0.12, color: c.inkMuted),
       numeral: mono(13, 500),
@@ -110,6 +114,10 @@ class UnsungType extends ThemeExtension<UnsungType> {
   final TextStyle lyricPast;
   final TextStyle body;
   final TextStyle bodyMuted;
+
+  /// List row title and secondary line.
+  final TextStyle rowTitle;
+  final TextStyle rowMeta;
 
   /// Uppercase mono label. Callers pass upper-case strings.
   final TextStyle label;
@@ -126,6 +134,8 @@ class UnsungType extends ThemeExtension<UnsungType> {
     TextStyle? lyricPast,
     TextStyle? body,
     TextStyle? bodyMuted,
+    TextStyle? rowTitle,
+    TextStyle? rowMeta,
     TextStyle? label,
     TextStyle? labelMuted,
     TextStyle? numeral,
@@ -139,6 +149,8 @@ class UnsungType extends ThemeExtension<UnsungType> {
       lyricPast: lyricPast ?? this.lyricPast,
       body: body ?? this.body,
       bodyMuted: bodyMuted ?? this.bodyMuted,
+      rowTitle: rowTitle ?? this.rowTitle,
+      rowMeta: rowMeta ?? this.rowMeta,
       label: label ?? this.label,
       labelMuted: labelMuted ?? this.labelMuted,
       numeral: numeral ?? this.numeral,
@@ -157,6 +169,8 @@ class UnsungType extends ThemeExtension<UnsungType> {
       lyricPast: TextStyle.lerp(lyricPast, other.lyricPast, t)!,
       body: TextStyle.lerp(body, other.body, t)!,
       bodyMuted: TextStyle.lerp(bodyMuted, other.bodyMuted, t)!,
+      rowTitle: TextStyle.lerp(rowTitle, other.rowTitle, t)!,
+      rowMeta: TextStyle.lerp(rowMeta, other.rowMeta, t)!,
       label: TextStyle.lerp(label, other.label, t)!,
       labelMuted: TextStyle.lerp(labelMuted, other.labelMuted, t)!,
       numeral: TextStyle.lerp(numeral, other.numeral, t)!,
