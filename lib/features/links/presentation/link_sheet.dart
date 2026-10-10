@@ -343,7 +343,11 @@ class _Thumb extends StatelessWidget {
       child: SizedBox.square(
         dimension: size,
         child: url == null
-            ? ColoredBox(color: c.stage)
+            ? ColoredBox(
+                color: c.stage,
+                child: Icon(Icons.music_note_rounded,
+                    color: c.inkFaint, size: Sizes.iconLg),
+              )
             : Image.network(
                 url!,
                 fit: BoxFit.cover,

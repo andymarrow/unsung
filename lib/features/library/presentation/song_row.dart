@@ -55,35 +55,54 @@ class SongRow extends ConsumerWidget {
                     style: type.rowTitle,
                   ),
                   const SizedBox(height: Space.xxs),
-                  Text(
-                    '${song.artistOrUnknown} · ${formatDuration(song.duration)}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: type.rowMeta,
+                  // READY sits on the meta line so titles get the full row.
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          '${song.artistOrUnknown} · ${formatDuration(song.duration)}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: type.rowMeta,
+                        ),
+                      ),
+                      if (song.isImported) ...[
+                        const SizedBox(width: Space.xs),
+                        Icon(Icons.link_rounded,
+                            size: Sizes.iconSm,
+                            color: context.colors.inkFaint,
+                            semanticLabel: 'From YouTube'),
+                      ],
+                      AnimatedSize(
+                        duration: Motion.of(context, Motion.base),
+                        curve: Motion.standard,
+                        child: ready && job == null
+                            ? const Padding(
+                                padding: EdgeInsets.only(left: Space.xs),
+                                child: TapeLabel('Ready', tone: TapeTone.cue),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: Space.sm),
             AnimatedSwitcher(
               duration: Motion.of(context, Motion.base),
               switchInCurve: Motion.emphasized,
               transitionBuilder: (child, a) =>
                   ScaleTransition(scale: a, child: child),
               child: switch (job) {
-                KaraokeRunning(:final progress) => _Ring(
+                KaraokeRunning(:final progress) => Padding(
                     key: const ValueKey('ring'),
-                    value: progress,
+                    padding: const EdgeInsets.only(left: Space.sm),
+                    child: _Ring(value: progress),
                   ),
-                KaraokeFailed() => const TapeLabel(
-                    'Failed',
+                KaraokeFailed() => const Padding(
                     key: ValueKey('failed'),
-                    tone: TapeTone.outline,
-                  ),
-                null when ready => const TapeLabel(
-                    'Ready',
-                    key: ValueKey('ready'),
-                    tone: TapeTone.cue,
+                    padding: EdgeInsets.only(left: Space.sm),
+                    child: TapeLabel('Failed', tone: TapeTone.outline),
                   ),
                 null => const SizedBox.shrink(key: ValueKey('none')),
               },
@@ -96,7 +115,7 @@ class SongRow extends ConsumerWidget {
 }
 
 class _Ring extends StatelessWidget {
-  const _Ring({required this.value, super.key});
+  const _Ring({required this.value});
 
   final double value;
 

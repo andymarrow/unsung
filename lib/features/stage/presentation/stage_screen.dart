@@ -49,6 +49,7 @@ class _StageScreenState extends ConsumerState<StageScreen> {
             Expanded(
               child: StageGate(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(
@@ -126,8 +127,9 @@ class _Feed extends ConsumerWidget {
               separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
               itemBuilder: (context, i) => i >= value.posts.length
                   ? const Padding(
-                      padding: EdgeInsets.all(Space.lg),
-                      child: Center(child: CircularProgressIndicator()),
+                      padding: EdgeInsets.symmetric(horizontal: Space.gutter),
+                      child: Skeleton(
+                          height: Sizes.postSkeleton, radius: Radii.card),
                     )
                   : Entrance(index: i, child: PostCard(post: value.posts[i])),
             ),

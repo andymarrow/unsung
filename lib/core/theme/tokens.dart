@@ -197,6 +197,13 @@ abstract final class Sizes {
   static const double scrubRail = 20;
   static const double scrubBubble = 56;
 
+  /// Narrowest a profile stat may be before the row goes 2 x 2
+  /// ("FOLLOWERS" in the mono label plus breathing room), at 1x text.
+  static const double statMin = 84;
+
+  /// Placeholder for a post card while more of the feed loads.
+  static const double postSkeleton = 168;
+
   /// Waveform bars.
   static const double waveBar = 2;
   static const double waveGap = 2;

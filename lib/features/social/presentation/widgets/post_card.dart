@@ -49,9 +49,11 @@ class PostCard extends ConsumerWidget {
         decoration: BoxDecoration(
           color: c.surface,
           borderRadius: BorderRadius.circular(Radii.card),
-          border: mine
-              ? Border.all(color: c.cue.withValues(alpha: Alphas.glowStrong))
-              : null,
+          // A hairline keeps cards distinct from the page in light mode.
+          border: Border.all(
+              color: mine
+                  ? c.cue.withValues(alpha: Alphas.glowStrong)
+                  : c.hairline),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

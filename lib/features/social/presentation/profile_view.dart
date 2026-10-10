@@ -128,13 +128,26 @@ class _Header extends ConsumerWidget {
             Text(profile.bio, style: type.body),
           ],
           const SizedBox(height: Space.lg),
-          Row(
-            children: [
-              _Stat(label: 'Takes', value: stats.publicPosts),
-              _Stat(label: 'Likes', value: stats.likesReceived),
-              _Stat(label: 'Followers', value: stats.followers),
-              _Stat(label: 'Following', value: stats.following),
-            ],
+          LayoutBuilder(
+            builder: (context, box) {
+              // Four across when each fits its longest label; else 2 x 2.
+              final min = MediaQuery.textScalerOf(context).scale(Sizes.statMin);
+              final cols = box.maxWidth / 4 >= min ? 4 : 2;
+              final w = box.maxWidth / cols;
+              return Wrap(
+                runSpacing: Space.md,
+                children: [
+                  for (final (label, value) in [
+                    ('Takes', stats.publicPosts),
+                    ('Likes', stats.likesReceived),
+                    ('Followers', stats.followers),
+                    ('Following', stats.following),
+                  ])
+                    SizedBox(
+                        width: w, child: _Stat(label: label, value: value)),
+                ],
+              );
+            },
           ),
           const SizedBox(height: Space.lg),
           action,
@@ -152,26 +165,23 @@ class _Stat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Semantics(
-        label: '$value $label',
-        child: ExcludeSemantics(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TweenAnimationBuilder<double>(
-                tween: Tween(end: value.toDouble()),
-                duration: Motion.of(context, Motion.signature),
-                builder: (_, v, __) =>
-                    Text('${v.round()}', style: context.type.heading),
-              ),
-              Text(label.toUpperCase(),
-                  maxLines: 1,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                  style: context.type.labelMuted),
-            ],
-          ),
+    return Semantics(
+      label: '$value $label',
+      child: ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TweenAnimationBuilder<double>(
+              tween: Tween(end: value.toDouble()),
+              duration: Motion.of(context, Motion.signature),
+              builder: (_, v, __) =>
+                  Text('${v.round()}', style: context.type.heading),
+            ),
+            Text(label.toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.type.labelMuted),
+          ],
         ),
       ),
     );

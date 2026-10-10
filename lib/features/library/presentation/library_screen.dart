@@ -80,7 +80,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
                   actionLabel: 'Check again',
                   onAction: () =>
                       unawaited(ref.read(libraryProvider.notifier).refresh()),
-                  secondaryLabel: 'Bring one in from YouTube',
+                  secondaryLabel: 'Paste a YouTube link',
                   secondaryIcon: Icons.link_rounded,
                   onSecondary: () => unawaited(showLinkSheet(context)),
                 )
@@ -203,7 +203,7 @@ class _NeedsAccess extends StatelessWidget {
           : 'Unsung reads the songs saved on this phone so you can turn them into karaoke. Your files never leave your phone unless you share a take.',
       actionLabel: blocked ? 'Open settings' : 'Allow music access',
       onAction: onAllow,
-      secondaryLabel: 'Or bring one in from YouTube',
+      secondaryLabel: 'Paste a YouTube link',
       secondaryIcon: Icons.link_rounded,
       onSecondary: () => unawaited(showLinkSheet(context)),
     );
