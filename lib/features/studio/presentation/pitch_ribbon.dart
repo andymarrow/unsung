@@ -112,9 +112,9 @@ class PitchRibbonPainter extends CustomPainter {
     final glow = Paint()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = Sizes.strokeBold * 3
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4)
-      ..color = tune.withValues(alpha: Alphas.glowStrong);
+      ..strokeWidth = Sizes.strokeBold * 2
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3)
+      ..color = tune.withValues(alpha: Alphas.glow);
 
     Offset? prev;
     var prevTuned = false;

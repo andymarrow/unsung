@@ -83,7 +83,7 @@ void main() {
     testWidgets('library ${b.name}', (tester) async {
       await pumpScreen(tester, const LibraryScreen(),
           brightness: b, overrides: libraryOverrides());
-      await tester.pump(const Duration(seconds: 1));
+      await settleFrames(tester);
       await expectLater(find.byType(LibraryScreen),
           matchesGoldenFile('library_${b.name}.png'));
     });
@@ -98,7 +98,7 @@ void main() {
         karaokeJobsProvider.overrideWith(_RunningJobs.new),
       ],
     );
-    await tester.pump(const Duration(seconds: 1));
+    await settleFrames(tester);
     await expectLater(
         find.byType(Scaffold), matchesGoldenFile('song_sheet_unsinging.png'));
   });
@@ -109,7 +109,7 @@ void main() {
       Scaffold(body: SafeArea(child: SongSheet(song: demoSongList[0]))),
       overrides: libraryOverrides(),
     );
-    await tester.pump(const Duration(seconds: 1));
+    await settleFrames(tester);
     await expectLater(
         find.byType(Scaffold), matchesGoldenFile('song_sheet_ready.png'));
   });
@@ -146,7 +146,7 @@ void main() {
         ),
         brightness: b,
       );
-      await tester.pump(const Duration(seconds: 1));
+      await settleFrames(tester);
       await expectLater(find.byType(Scaffold),
           matchesGoldenFile('studio_surface_${b.name}.png'));
     });
@@ -158,7 +158,7 @@ void main() {
       const TakesScreen(),
       overrides: [takesProvider.overrideWith(_Takes.new)],
     );
-    await tester.pump(const Duration(seconds: 1));
+    await settleFrames(tester);
     await expectLater(
         find.byType(TakesScreen), matchesGoldenFile('takes_dark.png'));
   });

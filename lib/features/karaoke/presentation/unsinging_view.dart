@@ -119,6 +119,8 @@ class UnsingingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // The ribbon floats up and away; keep it inside our own box.
+    canvas.clipRect(Offset.zero & size);
     final inst = _normalised(instrumental);
     final voc = _normalised(vocal);
     final count = (size.width / (_bar + _gap)).floor().clamp(1, 400);
@@ -144,13 +146,21 @@ class UnsingingPainter extends CustomPainter {
       final age =
           progress <= 0 ? 0.0 : ((progress - t) / progress).clamp(0.0, 1.0);
       final bandH = math.max(_bar, _at(inst, t) * bandMax);
-      paint.color = Color.lerp(voice, band, (age * 6).clamp(0.0, 1.0))!;
+      // Fresh bars glow cue at the head and cool to the band colour; once
+      // finished everything settles to the band colour.
+      paint.color = Color.lerp(
+        voice,
+        band,
+        math.max((age * 6).clamp(0.0, 1.0), settle),
+      )!;
       canvas.drawLine(Offset(x, baseline - bandH), Offset(x, baseline), paint);
 
       // The voice ribbon rises with age and with the final settle.
-      final lift = (age * 0.5 + settle) * size.height * 0.5;
-      final vy =
-          baseline - bandH - Space.xs - _at(voc, t) * size.height * 0.22 - lift;
+      final lift = (age * 0.35 + settle) * size.height * 0.5;
+      final vy = math.max(
+        _bar,
+        baseline - bandH - Space.xs - _at(voc, t) * size.height * 0.2 - lift,
+      );
       if (!ribbonStarted) {
         ribbon.moveTo(x, vy);
         ribbonStarted = true;

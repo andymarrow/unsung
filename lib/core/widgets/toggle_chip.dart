@@ -38,12 +38,16 @@ class ToggleChip extends StatelessWidget {
             color: selected ? c.ink : c.raised,
             borderRadius: BorderRadius.circular(Radii.full),
           ),
-          alignment: Alignment.center,
-          child: Text(
-            count == null
-                ? label.toUpperCase()
-                : '${label.toUpperCase()}  $count',
-            style: context.type.label.copyWith(color: fg),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                count == null
+                    ? label.toUpperCase()
+                    : '${label.toUpperCase()}  $count',
+                style: context.type.label.copyWith(color: fg),
+              ),
+            ],
           ),
         ),
       ),
