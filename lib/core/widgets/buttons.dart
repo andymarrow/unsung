@@ -66,7 +66,7 @@ class CueButton extends StatelessWidget {
       haptic: PressHaptic.light,
       semanticLabel: label,
       child: Container(
-        height: Sizes.tap + Space.xs,
+        height: Sizes.button,
         padding: const EdgeInsets.symmetric(horizontal: Space.lg),
         decoration: BoxDecoration(
           color: c.cue,

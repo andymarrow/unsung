@@ -10,10 +10,10 @@ void main() {
     await pumpScreen(tester, const OnboardingScreen());
     expect(find.textContaining('karaoke track'), findsOneWidget);
     await tester.tap(find.text('NEXT'));
-    await tester.pumpAndSettle();
+    await settleFrames(tester);
     expect(find.textContaining('every take'), findsOneWidget);
     await tester.tap(find.text('NEXT'));
-    await tester.pumpAndSettle();
+    await settleFrames(tester);
     expect(find.text("LET'S SING"), findsOneWidget);
   });
 

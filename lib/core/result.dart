@@ -34,6 +34,10 @@ final class AuthFailure extends AppFailure {
   const AuthFailure(super.message);
 }
 
+final class CancelledFailure extends AppFailure {
+  const CancelledFailure() : super('Cancelled.');
+}
+
 final class UnknownFailure extends AppFailure {
   const UnknownFailure([super.message = 'Something went wrong. Try again.']);
 }
