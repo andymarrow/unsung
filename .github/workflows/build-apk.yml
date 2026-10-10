@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: build-${{ github.head_ref || github.ref }}
@@ -70,15 +71,37 @@ jobs:
           fi
 
       - name: Analyze
-        run: flutter analyze
+        run: |
+          mkdir -p ci-report
+          flutter analyze 2>&1 | tee ci-report/analyze.txt
+          exit ${PIPESTATUS[0]}
 
       - name: Test
-        run: flutter test --exclude-tags golden
+        run: |
+          flutter test --exclude-tags golden --reporter expanded 2>&1 | tee ci-report/test.txt
+          exit ${PIPESTATUS[0]}
 
       # Golden tests render key screens with the real fonts in light and dark.
-      # Rendered images are uploaded as review evidence.
+      # On PR branches the rendered images are committed to docs/screenshots
+      # so they can be reviewed in the PR.
       - name: Render screenshots (goldens)
-        run: flutter test --tags golden --update-goldens
+        run: |
+          flutter test --tags golden --update-goldens 2>&1 | tee ci-report/goldens.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Publish screenshots to branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          mkdir -p docs/screenshots
+          find test/goldens -name '*.png' -exec cp {} docs/screenshots/ \;
+          git add docs/screenshots
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "docs: update rendered screenshots [skip ci]"
+            git pull --rebase origin ${{ github.head_ref }}
+            git push origin HEAD:${{ github.head_ref }}
+          fi
 
       - name: Upload screenshots
         if: always()
@@ -92,17 +115,40 @@ jobs:
 
       - name: Build APK
         run: |
+          set -o pipefail
           flutter build apk --release \
             --dart-define=SUPABASE_URL="$SUPABASE_URL" \
             --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
-            --dart-define=SEPARATION_API_URL="$SEPARATION_API_URL"
-          ls -la build/app/outputs/flutter-apk/
+            --dart-define=SEPARATION_API_URL="$SEPARATION_API_URL" 2>&1 | tee ci-report/build.txt
+          ls -la build/app/outputs/flutter-apk/ | tee -a ci-report/build.txt
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: unsung-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
+      # Job logs are not always reachable from where PRs are reviewed, so a
+      # failing run posts the tail of each report as a PR comment.
+      - name: Report failure on the PR
+        if: failure() && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "### CI failed on \`${GITHUB_SHA::7}\`"
+            for f in ci-report/*.txt; do
+              [ -f "$f" ] || continue
+              echo ""
+              echo "<details><summary>$(basename "$f")</summary>"
+              echo ""
+              echo '```'
+              grep -vE '^\s*$' "$f" | tail -n 120
+              echo '```'
+              echo "</details>"
+            done
+          } > comment.md
+          gh pr comment ${{ github.event.pull_request.number }} --body-file comment.md
 
       - name: Attach APK to release
         if: startsWith(github.ref, 'refs/tags/v')
