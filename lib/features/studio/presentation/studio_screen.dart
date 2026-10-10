@@ -100,7 +100,7 @@ class _StudioState extends ConsumerState<_Studio> {
     final take = await _s.stop();
     if (take == null || !mounted) return;
     await ref.read(takesProvider.notifier).upsert(take);
-    if (mounted) unawaited(context.pushReplacement(Routes.reviewFor(take.id)));
+    if (mounted) context.pushReplacement(Routes.reviewFor(take.id));
   }
 
   Future<bool> _confirmLeave() async {

@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +9,7 @@ class LibraryRepository {
   LibraryRepository(this._audio);
 
   final NativeAudio _audio;
-  final _art = LinkedHashMap<String, Uint8List?>();
+  final _art = <String, Uint8List?>{};
   static const _artCacheSize = 160;
 
   Future<List<Song>> songs() async {

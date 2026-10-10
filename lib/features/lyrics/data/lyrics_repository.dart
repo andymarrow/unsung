@@ -78,7 +78,7 @@ class LyricsRepository {
                 queryParameters: {
                   'track_name': title,
                   'artist_name': artist,
-                  if (song.album != null) 'album_name': song.album!,
+                  if (song.album != null) 'album_name': song.album,
                   'duration': song.duration.inSeconds.toString(),
                 },
               ),

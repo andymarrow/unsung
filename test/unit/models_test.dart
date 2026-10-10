@@ -7,7 +7,7 @@ import 'package:unsung/features/studio/domain/take.dart';
 
 void main() {
   test('song from platform map', () {
-    final s = Song.fromMap({
+    final s = Song.fromMap(const {
       'id': '7',
       'title': 'Blue',
       'artist': null,

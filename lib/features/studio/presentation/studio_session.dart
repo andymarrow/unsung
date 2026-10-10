@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
@@ -108,8 +107,9 @@ class StudioSession extends ChangeNotifier {
       await music.setFilePath(track.path);
       await setKey(semitones);
       var access = await permissions.microphone();
-      if (access != Access.granted)
+      if (access != Access.granted) {
         access = await permissions.requestMicrophone();
+      }
       if (access != Access.granted) {
         micBlocked = access == Access.blocked;
         _set(StudioPhase.needsMic);
@@ -163,16 +163,12 @@ class StudioSession extends ChangeNotifier {
     try {
       _takeId = takes.newId();
       final path = '${takes.folderFor(_takeId!)}/vocal.wav';
-      _wav = await WavWriter.create(path, sampleRate: sampleRate);
+      _wav = await WavWriter.create(path);
       await music.seek(Duration.zero);
       final stream = await _recorder.startStream(
         const RecordConfig(
           encoder: AudioEncoder.pcm16bits,
-          sampleRate: sampleRate,
           numChannels: 1,
-          echoCancel: false,
-          noiseSuppress: false,
-          autoGain: false,
         ),
       );
       _musicStarted = false;

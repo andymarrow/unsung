@@ -171,9 +171,10 @@ class UnsingingPainter extends CustomPainter {
             voice.withValues(alpha: fade),
           ],
         ).createShader(bounds);
-      canvas.drawPath(ribbon, stroke);
-      // A soft glow under the newest part of the ribbon.
-      canvas.drawPath(
+      // The ribbon, then a soft glow under its newest part.
+      canvas
+        ..drawPath(ribbon, stroke)
+        ..drawPath(
         ribbon,
         stroke
           ..strokeWidth = _bar * 4
