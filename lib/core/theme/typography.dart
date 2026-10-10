@@ -111,7 +111,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
   final TextStyle body;
   final TextStyle bodyMuted;
 
-  /// Uppercase mono label. Callers pass upper-case strings via [Caps].
+  /// Uppercase mono label. Callers pass upper-case strings.
   final TextStyle label;
   final TextStyle labelMuted;
   final TextStyle numeral;

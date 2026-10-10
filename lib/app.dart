@@ -13,8 +13,8 @@ class UnsungApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      // Dark is the primary experience; the system setting still wins.
-      themeMode: ThemeMode.system,
+      // Dark is the primary experience; ThemeMode.system (default) lets the
+      // device setting win.
       routerConfig: ref.watch(routerProvider),
     );
   }

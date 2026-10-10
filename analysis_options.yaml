@@ -13,3 +13,5 @@ linter:
     public_member_api_docs: false
     # Long string literals (copy) are clearer unbroken; the formatter handles code.
     lines_longer_than_80_chars: false
+    # The formatter owns layout.
+    require_trailing_commas: false
