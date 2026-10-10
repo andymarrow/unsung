@@ -50,14 +50,15 @@ class _StageScreenState extends ConsumerState<StageScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(Space.gutter, 0, Space.gutter, Space.sm),
-                      child: Row(
+                      child: Wrap(
+                        spacing: Space.xs,
+                        runSpacing: Space.xs,
                         children: [
                           ToggleChip(
                             label: 'For you',
                             selected: _scope == FeedScope.forYou,
                             onTap: () => setState(() => _scope = FeedScope.forYou),
                           ),
-                          const SizedBox(width: Space.xs),
                           ToggleChip(
                             label: 'Following',
                             selected: _scope == FeedScope.following,

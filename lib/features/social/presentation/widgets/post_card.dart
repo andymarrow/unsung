@@ -85,18 +85,25 @@ class PostCard extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: Space.xs),
-            Row(
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: Space.xs,
+              runSpacing: Space.xs,
               children: [
                 LikeButton(post: post),
+                Semantics(
+                  label: '${post.commentCount} comments',
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.mode_comment_outlined, size: Sizes.iconMd, color: c.inkMuted),
+                      const SizedBox(width: Space.xxs),
+                      Text('${post.commentCount}', style: type.numeral.copyWith(color: c.inkMuted)),
+                    ],
+                  ),
+                ),
                 const SizedBox(width: Space.xs),
-                Icon(Icons.mode_comment_outlined, size: Sizes.iconMd, color: c.inkMuted),
-                const SizedBox(width: Space.xxs),
-                Text('${post.commentCount}', style: type.numeral.copyWith(color: c.inkMuted)),
-                const Spacer(),
-                if (!post.isPublic) ...[
-                  const TapeLabel('Only you', icon: Icons.lock_rounded),
-                  const SizedBox(width: Space.xs),
-                ],
+                if (!post.isPublic) const TapeLabel('Only you', icon: Icons.lock_rounded),
                 TapeLabel('${(post.inTune * 100).round()}% in tune', tone: TapeTone.outline),
               ],
             ),

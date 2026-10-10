@@ -175,12 +175,13 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
         children: [
           Text('WHO CAN HEAR THIS', style: type.labelMuted),
           const SizedBox(height: Space.sm),
-          Row(
+          Wrap(
+            spacing: Space.xs,
+            runSpacing: Space.xs,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               ToggleChip(label: 'Only me', selected: !public, onTap: () => unawaited(_set(TakeVisibility.private))),
-              const SizedBox(width: Space.xs),
               ToggleChip(label: 'Everyone', selected: public, onTap: () => unawaited(_set(TakeVisibility.public))),
-              const Spacer(),
               AnimatedOpacity(
                 opacity: _busy ? 1 : 0,
                 duration: Motion.of(context, Motion.fast),

@@ -116,14 +116,15 @@ class _ShareSheetState extends ConsumerState<ShareSheet> {
           const SizedBox(height: Space.sm),
           Text('WHO CAN HEAR IT', style: type.labelMuted),
           const SizedBox(height: Space.xs),
-          Row(
+          Wrap(
+            spacing: Space.xs,
+            runSpacing: Space.xs,
             children: [
               ToggleChip(
                 label: 'Only me',
                 selected: !public,
                 onTap: () => setState(() => _visibility = TakeVisibility.private),
               ),
-              const SizedBox(width: Space.xs),
               ToggleChip(
                 label: 'Everyone',
                 selected: public,
