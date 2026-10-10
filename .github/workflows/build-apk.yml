@@ -1,0 +1,174 @@
+name: Build APK
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: build-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      # The link endpoints only; Demucs is not needed for these tests.
+      - run: pip install fastapi python-multipart 'yt-dlp[default]' httpx pytest
+      - run: pytest -q
+        working-directory: server
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      # Optional backend config. Leave the secrets unset to build an offline-only app.
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      SEPARATION_API_URL: ${{ secrets.SEPARATION_API_URL }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter --version
+
+      # Platform glue the repo does not commit (gradle files, icons, wrapper) is
+      # generated from the current Flutter template, then patched for this app.
+      # `flutter create` never overwrites files that already exist.
+      - name: Generate and patch Android platform files
+        run: |
+          flutter create . --platforms=android --org com.andymarrow --project-name unsung
+          python3 tool/patch_android.py
+
+      - run: flutter pub get
+
+      # Formatting is enforced by fixing it: on PR branches the formatted code
+      # is committed back, and this run continues on the formatted tree.
+      - name: Format
+        run: |
+          dart format lib test
+          if ! git diff --quiet -- lib test; then
+            git --no-pager diff --stat -- lib test
+            if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add lib test
+              git commit -m "style: dart format"
+              git push origin HEAD:${{ github.head_ref }}
+            else
+              echo "::error::Code is not formatted. Run dart format lib test."
+              exit 1
+            fi
+          fi
+
+      - name: Analyze
+        run: |
+          mkdir -p ci-report
+          flutter analyze 2>&1 | tee ci-report/analyze.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Test
+        run: |
+          flutter test --exclude-tags golden --reporter expanded 2>&1 | tee ci-report/test.txt
+          exit ${PIPESTATUS[0]}
+
+      # Golden tests render key screens with the real fonts in light and dark.
+      # On PR branches the rendered images are committed to docs/screenshots
+      # so they can be reviewed in the PR.
+      - name: Render screenshots (goldens)
+        run: |
+          flutter test --tags golden --update-goldens 2>&1 | tee ci-report/goldens.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Publish screenshots to branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          # Commit from a clean worktree so build files generated above are
+          # never committed.
+          git fetch -q origin ${{ github.head_ref }}
+          git worktree add -q /tmp/shots FETCH_HEAD
+          mkdir -p /tmp/shots/docs/screenshots
+          find test/goldens -name '*.png' -exec cp {} /tmp/shots/docs/screenshots/ \;
+          cd /tmp/shots
+          git add docs/screenshots
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -q -m "docs: update rendered screenshots [skip ci]"
+            git push -q origin HEAD:${{ github.head_ref }}
+          fi
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: |
+            test/goldens/**/*.png
+            test/**/failures/**
+          if-no-files-found: ignore
+
+      - name: Build APK
+        run: |
+          set -o pipefail
+          flutter build apk --release \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
+            --dart-define=SEPARATION_API_URL="$SEPARATION_API_URL" 2>&1 | tee ci-report/build.txt
+          ls -la build/app/outputs/flutter-apk/ | tee -a ci-report/build.txt
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsung-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # Job logs are not always reachable from where PRs are reviewed, so a
+      # failing run posts the tail of each report as a PR comment.
+      - name: Report failure on the PR
+        if: failure() && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "### CI failed on \`${GITHUB_SHA::7}\`"
+            for f in ci-report/*.txt; do
+              [ -f "$f" ] || continue
+              echo ""
+              echo "<details><summary>$(basename "$f")</summary>"
+              echo ""
+              echo '```'
+              grep -vE '^\s*$' "$f" | tail -n 120
+              echo '```'
+              echo "</details>"
+            done
+          } > comment.md
+          gh pr comment ${{ github.event.pull_request.number }} --body-file comment.md
+
+      - name: Attach APK to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/app/outputs/flutter-apk/app-release.apk

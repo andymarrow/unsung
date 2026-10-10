@@ -1,0 +1,8 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+demucs==4.0.1
+# Link import. yt-dlp changes often to keep up with YouTube: rebuild the
+# image regularly. [default] includes yt-dlp-ejs (needs Deno, see Dockerfile).
+yt-dlp[default]>=2026.8.19
+bgutil-ytdlp-pot-provider>=1.2.0
