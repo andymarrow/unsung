@@ -11,6 +11,7 @@ import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
 import 'package:unsung/core/widgets/state_views.dart';
 import 'package:unsung/core/widgets/toggle_chip.dart';
+import 'package:unsung/features/social/data/social_repository.dart';
 import 'package:unsung/features/social/domain/models.dart';
 import 'package:unsung/features/social/presentation/social_providers.dart';
 import 'package:unsung/features/social/presentation/widgets/avatar.dart';
@@ -61,6 +62,7 @@ class _PostBody extends ConsumerWidget {
             children: [
               PostCard(post: post),
               if (mine) _OwnerPanel(post: post),
+              if (!mine && me != null) _ReportButton(postId: post.id),
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                     Space.gutter, Space.lg, Space.gutter, Space.sm),
@@ -361,6 +363,81 @@ class _ComposerState extends ConsumerState<_Composer> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ReportButton extends ConsumerWidget {
+  const _ReportButton({required this.postId});
+
+  final String postId;
+
+  static const _reasons = {
+    'spam': 'Spam',
+    'abuse': 'Harassment or hate',
+    'copyright': 'Not theirs to share',
+    'other': 'Something else',
+  };
+
+  Future<void> _report(BuildContext context, WidgetRef ref) async {
+    final reason = await showModalBottomSheet<String>(
+      context: context,
+      builder: (sheet) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                Space.gutter,
+                0,
+                Space.gutter,
+                Space.sm,
+              ),
+              child: Text('Report this take', style: sheet.type.heading),
+            ),
+            for (final e in _reasons.entries)
+              ListTile(
+                title: Text(e.value, style: sheet.type.body),
+                onTap: () => Navigator.of(sheet).pop(e.key),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (reason == null || !context.mounted) return;
+    try {
+      await ref.read(socialRepositoryProvider).report(postId, reason);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Thanks. We'll take a look.")),
+        );
+      }
+    } on Object catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(toFailure(e).message)),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Padding(
+        padding: const EdgeInsets.only(right: Space.gutter),
+        child: TextButton.icon(
+          onPressed: () => unawaited(_report(context, ref)),
+          icon: Icon(
+            Icons.flag_outlined,
+            size: Sizes.iconSm,
+            color: context.colors.inkMuted,
+          ),
+          label: Text('REPORT', style: context.type.labelMuted),
         ),
       ),
     );

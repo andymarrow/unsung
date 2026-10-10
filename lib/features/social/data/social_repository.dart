@@ -310,6 +310,18 @@ class SocialRepository {
             .eq('follower_id', userId!)
             .eq('followee_id', id),
       );
+
+  /// Files a moderation report. Reasons: spam, abuse, copyright, other.
+  /// Reporting twice is fine: the duplicate is ignored.
+  Future<void> report(String postId, String reason) => _guard(() async {
+        try {
+          await _db.from('reports').insert(
+            {'post_id': postId, 'reporter_id': userId, 'reason': reason},
+          );
+        } on PostgrestException catch (e) {
+          if (e.code != '23505') rethrow;
+        }
+      });
 }
 
 final socialRepositoryProvider = Provider<SocialRepository>(

@@ -168,3 +168,18 @@ create policy "read own or public takes" on storage.objects for select
     (storage.foldername(name))[1] = auth.uid()::text
     or exists (select 1 from public.posts p where p.audio_path = name and p.visibility = 'public')
   ));
+
+-- Reports (moderation queue) ----------------------------------------------------------
+create table public.reports (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid not null references public.posts (id) on delete cascade,
+  reporter_id uuid not null references public.profiles (id) on delete cascade,
+  reason text not null check (reason in ('spam', 'abuse', 'copyright', 'other')),
+  created_at timestamptz not null default now(),
+  unique (post_id, reporter_id)
+);
+
+alter table public.reports enable row level security;
+-- Users can file reports; only the service role (moderators) can read them.
+create policy "file a report" on public.reports for insert
+  with check (reporter_id = auth.uid());
