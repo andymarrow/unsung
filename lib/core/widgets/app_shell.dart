@@ -13,13 +13,30 @@ class AppShell extends StatelessWidget {
   final VoidCallback onSing;
 
   static const _tabs = [
-    (icon: Icons.library_music_outlined, active: Icons.library_music_rounded, label: 'Library'),
-    (icon: Icons.podcasts_outlined, active: Icons.podcasts_rounded, label: 'Stage'),
-    (icon: Icons.graphic_eq_outlined, active: Icons.graphic_eq_rounded, label: 'Takes'),
-    (icon: Icons.person_outline_rounded, active: Icons.person_rounded, label: 'Me'),
+    (
+      icon: Icons.library_music_outlined,
+      active: Icons.library_music_rounded,
+      label: 'Library'
+    ),
+    (
+      icon: Icons.podcasts_outlined,
+      active: Icons.podcasts_rounded,
+      label: 'Stage'
+    ),
+    (
+      icon: Icons.graphic_eq_outlined,
+      active: Icons.graphic_eq_rounded,
+      label: 'Takes'
+    ),
+    (
+      icon: Icons.person_outline_rounded,
+      active: Icons.person_rounded,
+      label: 'Me'
+    ),
   ];
 
-  void _go(int i) => shell.goBranch(i, initialLocation: i == shell.currentIndex);
+  void _go(int i) =>
+      shell.goBranch(i, initialLocation: i == shell.currentIndex);
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +146,8 @@ class _TabItem extends StatelessWidget {
 
 /// The record affordance: a cue disc with a soft glow.
 class SingButton extends StatelessWidget {
-  const SingButton({required this.onTap, this.size = Sizes.recordButton, super.key});
+  const SingButton(
+      {required this.onTap, this.size = Sizes.recordButton, super.key});
 
   final VoidCallback onTap;
   final double size;

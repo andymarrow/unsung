@@ -73,7 +73,8 @@ class UnsungType extends ThemeExtension<UnsungType> {
       );
     }
 
-    TextStyle mono(double size, double weight, {double tracking = 0, Color? color}) {
+    TextStyle mono(double size, double weight,
+        {double tracking = 0, Color? color}) {
       return TextStyle(
         fontFamily: Fonts.mono,
         fontSize: size,

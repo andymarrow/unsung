@@ -33,10 +33,11 @@ class Artwork extends StatelessWidget {
                 image,
                 fit: BoxFit.cover,
                 gaplessPlayback: true,
-                cacheWidth: (size * MediaQuery.devicePixelRatioOf(context))
-                    .round(),
+                cacheWidth:
+                    (size * MediaQuery.devicePixelRatioOf(context)).round(),
                 semanticLabel: 'Cover art for $title',
-                errorBuilder: (_, __, ___) => _TypeCover(title: title, size: size),
+                errorBuilder: (_, __, ___) =>
+                    _TypeCover(title: title, size: size),
               )
             : ColoredBox(
                 color: c.raised,

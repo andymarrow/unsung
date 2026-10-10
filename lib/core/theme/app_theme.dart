@@ -66,7 +66,8 @@ abstract final class AppTheme {
         showDragHandle: true,
         dragHandleColor: c.inkFaint,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(Radii.sheet)),
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(Radii.sheet)),
         ),
       ),
       snackBarTheme: SnackBarThemeData(

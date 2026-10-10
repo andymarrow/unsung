@@ -6,7 +6,8 @@ enum TapeTone { neutral, cue, outline }
 
 /// Square-cornered mono tag, like a label on a tape reel: READY, PRIVATE, 3:42.
 class TapeLabel extends StatelessWidget {
-  const TapeLabel(this.text, {this.tone = TapeTone.neutral, this.icon, super.key});
+  const TapeLabel(this.text,
+      {this.tone = TapeTone.neutral, this.icon, super.key});
 
   final String text;
   final TapeTone tone;

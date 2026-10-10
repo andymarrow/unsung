@@ -138,7 +138,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     const Spacer(),
                     CueButton(
                       label: last ? "Let's sing" : 'Next',
-                      icon: last ? Icons.mic_rounded : Icons.arrow_forward_rounded,
+                      icon: last
+                          ? Icons.mic_rounded
+                          : Icons.arrow_forward_rounded,
                       onTap: () => unawaited(_next()),
                     ),
                   ],
