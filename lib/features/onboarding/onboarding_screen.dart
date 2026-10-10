@@ -10,13 +10,15 @@ import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
 import 'package:unsung/core/widgets/cue_glow.dart';
+import 'package:unsung/features/onboarding/beat_visuals.dart';
 
 class _Beat {
-  const _Beat(this.kicker, this.lead, this.accent, this.body);
+  const _Beat(this.kicker, this.lead, this.accent, this.body, this.visual);
   final String kicker;
   final String lead;
   final String accent;
   final String body;
+  final Widget visual;
 }
 
 const _beats = [
@@ -25,18 +27,21 @@ const _beats = [
     'Every song you own is a',
     'karaoke track.',
     'Unsung finds the music already on your phone. One tap lifts the vocals out and leaves the band.',
+    UnsingBeatVisual(),
   ),
   _Beat(
     '02 — The studio',
     'Sing it. Keep',
     'every take.',
     'Live lyrics, a pitch ribbon that glows when you hit the note, and effects you can change any time.',
+    StudioBeatVisual(),
   ),
   _Beat(
     '03 — The stage',
     'Private first.',
     'Public when ready.',
     'Takes start private. Put the good ones on the Stage, collect likes, and follow the voices you love.',
+    StageBeatVisual(),
   ),
 ];
 
@@ -186,6 +191,11 @@ class _BeatView extends StatelessWidget {
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: Sizes.maxContentWidth),
             child: Text(beat.body, style: context.type.bodyMuted),
+          ),
+          const SizedBox(height: Space.xl),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: Sizes.maxContentWidth),
+            child: beat.visual,
           ),
           const SizedBox(height: Space.xl),
         ],

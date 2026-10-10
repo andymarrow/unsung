@@ -42,7 +42,9 @@ class _UnsingingViewState extends State<UnsingingView>
   @override
   void didUpdateWidget(UnsingingView old) {
     super.didUpdateWidget(old);
-    if (widget.done && !old.done) {
+    if (!widget.done && old.done) {
+      _settle.value = 0;
+    } else if (widget.done && !old.done) {
       if (Motion.reduced(context)) {
         _settle.value = 1;
       } else {
