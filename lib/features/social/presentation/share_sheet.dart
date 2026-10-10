@@ -9,7 +9,8 @@ import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
-import 'package:unsung/core/widgets/toggle_chip.dart';
+import 'package:unsung/core/widgets/glass_sheet.dart';
+import 'package:unsung/core/widgets/visibility_toggle.dart';
 import 'package:unsung/features/social/data/social_repository.dart';
 import 'package:unsung/features/social/presentation/social_providers.dart';
 import 'package:unsung/features/studio/domain/take.dart';
@@ -34,10 +35,8 @@ Future<void> shareTake(BuildContext context, WidgetRef ref, Take take) async {
     unawaited(context.push(Routes.signIn));
     return;
   }
-  await showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
+  await showGlassSheet<void>(
+    context,
     builder: (_) => ShareSheet(take: take),
   );
 }
@@ -124,23 +123,10 @@ class _ShareSheetState extends ConsumerState<ShareSheet> {
           const SizedBox(height: Space.sm),
           Text('WHO CAN HEAR IT', style: type.labelMuted),
           const SizedBox(height: Space.xs),
-          Wrap(
-            spacing: Space.xs,
-            runSpacing: Space.xs,
-            children: [
-              ToggleChip(
-                label: 'Only me',
-                selected: !public,
-                onTap: () =>
-                    setState(() => _visibility = TakeVisibility.private),
-              ),
-              ToggleChip(
-                label: 'Everyone',
-                selected: public,
-                onTap: () =>
-                    setState(() => _visibility = TakeVisibility.public),
-              ),
-            ],
+          VisibilityToggle(
+            public: public,
+            onChanged: (v) => setState(() => _visibility =
+                v ? TakeVisibility.public : TakeVisibility.private),
           ),
           const SizedBox(height: Space.xs),
           Text(

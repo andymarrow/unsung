@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:unsung/core/widgets/visibility_toggle.dart';
 import 'package:unsung/features/social/domain/models.dart';
 import 'package:unsung/features/stage/presentation/stage_screen.dart';
 
@@ -43,5 +45,30 @@ void main() {
     await pumpScreen(tester, const StageScreen());
     await tester.pump(const Duration(seconds: 1));
     expect(find.text('The Stage opens soon'), findsOneWidget);
+  });
+
+  testWidgets('visibility toggle flips between only me and everyone',
+      (tester) async {
+    var public = false;
+    await pumpScreen(
+      tester,
+      StatefulBuilder(
+        builder: (context, setState) => Scaffold(
+          body: VisibilityToggle(
+            public: public,
+            onChanged: (v) => setState(() => public = v),
+          ),
+        ),
+      ),
+      textScale: 2,
+    );
+    expect(find.text('ONLY ME'), findsOneWidget);
+    await tester.tap(find.byType(VisibilityToggle));
+    await tester.pump(const Duration(milliseconds: 140));
+    expect(public, isTrue);
+    await tester.pumpAndSettle();
+    expect(find.text('EVERYONE'), findsOneWidget);
+    expect(find.byIcon(Icons.podcasts_rounded), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:unsung/core/result.dart';
 import 'package:unsung/core/theme/app_theme.dart';
-import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
+import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/core/widgets/state_views.dart';
-import 'package:unsung/core/widgets/toggle_chip.dart';
+import 'package:unsung/core/widgets/visibility_toggle.dart';
 import 'package:unsung/features/social/data/social_repository.dart';
 import 'package:unsung/features/social/domain/models.dart';
 import 'package:unsung/features/social/presentation/social_providers.dart';
@@ -200,28 +200,11 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
         children: [
           Text('WHO CAN HEAR THIS', style: type.labelMuted),
           const SizedBox(height: Space.sm),
-          Wrap(
-            spacing: Space.xs,
-            runSpacing: Space.xs,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              ToggleChip(
-                  label: 'Only me',
-                  selected: !public,
-                  onTap: () => unawaited(_set(TakeVisibility.private))),
-              ToggleChip(
-                  label: 'Everyone',
-                  selected: public,
-                  onTap: () => unawaited(_set(TakeVisibility.public))),
-              AnimatedOpacity(
-                opacity: _busy ? 1 : 0,
-                duration: Motion.of(context, Motion.fast),
-                child: const SizedBox.square(
-                  dimension: Sizes.iconSm,
-                  child: CircularProgressIndicator(strokeWidth: Sizes.stroke),
-                ),
-              ),
-            ],
+          VisibilityToggle(
+            public: public,
+            busy: _busy,
+            onChanged: (v) => unawaited(
+                _set(v ? TakeVisibility.public : TakeVisibility.private)),
           ),
           const SizedBox(height: Space.sm),
           Text(
@@ -382,8 +365,8 @@ class _ReportButton extends ConsumerWidget {
   };
 
   Future<void> _report(BuildContext context, WidgetRef ref) async {
-    final reason = await showModalBottomSheet<String>(
-      context: context,
+    final reason = await showGlassSheet<String>(
+      context,
       builder: (sheet) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,

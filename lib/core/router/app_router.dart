@@ -7,6 +7,7 @@ import 'package:unsung/core/prefs.dart';
 import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/router/spotlight_page.dart';
 import 'package:unsung/core/widgets/app_shell.dart';
+import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/features/library/presentation/library_screen.dart';
 import 'package:unsung/features/me/presentation/me_screen.dart';
 import 'package:unsung/features/onboarding/onboarding_screen.dart';
@@ -25,10 +26,8 @@ final _rootKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 /// The Sing button: pick a ready song, then open the studio.
 void _openSingPicker(BuildContext context) {
   unawaited(
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
+    showGlassSheet<void>(
+      context,
       builder: (sheet) => ReadySongPicker(
         onPick: (song) {
           Navigator.of(sheet).pop();

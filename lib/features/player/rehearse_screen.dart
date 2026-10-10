@@ -8,6 +8,7 @@ import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
+import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/core/widgets/state_views.dart';
 import 'package:unsung/core/widgets/waveform.dart';
 import 'package:unsung/features/karaoke/domain/karaoke_track.dart';
@@ -168,8 +169,8 @@ class _RehearseRoomState extends ConsumerState<_RehearseRoom> {
   }
 
   Future<void> _showLyricsOptions(BuildContext context, Lyrics? lyrics) {
-    return showModalBottomSheet<void>(
-      context: context,
+    return showGlassSheet<void>(
+      context,
       builder: (sheet) => StatefulBuilder(
         builder: (sheet, setSheet) {
           final ms = _state.lyricsOffset.inMilliseconds;

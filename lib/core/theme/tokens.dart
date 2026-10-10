@@ -184,6 +184,22 @@ abstract final class Sizes {
   static const double waveformCompact = 72;
   static const double pitchRibbon = 140;
   static const double maxContentWidth = 560;
+
+  /// Alphabet scrub rail width (fits inside the page gutter) and the
+  /// letter bubble shown while scrubbing.
+  static const double scrubRail = 20;
+  static const double scrubBubble = 56;
+
+  /// The visibility switch.
+  static const double switchWidth = 48;
+  static const double switchHeight = 28;
+  static const double switchThumb = 18;
+}
+
+/// Backdrop blur strengths.
+abstract final class Blurs {
+  /// Frosted glass on transient sheets.
+  static const double glass = 24;
 }
 
 /// Opacities used for glows and overlays.

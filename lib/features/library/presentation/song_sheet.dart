@@ -11,6 +11,7 @@ import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/artwork.dart';
 import 'package:unsung/core/widgets/buttons.dart';
+import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/core/widgets/tape_label.dart';
 import 'package:unsung/core/widgets/toggle_chip.dart';
 import 'package:unsung/features/karaoke/domain/karaoke_track.dart';
@@ -20,10 +21,8 @@ import 'package:unsung/features/library/domain/song.dart';
 import 'package:unsung/features/library/presentation/library_controller.dart';
 
 Future<void> showSongSheet(BuildContext context, Song song) {
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
+  return showGlassSheet<void>(
+    context,
     builder: (_) => SongSheet(song: song),
   );
 }

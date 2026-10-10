@@ -48,6 +48,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
     required this.rowMeta,
     required this.label,
     required this.labelMuted,
+    required this.button,
     required this.numeral,
   });
 
@@ -102,6 +103,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
       rowMeta: display(13, 420, height: 1.3, color: c.inkMuted),
       label: mono(11, 600, tracking: 0.12),
       labelMuted: mono(11, 600, tracking: 0.12, color: c.inkMuted),
+      button: mono(13, 700, tracking: 0.1),
       numeral: mono(13, 500),
     );
   }
@@ -122,6 +124,9 @@ class UnsungType extends ThemeExtension<UnsungType> {
   /// Uppercase mono label. Callers pass upper-case strings.
   final TextStyle label;
   final TextStyle labelMuted;
+
+  /// Button labels: the label voice, one step bigger and bolder.
+  final TextStyle button;
   final TextStyle numeral;
 
   @override
@@ -138,6 +143,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
     TextStyle? rowMeta,
     TextStyle? label,
     TextStyle? labelMuted,
+    TextStyle? button,
     TextStyle? numeral,
   }) {
     return UnsungType(
@@ -153,6 +159,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
       rowMeta: rowMeta ?? this.rowMeta,
       label: label ?? this.label,
       labelMuted: labelMuted ?? this.labelMuted,
+      button: button ?? this.button,
       numeral: numeral ?? this.numeral,
     );
   }
@@ -173,6 +180,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
       rowMeta: TextStyle.lerp(rowMeta, other.rowMeta, t)!,
       label: TextStyle.lerp(label, other.label, t)!,
       labelMuted: TextStyle.lerp(labelMuted, other.labelMuted, t)!,
+      button: TextStyle.lerp(button, other.button, t)!,
       numeral: TextStyle.lerp(numeral, other.numeral, t)!,
     );
   }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 – polish
+
+- Library: alphabet scrub rail on long libraries (24+ songs) with a letter bubble and haptics; songs always sorted by title.
+- Sheets are frosted glass, as the design brief asks for transient layers.
+- Private ↔ public is now one switch: the lock flips into a broadcast mark with a cue ripple when a take goes public (share sheet and post owner panel).
+- Button labels use a bolder, larger mono style so primary actions read at a glance.
+
 ## 0.1.0 – first build
 
 - Design system: warm stage palette with one cue accent, Bricolage Grotesque + JetBrains Mono variable fonts, motion tokens, light and dark.

@@ -9,6 +9,12 @@ abstract final class Motion {
   /// Reserved for signature moments.
   static const signature = Duration(milliseconds: 650);
 
+  /// The visibility flip ripple (lock → broadcast).
+  static const ripple = Duration(milliseconds: 280);
+
+  /// Fraction of a turn the visibility mark spins as it flips.
+  static const flipTurns = -0.12;
+
   /// Per-item delay for staggered list entrances, and the cap.
   static const stagger = Duration(milliseconds: 30);
   static const staggerMaxItems = 8;

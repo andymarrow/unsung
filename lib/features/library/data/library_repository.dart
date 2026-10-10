@@ -14,7 +14,10 @@ class LibraryRepository {
 
   Future<List<Song>> songs() async {
     final raw = await _audio.querySongs();
-    return [for (final m in raw) Song.fromMap(m)];
+    // MediaStore already sorts by title; sorting again keeps the alphabet
+    // scrub correct whatever the platform returns.
+    return [for (final m in raw) Song.fromMap(m)]
+      ..sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
   }
 
   /// Cover art, cached in memory (LRU). Null when the file has none.

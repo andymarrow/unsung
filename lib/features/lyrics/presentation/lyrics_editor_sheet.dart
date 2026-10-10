@@ -5,15 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
+import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/features/library/domain/song.dart';
 import 'package:unsung/features/lyrics/data/lyrics_repository.dart';
 
 Future<void> showLyricsEditor(BuildContext context, Song song,
     {String initial = ''}) {
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
+  return showGlassSheet<void>(
+    context,
     builder: (_) => LyricsEditorSheet(song: song, initial: initial),
   );
 }

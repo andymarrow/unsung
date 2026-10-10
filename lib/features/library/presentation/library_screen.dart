@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:unsung/core/result.dart';
 import 'package:unsung/core/theme/app_theme.dart';
@@ -11,6 +12,7 @@ import 'package:unsung/core/widgets/state_views.dart';
 import 'package:unsung/core/widgets/toggle_chip.dart';
 import 'package:unsung/features/karaoke/presentation/karaoke_controller.dart';
 import 'package:unsung/features/library/domain/song.dart';
+import 'package:unsung/features/library/presentation/alphabet_scrub.dart';
 import 'package:unsung/features/library/presentation/library_controller.dart';
 import 'package:unsung/features/library/presentation/song_row.dart';
 import 'package:unsung/features/library/presentation/song_sheet.dart';
@@ -143,13 +145,44 @@ class _NeedsAccess extends StatelessWidget {
   }
 }
 
-class _SongList extends ConsumerWidget {
+class _SongList extends ConsumerStatefulWidget {
   const _SongList({required this.songs});
 
   final List<Song> songs;
 
+  /// Below this many songs the list is short enough to scroll by hand.
+  static const scrubFrom = 24;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_SongList> createState() => _SongListState();
+}
+
+class _SongListState extends ConsumerState<_SongList> {
+  final _scroll = ScrollController();
+  final _listKey = GlobalKey(debugLabel: 'songs');
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// Brings song [i] to the top. Rows share one height (the prototype), so
+  /// the offset is exact even for rows that have not been built yet.
+  void _jumpTo(int i) {
+    final list = _listKey.currentContext?.findRenderObject();
+    if (list is! RenderSliverFixedExtentBoxAdaptor || !_scroll.hasClients) {
+      return;
+    }
+    final extent = list.itemExtent;
+    if (extent == null) return;
+    final offset = list.constraints.precedingScrollExtent + i * extent;
+    _scroll.jumpTo(offset.clamp(0, _scroll.position.maxScrollExtent));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final songs = widget.songs;
     final query = ref.watch(libraryQueryProvider);
     final ready = ref.watch(karaokeTracksProvider).valueOrNull ?? const {};
     final text = query.text.trim().toLowerCase();
@@ -160,10 +193,14 @@ class _SongList extends ConsumerWidget {
           s,
     ];
     final readyCount = songs.where((s) => ready.containsKey(s.id)).length;
+    final scrub = visible.length >= _SongList.scrubFrom
+        ? scrubIndex([for (final s in visible) s.title])
+        : null;
 
-    return RefreshIndicator(
+    final list = RefreshIndicator(
       onRefresh: () => ref.read(libraryProvider.notifier).refresh(),
       child: CustomScrollView(
+        controller: _scroll,
         slivers: [
           SliverToBoxAdapter(
             child: _Header(
@@ -236,7 +273,9 @@ class _SongList extends ConsumerWidget {
                     ),
             )
           else
-            SliverList.builder(
+            SliverPrototypeExtentList.builder(
+              key: _listKey,
+              prototypeItem: SongRow(song: visible.first, onTap: () {}),
               itemCount: visible.length,
               itemBuilder: (context, i) => Entrance(
                 index: i,
@@ -249,6 +288,18 @@ class _SongList extends ConsumerWidget {
           const SliverToBoxAdapter(child: SizedBox(height: Space.xxl)),
         ],
       ),
+    );
+    if (scrub == null) return list;
+    return Stack(
+      children: [
+        list,
+        Positioned(
+          right: 0,
+          top: Space.xxxl * 2,
+          bottom: Space.xxl,
+          child: AlphabetScrub(index: scrub, onJump: _jumpTo),
+        ),
+      ],
     );
   }
 }
