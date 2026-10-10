@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:unsung/core/platform/native_audio.dart';
 import 'package:unsung/core/platform/permissions.dart';
@@ -12,9 +13,13 @@ void main() {
     await pumpScreen(tester, const LibraryScreen(),
         overrides: libraryOverrides());
     await tester.pump(const Duration(seconds: 1));
+    expect(find.textContaining('8 SONGS · 3 READY'), findsOneWidget);
+    expect(find.text('START WITH A CLASSIC'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Paper Moons'), 200,
+        scrollable: find.byWidgetPredicate((w) =>
+            w is Scrollable && w.axisDirection == AxisDirection.down));
     expect(find.text('Paper Moons'), findsOneWidget);
     expect(find.text('READY'), findsWidgets);
-    expect(find.textContaining('8 SONGS · 3 READY'), findsOneWidget);
   });
 
   testWidgets('filters to ready songs', (tester) async {

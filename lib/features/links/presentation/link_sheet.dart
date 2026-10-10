@@ -299,6 +299,7 @@ class _PreviewCard extends StatelessWidget {
                                             : 'Fetching $pct%',
                                         key: const ValueKey('busy'),
                                         tone: TapeTone.outline,
+                                        icon: Icons.graphic_eq_rounded,
                                       )
                                     : const TapeLabel('YouTube',
                                         key: ValueKey('src'),

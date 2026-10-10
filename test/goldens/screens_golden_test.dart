@@ -4,9 +4,14 @@ library;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unsung/app.dart';
 import 'package:unsung/core/platform/permissions.dart';
+import 'package:unsung/core/prefs.dart';
 import 'package:unsung/core/result.dart';
+import 'package:unsung/core/widgets/ambient_light.dart';
 import 'package:unsung/features/library/presentation/library_screen.dart';
 import 'package:unsung/features/library/presentation/song_sheet.dart';
 import 'package:unsung/features/links/presentation/link_sheet.dart';
@@ -41,8 +46,40 @@ Future<void> _overLibrary(
   await settleFrames(tester);
 }
 
+/// The whole app past onboarding: shell, ambient light, floating glass bar.
+Future<void> _pumpApp(WidgetTester tester, Brightness brightness) async {
+  SharedPreferences.setMockInitialValues({PrefKeys.onboarded: true});
+  final prefs = await SharedPreferences.getInstance();
+  AmbientLight.debugStill = true;
+  tester.view
+    ..physicalSize = phone
+    ..devicePixelRatio = 3;
+  tester.platformDispatcher.platformBrightnessTestValue = brightness;
+  addTearDown(tester.view.reset);
+  addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        prefsProvider.overrideWithValue(prefs),
+        ...libraryOverrides(),
+        ...linkOverrides(FakeLinkSource()),
+      ],
+      child: const UnsungApp(),
+    ),
+  );
+  await settleFrames(tester);
+}
+
 void main() {
   setUpAll(loadAppFonts);
+
+  for (final b in Brightness.values) {
+    testWidgets('app shell ${b.name}', (tester) async {
+      await _pumpApp(tester, b);
+      await expectLater(
+          find.byType(UnsungApp), matchesGoldenFile('app_${b.name}.png'));
+    });
+  }
 
   for (final b in Brightness.values) {
     testWidgets('link sheet preview ${b.name}', (tester) async {

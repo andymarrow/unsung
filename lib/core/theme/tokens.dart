@@ -16,6 +16,9 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
     required this.tune,
     required this.hairline,
     required this.scrim,
+    required this.glass,
+    required this.glassEdge,
+    required this.glassSheen,
   });
 
   static const dark = UnsungColors(
@@ -30,6 +33,9 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
     tune: Color(0xFF5BF0A0),
     hairline: Color(0x1AF4EEE6),
     scrim: Color(0xB30F0D0C),
+    glass: Color(0x8C1F1B19),
+    glassEdge: Color(0x33FFF4EA),
+    glassSheen: Color(0x14FFF4EA),
   );
 
   static const light = UnsungColors(
@@ -44,6 +50,9 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
     tune: Color(0xFF0E8A4F),
     hairline: Color(0x1A161311),
     scrim: Color(0x99161311),
+    glass: Color(0xA6FBF8F3),
+    glassEdge: Color(0xCCFFFFFF),
+    glassSheen: Color(0x66FFFFFF),
   );
 
   /// Page background.
@@ -79,6 +88,15 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
   /// Behind sheets and dialogs.
   final Color scrim;
 
+  /// Tinted fill of glass surfaces (bars, sheets, floating cards).
+  final Color glass;
+
+  /// The specular rim light along a glass edge.
+  final Color glassEdge;
+
+  /// Soft sheen across the top of a glass surface.
+  final Color glassSheen;
+
   @override
   UnsungColors copyWith({
     Color? stage,
@@ -92,6 +110,9 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
     Color? tune,
     Color? hairline,
     Color? scrim,
+    Color? glass,
+    Color? glassEdge,
+    Color? glassSheen,
   }) {
     return UnsungColors(
       stage: stage ?? this.stage,
@@ -105,6 +126,9 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
       tune: tune ?? this.tune,
       hairline: hairline ?? this.hairline,
       scrim: scrim ?? this.scrim,
+      glass: glass ?? this.glass,
+      glassEdge: glassEdge ?? this.glassEdge,
+      glassSheen: glassSheen ?? this.glassSheen,
     );
   }
 
@@ -123,6 +147,9 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
       tune: Color.lerp(tune, other.tune, t)!,
       hairline: Color.lerp(hairline, other.hairline, t)!,
       scrim: Color.lerp(scrim, other.scrim, t)!,
+      glass: Color.lerp(glass, other.glass, t)!,
+      glassEdge: Color.lerp(glassEdge, other.glassEdge, t)!,
+      glassSheen: Color.lerp(glassSheen, other.glassSheen, t)!,
     );
   }
 }
@@ -208,6 +235,16 @@ abstract final class Sizes {
   static const double waveBar = 2;
   static const double waveGap = 2;
 
+  /// Floating glass tab bar: height and its inset from the screen edges.
+  static const double glassBar = 64;
+  static const double glassBarInset = 12;
+
+  /// Starter shelf cards (16:9 thumbnail).
+  static const double shelfCard = 220;
+
+  /// Room for a shelf card's two text lines and padding, at 1x text.
+  static const double shelfText = 64;
+
   /// The visibility switch.
   static const double switchWidth = 48;
   static const double switchHeight = 28;
@@ -216,8 +253,11 @@ abstract final class Sizes {
 
 /// Blur strengths.
 abstract final class Blurs {
-  /// Frosted glass on transient sheets.
+  /// Frosted glass on sheets and floating bars.
   static const double glass = 24;
+
+  /// Lighter frost for the tab bar, so content stays readable through it.
+  static const double bar = 18;
 
   /// Glow under the lifting vocal ribbon.
   static const double voice = 6;
@@ -233,4 +273,18 @@ abstract final class Alphas {
   static const double disabled = 0.38;
   static const double glass = 0.72;
   static const double ghost = 0.08;
+
+  /// Rim light falloff along a glass edge (fractions of the rim colour).
+  static const double rimMid = 0.35;
+  static const double rimFar = 0.12;
+
+  /// Ambient stage light behind the app.
+  static const double ambientDark = 0.16;
+  static const double ambientLight = 0.10;
+
+  /// Resting height of an equalizer bar, as a fraction of its box.
+  static const double eqRest = 0.18;
+
+  /// How far the ember pool leans from cue toward ink.
+  static const double emberMix = 0.45;
 }

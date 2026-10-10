@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:unsung/core/result.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
@@ -102,7 +105,9 @@ class ErrorState extends StatelessWidget {
   }
 }
 
-/// Skeleton block that breathes between surface and raised.
+/// Skeleton block with a soft band of light sweeping across it. Every
+/// skeleton reads the same clock and places the band in screen space, so a
+/// whole loading screen shimmers as one sweep instead of blinking piecemeal.
 class Skeleton extends StatefulWidget {
   const Skeleton({
     this.width,
@@ -121,47 +126,78 @@ class Skeleton extends StatefulWidget {
 
 class _SkeletonState extends State<Skeleton>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(
-    vsync: this,
-    duration: Motion.signature * 2,
-  );
+  late final Ticker _ticker = createTicker((_) => setState(() {}));
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (Motion.reduced(context)) {
-      _c.stop();
-    } else if (!_c.isAnimating) {
-      _c.repeat(reverse: true);
+    final still = Motion.reduced(context);
+    if (still && _ticker.isActive) {
+      _ticker.stop();
+    } else if (!still && !_ticker.isActive) {
+      unawaited(_ticker.start());
     }
   }
 
   @override
   void dispose() {
-    _c.dispose();
+    _ticker.dispose();
     super.dispose();
+  }
+
+  /// 0..1 through the current sweep, shared by every skeleton.
+  static double get _phase {
+    final period = Motion.shimmer.inMicroseconds;
+    return (DateTime.now().microsecondsSinceEpoch % period) / period;
   }
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final screen = MediaQuery.sizeOf(context).width;
+    final box = context.findRenderObject();
+    final left = box is RenderBox && box.hasSize
+        ? box.localToGlobal(Offset.zero).dx
+        : 0.0;
+    // Band centre travels from off-screen left to off-screen right.
+    final band = screen * Sizes.progressSegment;
+    final x = -band + (screen + 2 * band) * Motion.standard.transform(_phase);
     return RepaintBoundary(
-      child: AnimatedBuilder(
-        animation: _c,
-        builder: (context, _) => Container(
-          width: widget.width,
-          height: widget.height,
-          decoration: BoxDecoration(
-            color: Color.lerp(
-              c.surface,
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(widget.radius),
+          color: c.raised,
+          gradient: LinearGradient(
+            colors: [
               c.raised,
-              Motion.standard.transform(_c.value),
-            ),
-            borderRadius: BorderRadius.circular(widget.radius),
+              Color.alphaBlend(c.glassSheen, c.raised),
+              c.raised,
+            ],
+            transform: _BandAt(x - left, band),
           ),
         ),
       ),
     );
+  }
+}
+
+/// Places a 3-stop gradient as a band of [width] centred at [x] (pixels,
+/// in the painted box's own coordinates).
+class _BandAt extends GradientTransform {
+  const _BandAt(this.x, this.width);
+
+  final double x;
+  final double width;
+
+  @override
+  Matrix4 transform(Rect bounds, {TextDirection? textDirection}) {
+    // The gradient spans [bounds.left, bounds.right]; scale it to the band
+    // width, then move it so its middle sits at x.
+    final scale = width / bounds.width;
+    return Matrix4.translationValues(x - width / 2 - bounds.left * scale, 0, 0)
+      ..multiply(Matrix4.diagonal3Values(scale, 1, 1));
   }
 }
 

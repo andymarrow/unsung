@@ -4,6 +4,8 @@ import 'package:unsung/core/router/spotlight_page.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
+import 'package:unsung/core/widgets/ambient_light.dart';
+import 'package:unsung/core/widgets/glass.dart';
 import 'package:unsung/core/widgets/pressable.dart';
 
 /// Shell with the "tape deck" bottom bar: two tabs, the Sing button, two tabs.
@@ -55,29 +57,78 @@ class AppShell extends StatelessWidget {
       );
     }
 
+    // Bar slots: two tabs, Sing, two tabs. The lens sits under a tab.
+    final current = shell.currentIndex;
+    final lensSlot = current < 2 ? current : current + 1;
+
     return Scaffold(
-      body: shell,
-      bottomNavigationBar: DecoratedBox(
-        decoration: BoxDecoration(
-          color: c.stage,
-          border: Border(top: BorderSide(color: c.hairline)),
+      backgroundColor: c.stage,
+      // Content scrolls under the floating bar; Scaffold adds the bar's
+      // height to the body's bottom padding.
+      extendBody: true,
+      body: AmbientLight(child: shell),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        minimum: const EdgeInsets.fromLTRB(
+          Sizes.glassBarInset,
+          0,
+          Sizes.glassBarInset,
+          Sizes.glassBarInset,
         ),
-        child: SafeArea(
-          top: false,
+        child: GlassSurface(
+          radius: Radii.full,
+          blur: Blurs.bar,
           child: SizedBox(
-            height: Sizes.navBar,
-            child: Row(
-              children: [
-                tab(0),
-                tab(1),
-                Expanded(child: Center(child: SingButton(onTap: onSing))),
-                tab(2),
-                tab(3),
-              ],
+            height: Sizes.glassBar,
+            child: LayoutBuilder(
+              builder: (context, box) {
+                final slot = box.maxWidth / 5;
+                return Stack(
+                  children: [
+                    AnimatedPositioned(
+                      duration: Motion.of(context, Motion.slow),
+                      curve: Motion.emphasized,
+                      left: slot * lensSlot + Space.xxs,
+                      top: Space.xxs,
+                      bottom: Space.xxs,
+                      width: slot - Space.xs,
+                      child: const _Lens(),
+                    ),
+                    Row(
+                      children: [
+                        tab(0),
+                        tab(1),
+                        Expanded(
+                          child: Center(child: SingButton(onTap: onSing)),
+                        ),
+                        tab(2),
+                        tab(3),
+                      ],
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The selected tab's lens: a brighter pill of glass that glides between
+/// tabs, like a drop of water moving under the bar.
+class _Lens extends StatelessWidget {
+  const _Lens();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return GlassSurface(
+      radius: Radii.full,
+      frost: false,
+      tint: c.glassSheen,
+      child: const SizedBox.expand(),
     );
   }
 }
@@ -125,18 +176,8 @@ class _TabItem extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.fade,
               softWrap: false,
-              style: selected ? context.type.label : context.type.labelMuted,
-            ),
-            const SizedBox(height: Space.xxs),
-            AnimatedContainer(
-              duration: d,
-              curve: Motion.emphasized,
-              width: selected ? Space.md : 0,
-              height: Sizes.stroke,
-              decoration: BoxDecoration(
-                color: c.cue,
-                borderRadius: BorderRadius.circular(Radii.full),
-              ),
+              style: context.type.nav
+                  .copyWith(color: selected ? c.ink : c.inkMuted),
             ),
           ],
         ),

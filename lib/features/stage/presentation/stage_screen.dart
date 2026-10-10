@@ -28,6 +28,8 @@ class _StageScreenState extends ConsumerState<StageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Transparent: the shell's ambient light shows through.
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -122,7 +124,9 @@ class _Feed extends ConsumerWidget {
               return false;
             },
             child: ListView.separated(
-              padding: const EdgeInsets.only(bottom: Space.xxl),
+              // Clear the floating tab bar.
+              padding: EdgeInsets.only(
+                  bottom: Space.xxl + MediaQuery.paddingOf(context).bottom),
               itemCount: value.posts.length + (value.loadingMore ? 1 : 0),
               separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
               itemBuilder: (context, i) => i >= value.posts.length

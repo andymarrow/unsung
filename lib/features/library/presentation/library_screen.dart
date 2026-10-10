@@ -8,6 +8,7 @@ import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
 import 'package:unsung/core/widgets/entrance.dart';
+import 'package:unsung/core/widgets/equalizer.dart';
 import 'package:unsung/core/widgets/state_views.dart';
 import 'package:unsung/core/widgets/toggle_chip.dart';
 import 'package:unsung/features/karaoke/presentation/karaoke_controller.dart';
@@ -17,6 +18,7 @@ import 'package:unsung/features/library/presentation/library_controller.dart';
 import 'package:unsung/features/library/presentation/song_row.dart';
 import 'package:unsung/features/library/presentation/song_sheet.dart';
 import 'package:unsung/features/links/presentation/link_sheet.dart';
+import 'package:unsung/features/links/presentation/starter_shelf.dart';
 
 class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
@@ -52,6 +54,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
   Widget build(BuildContext context) {
     final library = ref.watch(libraryProvider);
     return Scaffold(
+      // Transparent: the shell's ambient light shows through.
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         bottom: false,
         child: switch (library) {
@@ -105,7 +109,7 @@ class _Loading extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Header(subtitle: 'READING YOUR MUSIC…'),
+        _Header(subtitle: 'READING YOUR MUSIC…', busy: true),
         Expanded(child: RowSkeletonList()),
       ],
     );
@@ -113,9 +117,12 @@ class _Loading extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.subtitle});
+  const _Header({required this.subtitle, this.busy = false});
 
   final String subtitle;
+
+  /// Shows the equalizer beside the subtitle while the library loads.
+  final bool busy;
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +142,16 @@ class _Header extends StatelessWidget {
               children: [
                 Text('Library', style: context.type.title),
                 const SizedBox(height: Space.xxs),
-                Text(subtitle, style: context.type.labelMuted),
+                Row(
+                  children: [
+                    if (busy) ...[
+                      const Equalizer(size: Sizes.iconXs),
+                      const SizedBox(width: Space.xs),
+                    ],
+                    Flexible(
+                        child: Text(subtitle, style: context.type.labelMuted)),
+                  ],
+                ),
               ],
             ),
           ),
@@ -194,6 +210,16 @@ class _NeedsAccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(child: _needsAccessMessage(context)),
+        const StarterShelf(),
+        SizedBox(height: MediaQuery.paddingOf(context).bottom),
+      ],
+    );
+  }
+
+  Widget _needsAccessMessage(BuildContext context) {
     return EmptyState(
       icon: Icons.library_music_rounded,
       kicker: 'Your library',
@@ -325,6 +351,8 @@ class _SongListState extends ConsumerState<_SongList> {
               ),
             ),
           ),
+          if (query.filter == LibraryFilter.all && text.isEmpty)
+            const SliverToBoxAdapter(child: StarterShelf()),
           if (visible.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,
@@ -354,7 +382,11 @@ class _SongListState extends ConsumerState<_SongList> {
                 ),
               ),
             ),
-          const SliverToBoxAdapter(child: SizedBox(height: Space.xxl)),
+          // Clear the floating tab bar.
+          SliverToBoxAdapter(
+            child: SizedBox(
+                height: Space.xxl + MediaQuery.paddingOf(context).bottom),
+          ),
         ],
       ),
     );
@@ -365,7 +397,7 @@ class _SongListState extends ConsumerState<_SongList> {
         Positioned(
           right: 0,
           top: Space.xxxl * 2,
-          bottom: Space.xxl,
+          bottom: Space.xxl + MediaQuery.paddingOf(context).bottom,
           child: AlphabetScrub(index: scrub, onJump: _jumpTo),
         ),
       ],

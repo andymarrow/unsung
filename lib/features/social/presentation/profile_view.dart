@@ -74,7 +74,11 @@ class ProfileView extends ConsumerWidget {
                     const SliverToBoxAdapter(child: RowSkeletonList(count: 3))
                   ],
               },
-              const SliverToBoxAdapter(child: SizedBox(height: Space.xxl)),
+              // Clear the floating tab bar.
+              SliverToBoxAdapter(
+                  child: SizedBox(
+                      height:
+                          Space.xxl + MediaQuery.paddingOf(context).bottom)),
             ],
           ),
         ),

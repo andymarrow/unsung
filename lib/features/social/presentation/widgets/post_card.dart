@@ -7,6 +7,8 @@ import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
+import 'package:unsung/core/widgets/equalizer.dart';
+import 'package:unsung/core/widgets/glass.dart';
 import 'package:unsung/core/widgets/pressable.dart';
 import 'package:unsung/core/widgets/tape_label.dart';
 import 'package:unsung/core/widgets/waveform.dart';
@@ -43,92 +45,91 @@ class PostCard extends ConsumerWidget {
     return Pressable(
       onTap: () => unawaited(context.push(Routes.postFor(post.id))),
       semanticLabel: '${post.author.name} sings ${post.songTitle}',
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: Space.gutter),
-        padding: const EdgeInsets.all(Space.md),
-        decoration: BoxDecoration(
-          color: c.surface,
-          borderRadius: BorderRadius.circular(Radii.card),
-          // A hairline keeps cards distinct from the page in light mode.
-          border: Border.all(
-              color: mine
-                  ? c.cue.withValues(alpha: Alphas.glowStrong)
-                  : c.hairline),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (showAuthor) ...[
-              _AuthorRow(post: post),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Space.gutter),
+        // Glass on the ambient light; your own posts carry a cue tint.
+        child: GlassSurface(
+          frost: false,
+          padding: const EdgeInsets.all(Space.md),
+          tint: mine
+              ? Color.alphaBlend(c.cue.withValues(alpha: Alphas.ghost), c.glass)
+              : null,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showAuthor) ...[
+                _AuthorRow(post: post),
+                const SizedBox(height: Space.sm),
+              ],
+              Text(post.songTitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: type.heading),
+              if (post.artist != null)
+                Text('originally by ${post.artist}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: type.rowMeta),
+              if (post.caption.isNotEmpty) ...[
+                const SizedBox(height: Space.xs),
+                Text(post.caption,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: type.body),
+              ],
               const SizedBox(height: Space.sm),
-            ],
-            Text(post.songTitle,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: type.heading),
-            if (post.artist != null)
-              Text('originally by ${post.artist}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: type.rowMeta),
-            if (post.caption.isNotEmpty) ...[
+              Row(
+                children: [
+                  _MiniPlay(
+                    playing: mine && playback.playing,
+                    loading: mine && playback.loading,
+                    onTap: () => unawaited(play()),
+                  ),
+                  const SizedBox(width: Space.sm),
+                  Expanded(
+                    child: Waveform(
+                      peaks: post.peaks.isEmpty
+                          ? const [0.3, 0.5, 0.3]
+                          : post.peaks,
+                      progress: progress.clamp(0.0, 1.0),
+                      onSeek: mine
+                          ? (f) => unawaited(ref
+                              .read(stagePlayerProvider.notifier)
+                              .seek(post, f))
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: Space.xs),
-              Text(post.caption,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: type.body),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: Space.xs,
+                runSpacing: Space.xs,
+                children: [
+                  LikeButton(post: post),
+                  Semantics(
+                    label: '${post.commentCount} comments',
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.mode_comment_outlined,
+                            size: Sizes.iconMd, color: c.inkMuted),
+                        const SizedBox(width: Space.xxs),
+                        Text('${post.commentCount}',
+                            style: type.numeral.copyWith(color: c.inkMuted)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: Space.xs),
+                  if (!post.isPublic)
+                    const TapeLabel('Only you', icon: Icons.lock_rounded),
+                  TapeLabel('${(post.inTune * 100).round()}% in tune',
+                      tone: TapeTone.outline),
+                ],
+              ),
             ],
-            const SizedBox(height: Space.sm),
-            Row(
-              children: [
-                _MiniPlay(
-                  playing: mine && playback.playing,
-                  loading: mine && playback.loading,
-                  onTap: () => unawaited(play()),
-                ),
-                const SizedBox(width: Space.sm),
-                Expanded(
-                  child: Waveform(
-                    peaks:
-                        post.peaks.isEmpty ? const [0.3, 0.5, 0.3] : post.peaks,
-                    progress: progress.clamp(0.0, 1.0),
-                    onSeek: mine
-                        ? (f) => unawaited(ref
-                            .read(stagePlayerProvider.notifier)
-                            .seek(post, f))
-                        : null,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: Space.xs),
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: Space.xs,
-              runSpacing: Space.xs,
-              children: [
-                LikeButton(post: post),
-                Semantics(
-                  label: '${post.commentCount} comments',
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.mode_comment_outlined,
-                          size: Sizes.iconMd, color: c.inkMuted),
-                      const SizedBox(width: Space.xxs),
-                      Text('${post.commentCount}',
-                          style: type.numeral.copyWith(color: c.inkMuted)),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: Space.xs),
-                if (!post.isPublic)
-                  const TapeLabel('Only you', icon: Icons.lock_rounded),
-                TapeLabel('${(post.inTune * 100).round()}% in tune',
-                    tone: TapeTone.outline),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -193,11 +194,7 @@ class _MiniPlay extends StatelessWidget {
         decoration: BoxDecoration(
             color: playing ? c.cue : c.ink, shape: BoxShape.circle),
         child: loading
-            ? Padding(
-                padding: const EdgeInsets.all(Space.sm),
-                child: CircularProgressIndicator(
-                    strokeWidth: Sizes.stroke, color: c.stage),
-              )
+            ? Center(child: Equalizer(size: Sizes.iconSm, color: c.stage))
             : Icon(
                 playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
                 color: playing ? c.onCue : c.stage,

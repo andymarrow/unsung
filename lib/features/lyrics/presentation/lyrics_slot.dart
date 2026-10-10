@@ -7,6 +7,7 @@ import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
+import 'package:unsung/core/widgets/equalizer.dart';
 import 'package:unsung/core/widgets/state_views.dart';
 import 'package:unsung/features/library/domain/song.dart';
 import 'package:unsung/features/lyrics/data/lyrics_repository.dart';
@@ -75,14 +76,22 @@ class LyricsSkeleton extends StatelessWidget {
       label: 'Loading lyrics',
       child: Padding(
         padding: EdgeInsets.fromLTRB(Space.gutter, top, Space.gutter, 0),
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Skeleton(width: Sizes.artworkHero, height: Space.lg),
-            SizedBox(height: Space.md),
-            Skeleton(width: Sizes.artworkHero * 1.2, height: Space.xl),
-            SizedBox(height: Space.md),
-            Skeleton(width: Sizes.artworkHero * 0.8, height: Space.lg),
+            Row(
+              children: [
+                const Equalizer(size: Sizes.iconXs),
+                const SizedBox(width: Space.xs),
+                Text('FINDING LYRICS', style: context.type.labelMuted),
+              ],
+            ),
+            const SizedBox(height: Space.md),
+            const Skeleton(width: Sizes.artworkHero, height: Space.lg),
+            const SizedBox(height: Space.md),
+            const Skeleton(width: Sizes.artworkHero * 1.2, height: Space.xl),
+            const SizedBox(height: Space.md),
+            const Skeleton(width: Sizes.artworkHero * 0.8, height: Space.lg),
           ],
         ),
       ),

@@ -6,7 +6,7 @@
 
 | Library | From a link | Unsinging | Studio | Stage |
 |---|---|---|---|---|
-| ![](docs/screenshots/library_dark.png) | ![](docs/screenshots/link_sheet_dark.png) | ![](docs/screenshots/song_sheet_unsinging.png) | ![](docs/screenshots/studio_surface_dark.png) | ![](docs/screenshots/stage_screen_dark.png) |
+| ![](docs/screenshots/app_dark.png) | ![](docs/screenshots/link_sheet_dark.png) | ![](docs/screenshots/song_sheet_unsinging.png) | ![](docs/screenshots/studio_surface_dark.png) | ![](docs/screenshots/stage_screen_dark.png) |
 
 Screenshots are rendered by CI from golden tests with the real fonts and demo data (invented songs and people).
 

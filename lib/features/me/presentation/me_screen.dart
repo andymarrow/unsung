@@ -20,6 +20,8 @@ class MeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userId = ref.watch(authUserIdProvider).valueOrNull;
     return Scaffold(
+      // Transparent: the shell's ambient light shows through.
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         bottom: false,
         child: Column(

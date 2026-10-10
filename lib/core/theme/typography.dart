@@ -49,6 +49,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
     required this.label,
     required this.labelMuted,
     required this.button,
+    required this.nav,
     required this.numeral,
   });
 
@@ -104,6 +105,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
       label: mono(11, 600, tracking: 0.12),
       labelMuted: mono(11, 600, tracking: 0.12, color: c.inkMuted),
       button: mono(13, 700, tracking: 0.1),
+      nav: mono(10, 600, tracking: 0.06),
       numeral: mono(13, 500),
     );
   }
@@ -127,6 +129,9 @@ class UnsungType extends ThemeExtension<UnsungType> {
 
   /// Button labels: the label voice, one step bigger and bolder.
   final TextStyle button;
+
+  /// Tab bar labels: the label voice, sized to fit a fifth of the bar.
+  final TextStyle nav;
   final TextStyle numeral;
 
   @override
@@ -144,6 +149,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
     TextStyle? label,
     TextStyle? labelMuted,
     TextStyle? button,
+    TextStyle? nav,
     TextStyle? numeral,
   }) {
     return UnsungType(
@@ -160,6 +166,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
       label: label ?? this.label,
       labelMuted: labelMuted ?? this.labelMuted,
       button: button ?? this.button,
+      nav: nav ?? this.nav,
       numeral: numeral ?? this.numeral,
     );
   }
@@ -181,6 +188,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
       label: TextStyle.lerp(label, other.label, t)!,
       labelMuted: TextStyle.lerp(labelMuted, other.labelMuted, t)!,
       button: TextStyle.lerp(button, other.button, t)!,
+      nav: TextStyle.lerp(nav, other.nav, t)!,
       numeral: TextStyle.lerp(numeral, other.numeral, t)!,
     );
   }

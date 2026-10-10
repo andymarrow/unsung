@@ -96,7 +96,7 @@ abstract final class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: c.raised,
+        fillColor: c.glass,
         hintStyle: type.bodyMuted,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: Space.md,

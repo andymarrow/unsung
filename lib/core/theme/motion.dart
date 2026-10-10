@@ -21,6 +21,15 @@ abstract final class Motion {
   /// Inactive tabs sit a hair smaller, so the incoming one settles in.
   static const tabScale = 0.985;
 
+  /// One loop of the ambient stage light. Slow enough to feel still.
+  static const ambient = Duration(seconds: 36);
+
+  /// One full cycle of the equalizer bars.
+  static const eqBeat = Duration(milliseconds: 1800);
+
+  /// One sweep of the loading shimmer.
+  static const shimmer = Duration(milliseconds: 1400);
+
   /// Rise distance for staggered list entrances.
   static const rise = 12.0;
 

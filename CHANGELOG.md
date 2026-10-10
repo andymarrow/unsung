@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 – glass
+
+- Liquid-glass system: ambient stage light behind the app, glass surfaces with a specular rim and sheen, frosted sheets with a lit edge, glassy inputs.
+- Floating glass tab bar with a lens that glides under the selected tab.
+- Stage post cards on glass (your own carry a faint cue tint).
+- Loading: a shared shimmer sweep on skeletons; an equalizer for music-related waits (library scan, lyrics, link fetch, buffering).
+- "Start with a classic": a shelf of 12 well-known songs (official YouTube uploads). Tapping one opens From a link pre-filled; nothing is downloaded until you bring it in.
+
 ## 0.2.0 – songs from links, review fixes
 
 - **From a link:** paste a YouTube / YouTube Music link or Share → Unsung from the YouTube app. Audio comes through the Studio server (yt-dlp, Deno, optional PO-token provider) or on the phone (youtube_explode_dart). Imported songs join the library with their cover, work with Quick/Studio unsinging, and can be deleted from the song sheet.

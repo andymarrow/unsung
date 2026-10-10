@@ -23,6 +23,8 @@ class TakesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final takes = ref.watch(takesProvider);
     return Scaffold(
+      // Transparent: the shell's ambient light shows through.
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         bottom: false,
         child: switch (takes) {
@@ -86,7 +88,10 @@ class _TakeList extends StatelessWidget {
             ),
           ),
         ),
-        const SliverToBoxAdapter(child: SizedBox(height: Space.xxl)),
+        // Clear the floating tab bar.
+        SliverToBoxAdapter(
+            child: SizedBox(
+                height: Space.xxl + MediaQuery.paddingOf(context).bottom)),
       ],
     );
   }

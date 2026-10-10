@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unsung/core/prefs.dart';
 import 'package:unsung/core/theme/app_theme.dart';
+import 'package:unsung/core/widgets/ambient_light.dart';
 
 /// A 360x780 logical phone at 3x.
 const phone = Size(1080, 2340);
@@ -17,6 +18,7 @@ Future<void> pumpScreen(
   Size physicalSize = phone,
   double textScale = 1,
 }) async {
+  AmbientLight.debugStill = true;
   SharedPreferences.setMockInitialValues(prefs);
   final instance = await SharedPreferences.getInstance();
   tester.view
@@ -37,7 +39,8 @@ Future<void> pumpScreen(
           ),
           child: inner!,
         ),
-        home: child,
+        // The shell's ambient light, held still, behind every screen.
+        home: AmbientLight(child: child),
       ),
     ),
   );

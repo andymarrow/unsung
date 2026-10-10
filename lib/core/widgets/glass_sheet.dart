@@ -17,7 +17,13 @@ Future<T?> showGlassSheet<T>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    backgroundColor: c.surface.withValues(alpha: Alphas.glass),
+    backgroundColor: c.glass,
+    // A rim of light along the sheet's top edge, like the edge of a pane.
+    shape: RoundedRectangleBorder(
+      side: BorderSide(color: c.glassEdge),
+      borderRadius:
+          const BorderRadius.vertical(top: Radius.circular(Radii.sheet)),
+    ),
     // The scrim is lighter than usual so the blur has something to show.
     barrierColor: c.scrim.withValues(alpha: Alphas.glowStrong),
     clipBehavior: Clip.antiAlias,

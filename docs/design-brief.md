@@ -75,6 +75,17 @@ Bottom bar with 4 destinations around a central Sing affordance: **Library**, **
 2. **Breathing lyrics.** The active line fills left-to-right with cue in sync with the music (line-timed LRC, word-timed if available) while its `wdth` axis expands 82→100 and weight eases up: the words physically open as they are sung. Upcoming line is larger and brighter than past lines (past lines fade to inkFaint). Scroll uses a 420ms decelerate curve. Reduce-motion: no width animation, colour fill only.
 3. **The Spotlight.** Pressing the record button throws a radial cue light that expands from the button to fill the screen and reveals the Studio (circular clip reveal, 600ms emphasized), with a heavy haptic on "3-2-1-sing". Going public on a take flips the lock into a broadcast mark with a ripple (280ms).
 
+## Glass (v0.3)
+The owner asked for an Apple "Liquid Glass" level of polish, so glass moved from "transient layers only" to a system, with rules that keep lyrics legible:
+- **Ambient stage light** (`AmbientLight`) drifts behind the shell: two cue pools and one ember on a 36s loop, 16% (dark) / 10% (light). It is what the glass catches; it never sits behind lyrics.
+- **GlassSurface**: tint (`glass`), a specular rim brightest top-left (`glassEdge`), a sheen across the top (`glassSheen`). Real backdrop blur (`frost`) only on floating layers: the tab bar (18) and sheets (24). Cards on the ambient light use tint + rim + sheen without blur, which reads the same and costs nothing.
+- **Floating tab bar**: a glass capsule inset 12 from the edges; a brighter glass lens glides under the selected tab on the emphasized curve (420ms).
+- Studio and Rehearse stay solid: nothing moves behind the words you sing.
+
+## Loading
+- Skeletons shimmer with one shared band of light that crosses the whole screen, not per block.
+- Anything waiting on music (library scan, lyrics lookup, link fetch, a take buffering) shows the equalizer: four bars out of phase that ease down to rest instead of freezing.
+
 ## Motion language
 Principle: motion confirms, it never performs. Nothing jumps at the user: content fades and rises a few pixels (6% of its height), sizes ease, and only the three signature moments are allowed to be expressive.
 
