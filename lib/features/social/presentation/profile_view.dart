@@ -33,8 +33,8 @@ class ProfileView extends ConsumerWidget {
           onRefresh: () async {
             ref
               ..invalidate(profileProvider(userId))
-              ..invalidate(statsProvider(userId));
-            ref.invalidate(postsByProvider(userId));
+              ..invalidate(statsProvider(userId))
+              ..invalidate(postsByProvider(userId));
             await ref.read(postsByProvider(userId).future);
           },
           child: CustomScrollView(
