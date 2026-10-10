@@ -1,0 +1,15 @@
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - build/**
+  language:
+    strict-casts: true
+    strict-raw-types: true
+
+linter:
+  rules:
+    # App, not a package: API docs on every public member add noise.
+    public_member_api_docs: false
+    # Long string literals (copy) are clearer unbroken; the formatter handles code.
+    lines_longer_than_80_chars: false
