@@ -46,3 +46,4 @@ test/goldens/*.png
 # Not committed: CI resolves against the current stable Flutter
 pubspec.lock
 .pytest_cache/
+research/
