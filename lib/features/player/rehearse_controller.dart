@@ -63,14 +63,22 @@ class RehearseState {
 /// Plays an instrumental with an optional "vocal guide": the original song
 /// running in sync underneath at a user-set level.
 class Rehearsal {
-  Rehearsal({required this.song, required this.track, required this.onChange});
+  Rehearsal({
+    required this.song,
+    required this.track,
+    required this.onChange,
+    AudioPlayer? music,
+    AudioPlayer? guide,
+  })  : music = music ?? AudioPlayer(),
+        guide = guide ?? AudioPlayer();
 
   final Song song;
   final KaraokeTrack track;
   final void Function(RehearseState Function(RehearseState)) onChange;
 
-  final music = AudioPlayer();
-  final guide = AudioPlayer();
+  /// The instrumental, and the original song as the vocal guide.
+  final AudioPlayer music;
+  final AudioPlayer guide;
   final _subs = <StreamSubscription<Object?>>[];
   Timer? _sync;
 
@@ -113,6 +121,11 @@ class Rehearsal {
     await pause();
     await seek(Duration.zero);
   }
+
+  /// Re-aligns the vocal guide when it drifts from the music. Exposed for
+  /// tests; runs on a timer while playing.
+  @visibleForTesting
+  Future<void> keepInSync() => _keepInSync();
 
   Future<void> _keepInSync() async {
     if (!music.playing || guide.volume == 0) return;

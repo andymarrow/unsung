@@ -16,5 +16,5 @@ abstract final class Env {
   /// Free, open synced-lyrics database.
   static const lyricsApi = 'https://lrclib.net/api';
 
-  static const userAgent = 'Unsung/0.1 (https://github.com/andymarrow/unsung)';
+  static const userAgent = 'Unsung/0.2 (https://github.com/andymarrow/unsung)';
 }

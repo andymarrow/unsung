@@ -206,11 +206,7 @@ class _ReviewState extends ConsumerState<_Review> {
   @override
   Widget build(BuildContext context) {
     final type = context.type;
-    final c = context.colors;
     final take = widget.take;
-    final progress = _dur.inMilliseconds == 0
-        ? 0.0
-        : (_pos.inMilliseconds / _dur.inMilliseconds).clamp(0.0, 1.0);
 
     return Scaffold(
       appBar: AppBar(
@@ -246,118 +242,23 @@ class _ReviewState extends ConsumerState<_Review> {
         children: [
           _Stats(take: take),
           const SizedBox(height: Space.lg),
-          AnimatedOpacity(
-            duration: Motion.of(context, Motion.base),
-            opacity: _rendering ? 0.4 : 1,
-            child: Waveform(
-              peaks: _peaks.isEmpty ? widget.track.instrumentalPeaks : _peaks,
-              progress: progress,
-              height: Sizes.waveformCompact,
-              onSeek:
-                  _rendering ? null : (f) => unawaited(_player.seek(_dur * f)),
-            ),
-          ),
-          TimeReadout(position: _pos, duration: _dur),
-          const SizedBox(height: Space.sm),
-          Row(
-            children: [
-              PlayButton(
-                playing: _playing,
-                onTap: _rendering
-                    ? null
-                    : () =>
-                        unawaited(_playing ? _player.pause() : _player.play()),
-              ),
-              const SizedBox(width: Space.md),
-              Expanded(
-                child: AnimatedSwitcher(
-                  duration: Motion.of(context, Motion.base),
-                  child: _failure != null
-                      ? Text(_failure!.message,
-                          key: const ValueKey('err'),
-                          style: type.rowMeta.copyWith(color: c.cue))
-                      : Text(
-                          _rendering
-                              ? 'MIXING…'
-                              : 'PREVIEW UPDATES AS YOU CHANGE THINGS',
-                          key: ValueKey(_rendering),
-                          style: type.labelMuted,
-                        ),
-                ),
-              ),
-            ],
+          _Preview(
+            peaks: _peaks.isEmpty ? widget.track.instrumentalPeaks : _peaks,
+            position: _pos,
+            duration: _dur,
+            playing: _playing,
+            rendering: _rendering,
+            failure: _failure,
+            onSeek: (f) => unawaited(_player.seek(_dur * f)),
+            onPlayPause: () =>
+                unawaited(_playing ? _player.pause() : _player.play()),
           ),
           const SizedBox(height: Space.xl),
-          Text('MIX', style: type.labelMuted),
-          const SizedBox(height: Space.xs),
-          LevelSlider(
-            label: 'Voice',
-            value: _settings.vocalGain / _maxVoiceGain,
-            display: '${(_settings.vocalGain * 100).round()}%',
-            onChanged: (v) =>
-                _change(_settings.copyWith(vocalGain: v * _maxVoiceGain)),
-          ),
-          LevelSlider(
-            label: 'Music',
-            value: _settings.musicGain,
-            onChanged: (v) => _change(_settings.copyWith(musicGain: v)),
-          ),
-          LevelSlider(
-            label: 'Reverb',
-            value: _settings.reverb,
-            onChanged: (v) => _change(_settings.copyWith(reverb: v)),
-          ),
-          LevelSlider(
-            label: 'Echo',
-            value: _settings.echo,
-            onChanged: (v) => _change(_settings.copyWith(echo: v)),
-          ),
-          const SizedBox(height: Space.md),
-          Row(
-            children: [
-              SizedBox(
-                  width: Sizes.sliderLabel,
-                  child: Text('SYNC', style: type.labelMuted)),
-              RoundIconButton(
-                icon: Icons.remove_rounded,
-                label: 'Voice earlier',
-                onTap: () => _change(_settings.copyWith(
-                    offsetMs: _settings.offsetMs + _syncStepMs)),
-              ),
-              Expanded(
-                child: Text(
-                  '${_settings.offsetMs} ms',
-                  textAlign: TextAlign.center,
-                  style: type.numeral,
-                ),
-              ),
-              RoundIconButton(
-                icon: Icons.add_rounded,
-                label: 'Voice later',
-                onTap: () => _change(_settings.copyWith(
-                    offsetMs: _settings.offsetMs - _syncStepMs)),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: Sizes.sliderLabel),
-            child: Text(
-              'If your voice sounds late, tap minus. Bluetooth headphones usually need more.',
-              style: type.rowMeta,
-            ),
-          ),
-          const SizedBox(height: Space.md),
-          Row(
-            children: [
-              SizedBox(
-                  width: Sizes.sliderLabel,
-                  child: Text('KEY', style: type.labelMuted)),
-              TapeLabel(
-                _settings.semitones == 0
-                    ? 'Original key'
-                    : '${_settings.semitones > 0 ? '+' : ''}${_settings.semitones} semitones',
-              ),
-            ],
+          _MixControls(
+            settings: _settings,
+            maxVoiceGain: _maxVoiceGain,
+            syncStepMs: _syncStepMs,
+            onChange: _change,
           ),
           const SizedBox(height: Space.xl),
           CueButton(
@@ -412,6 +313,179 @@ class _Stats extends StatelessWidget {
           stat('LENGTH', formatDuration(take.duration)),
         ],
       ),
+    );
+  }
+}
+
+/// Playback of the current preview mix, with its state line.
+class _Preview extends StatelessWidget {
+  const _Preview({
+    required this.peaks,
+    required this.position,
+    required this.duration,
+    required this.playing,
+    required this.rendering,
+    required this.failure,
+    required this.onSeek,
+    required this.onPlayPause,
+  });
+
+  final List<double> peaks;
+  final Duration position;
+  final Duration duration;
+  final bool playing;
+
+  /// A new preview is being mixed: playback waits for it.
+  final bool rendering;
+  final AppFailure? failure;
+  final ValueChanged<double> onSeek;
+  final VoidCallback onPlayPause;
+
+  @override
+  Widget build(BuildContext context) {
+    final type = context.type;
+    final c = context.colors;
+    final progress = duration.inMilliseconds == 0
+        ? 0.0
+        : (position.inMilliseconds / duration.inMilliseconds).clamp(0.0, 1.0);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AnimatedOpacity(
+          duration: Motion.of(context, Motion.base),
+          opacity: rendering ? 0.4 : 1,
+          child: Waveform(
+            peaks: peaks,
+            progress: progress,
+            height: Sizes.waveformCompact,
+            onSeek: rendering ? null : onSeek,
+          ),
+        ),
+        TimeReadout(position: position, duration: duration),
+        const SizedBox(height: Space.sm),
+        Row(
+          children: [
+            PlayButton(
+              playing: playing,
+              onTap: rendering ? null : onPlayPause,
+            ),
+            const SizedBox(width: Space.md),
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: Motion.of(context, Motion.base),
+                child: failure != null
+                    ? Text(failure!.message,
+                        key: const ValueKey('err'),
+                        style: type.rowMeta.copyWith(color: c.cue))
+                    : Text(
+                        rendering
+                            ? 'MIXING…'
+                            : 'PREVIEW UPDATES AS YOU CHANGE THINGS',
+                        key: ValueKey(rendering),
+                        style: type.labelMuted,
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Voice, music, reverb, echo, sync nudge and key. Every change re-renders
+/// the preview from the raw vocal, so nothing here is destructive.
+class _MixControls extends StatelessWidget {
+  const _MixControls({
+    required this.settings,
+    required this.maxVoiceGain,
+    required this.syncStepMs,
+    required this.onChange,
+  });
+
+  final MixSettings settings;
+  final double maxVoiceGain;
+  final int syncStepMs;
+  final ValueChanged<MixSettings> onChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final type = context.type;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('MIX', style: type.labelMuted),
+        const SizedBox(height: Space.xs),
+        LevelSlider(
+          label: 'Voice',
+          value: settings.vocalGain / maxVoiceGain,
+          display: '${(settings.vocalGain * 100).round()}%',
+          onChanged: (v) =>
+              onChange(settings.copyWith(vocalGain: v * maxVoiceGain)),
+        ),
+        LevelSlider(
+          label: 'Music',
+          value: settings.musicGain,
+          onChanged: (v) => onChange(settings.copyWith(musicGain: v)),
+        ),
+        LevelSlider(
+          label: 'Reverb',
+          value: settings.reverb,
+          onChanged: (v) => onChange(settings.copyWith(reverb: v)),
+        ),
+        LevelSlider(
+          label: 'Echo',
+          value: settings.echo,
+          onChanged: (v) => onChange(settings.copyWith(echo: v)),
+        ),
+        const SizedBox(height: Space.md),
+        Row(
+          children: [
+            SizedBox(
+                width: Sizes.sliderLabel,
+                child: Text('SYNC', style: type.labelMuted)),
+            RoundIconButton(
+              icon: Icons.remove_rounded,
+              label: 'Voice earlier',
+              onTap: () => onChange(
+                  settings.copyWith(offsetMs: settings.offsetMs + syncStepMs)),
+            ),
+            Expanded(
+              child: Text(
+                '${settings.offsetMs} ms',
+                textAlign: TextAlign.center,
+                style: type.numeral,
+              ),
+            ),
+            RoundIconButton(
+              icon: Icons.add_rounded,
+              label: 'Voice later',
+              onTap: () => onChange(
+                  settings.copyWith(offsetMs: settings.offsetMs - syncStepMs)),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: Sizes.sliderLabel),
+          child: Text(
+            'If your voice sounds late, tap minus. Bluetooth headphones usually need more.',
+            style: type.rowMeta,
+          ),
+        ),
+        const SizedBox(height: Space.md),
+        Row(
+          children: [
+            SizedBox(
+                width: Sizes.sliderLabel,
+                child: Text('KEY', style: type.labelMuted)),
+            TapeLabel(
+              settings.semitones == 0
+                  ? 'Original key'
+                  : '${settings.semitones > 0 ? '+' : ''}${settings.semitones} semitones',
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

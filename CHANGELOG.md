@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0 – songs from links, review fixes
+
+- **From a link:** paste a YouTube / YouTube Music link or Share → Unsung from the YouTube app. Audio comes through the Studio server (yt-dlp, Deno, optional PO-token provider) or on the phone (youtube_explode_dart). Imported songs join the library with their cover, work with Quick/Studio unsinging, and can be deleted from the song sheet.
+- Song sheet redesigned: Sing leads, Rehearse second, secondary actions as real buttons; the finished instrumental settles to tape grey.
+- Studio lyrics are never blank: skeleton while loading, retry / add lyrics when they can't be fetched.
+- Breathing lyrics no longer reflow mid-line; one gradient layer per frame; the clock stops while paused. Past lyrics are 24/600 for contrast.
+- Spotlight uses the brief's 600ms emphasized curve with a pill-to-disc hero morph. Tabs cross-fade.
+- Branded confirm sheets replace stock dialogs. Profile stats survive large text. READY moves to the row's meta line. Feed cards get a hairline; load-more is a skeleton.
+- All motion, size and blur values are tokens.
+- Tests: link parsing and flow, Studio session and Rehearse state machines (with fake players), server link endpoints, 2x text on profile and post card. New screenshots: link sheet (both themes), song sheet in its glass sheet, the Stage screen, Library without access, lyrics offline, Unsinging painter frames.
+
 ## 0.1.1 – polish
 
 - Library: alphabet scrub rail on long libraries (24+ songs) with a letter bubble and haptics; songs always sorted by title.

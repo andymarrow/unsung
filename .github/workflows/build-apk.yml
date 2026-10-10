@@ -16,6 +16,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      # The link endpoints only; Demucs is not needed for these tests.
+      - run: pip install fastapi python-multipart 'yt-dlp[default]' httpx pytest
+      - run: pytest -q
+        working-directory: server
+
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 45

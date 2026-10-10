@@ -76,7 +76,6 @@ class _SongSheetState extends ConsumerState<SongSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final type = context.type;
     final art = ref.watch(artworkProvider(song)).valueOrNull;
     final track = ref.watch(karaokeTrackProvider(song.id));
     final job = ref.watch(karaokeJobProvider(song.id));
@@ -99,51 +98,7 @@ class _SongSheetState extends ConsumerState<SongSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Hero(
-                tag: 'art-${song.id}',
-                child: Artwork(
-                  title: song.title,
-                  bytes: art,
-                  size: Sizes.artworkSheet,
-                ),
-              ),
-              const SizedBox(width: Space.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      song.title,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: type.heading,
-                    ),
-                    const SizedBox(height: Space.xxs),
-                    Text(song.artistOrUnknown, style: type.rowMeta),
-                    const SizedBox(height: Space.xs),
-                    Wrap(
-                      spacing: Space.xs,
-                      runSpacing: Space.xs,
-                      children: [
-                        TapeLabel(formatDuration(song.duration)),
-                        if (song.isImported)
-                          const TapeLabel('YouTube', tone: TapeTone.outline),
-                        if (track != null)
-                          TapeLabel(
-                            track.mode == SeparationMode.studio
-                                ? 'Studio'
-                                : 'Ready',
-                            tone: TapeTone.cue,
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          _Header(song: song, art: art, track: track),
           const SizedBox(height: Space.lg),
           AnimatedSize(
             duration: Motion.of(context, Motion.base),
@@ -501,6 +456,64 @@ class _MoreAction extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Artwork, title, artist and the song's tape labels.
+class _Header extends StatelessWidget {
+  const _Header({required this.song, required this.art, required this.track});
+
+  final Song song;
+  final Uint8List? art;
+  final KaraokeTrack? track;
+
+  @override
+  Widget build(BuildContext context) {
+    final type = context.type;
+    final track = this.track;
+    return Row(
+      children: [
+        Hero(
+          tag: 'art-${song.id}',
+          child: Artwork(
+            title: song.title,
+            bytes: art,
+            size: Sizes.artworkSheet,
+          ),
+        ),
+        const SizedBox(width: Space.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                song.title,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: type.heading,
+              ),
+              const SizedBox(height: Space.xxs),
+              Text(song.artistOrUnknown, style: type.rowMeta),
+              const SizedBox(height: Space.xs),
+              Wrap(
+                spacing: Space.xs,
+                runSpacing: Space.xs,
+                children: [
+                  TapeLabel(formatDuration(song.duration)),
+                  if (song.isImported)
+                    const TapeLabel('YouTube', tone: TapeTone.outline),
+                  if (track != null)
+                    TapeLabel(
+                      track.mode == SeparationMode.studio ? 'Studio' : 'Ready',
+                      tone: TapeTone.cue,
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

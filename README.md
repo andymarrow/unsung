@@ -4,15 +4,16 @@
 
 **Every song you own is a karaoke track.** Unsung finds the music already on your Android phone, lifts the vocals out, and lets you sing over the band with live lyrics and a pitch ribbon. Keep every take, polish the mix any time, and share the good ones on the Stage: private first, public when you're ready.
 
-| Library | Unsinging | Studio | Stage |
-|---|---|---|---|
-| ![](docs/screenshots/library_dark.png) | ![](docs/screenshots/song_sheet_unsinging.png) | ![](docs/screenshots/studio_surface_dark.png) | ![](docs/screenshots/stage_feed_dark.png) |
+| Library | From a link | Unsinging | Studio | Stage |
+|---|---|---|---|---|
+| ![](docs/screenshots/library_dark.png) | ![](docs/screenshots/link_sheet_dark.png) | ![](docs/screenshots/song_sheet_unsinging.png) | ![](docs/screenshots/studio_surface_dark.png) | ![](docs/screenshots/stage_screen_dark.png) |
 
 Screenshots are rendered by CI from golden tests with the real fonts and demo data (invented songs and people).
 
 ## What it does
 
-- **Your library** – reads every song on the device (MediaStore), with search, cover art and a "Ready" filter.
+- **Your library** – reads every song on the device (MediaStore), with search, cover art, a "Ready" filter and an A–Z scrub.
+- **From a YouTube link** – don't have the song? Paste a YouTube / YouTube Music link, or tap Share → Unsung in the YouTube app. Unsung fetches the audio (on your Studio server with yt-dlp when there is one, otherwise on the phone), and it joins your library ready to unsing.
 - **Unsing it** – removes the lead vocal on the phone (*Quick*), or on an optional ML server (*Studio*, Demucs). You watch the voice lift off the waveform as it's removed.
 - **Rehearse** – instrumental with a *vocal guide* fader (fade the original singer back in), key change ±6 semitones with tempo kept, synced lyrics from [LRCLIB](https://lrclib.net) or pasted by you, timing nudge.
 - **Studio** – 3-2-1 count-in, record over the music, live "breathing" lyrics and a pitch ribbon that glows when you're centred on a note. Automatic sync estimate.
@@ -49,7 +50,8 @@ Feature-first Flutter app (`lib/features/<feature>/{domain,data,presentation}`) 
 - Quick vocal removal relies on the voice being mixed to the centre. Mono songs can't be done on the phone; near-mono mixes leak some voice (the app tells you). Studio mode on a server is much cleaner.
 - "In tune" means centred on a note of the scale, not matched to the original melody.
 - Android only for now. iOS needs its own audio engine.
-- Users are responsible for having the rights to the songs they process and share.
+- Users are responsible for having the rights to the songs they process and share. That includes songs brought in from links: downloading from YouTube is against YouTube's terms unless you have the rights, which is why Unsung never re-shares imported audio and keeps it on the phone.
+- YouTube changes often. On-device fetching (youtube_explode_dart) can break between app updates; the Studio server's yt-dlp is updated far more often and is the reliable path. Rebuild the server image regularly.
 
 ## Fonts
 

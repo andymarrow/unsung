@@ -55,10 +55,13 @@ Two open-licence (SIL OFL 1.1) variable families, bundled in `assets/fonts` with
 - No drop shadows on dark. Depth comes from surface steps and the cue glow (a soft radial cue light, 24% alpha) behind the one focal element.
 
 ## Navigation model and key screens
-Bottom bar with 3 destinations + a central record affordance: **Library**, **Stage** (social feed), **Me** (profile + takes). Studio and Player are full-screen pushes.
+Bottom bar with 4 destinations around a central Sing affordance: **Library**, **Stage** (social feed) | Sing | **Takes**, **Me**. Studio and Player are full-screen pushes.
+
+*Changed from the first draft (3 destinations, takes inside Me):* takes are the thing people come back to most after singing, and burying them under a profile that only exists once you sign in to the Stage made them hard to find offline. Two tabs either side also balance the bar around Sing. Tabs cross-fade (240ms, with a 1.5% settle) and keep their state.
 
 1. **Onboarding** – 3 beats, asks for audio + mic permissions with reasons, at the moment they're needed.
-2. **Library** – every song on the device, search, filter (All / Karaoke-ready), alphabet scrub. Each row shows a tape-label tag `READY` once unsung.
+2. **Library** – every song on the device plus songs brought in from links, search, filter (All / Karaoke-ready), alphabet scrub. `READY` sits on a row's meta line once unsung.
+2b. **From a link** (glass sheet) – paste a YouTube or YouTube Music link, or Share → Unsung from the YouTube app. A preview card (thumbnail, cleaned title, artist, length) appears with a breathing skeleton while it resolves; "Bring it in" runs a thin cue progress line along the card's edge; done hands straight to Unsing it.
 3. **Song sheet** – artwork, metadata, "Unsing this song" with Quick (on-device) / Studio (server, if configured) choice.
 4. **Player / Rehearse** – instrumental with live lyrics, vocal guide fader (original ↔ instrumental), key ±6, lyrics offset.
 5. **Studio** – record over the instrumental, live lyrics + pitch ribbon, headphone hint, countdown.
@@ -73,6 +76,8 @@ Bottom bar with 3 destinations + a central record affordance: **Library**, **Sta
 3. **The Spotlight.** Pressing the record button throws a radial cue light that expands from the button to fill the screen and reveals the Studio (circular clip reveal, 600ms emphasized), with a heavy haptic on "3-2-1-sing". Going public on a take flips the lock into a broadcast mark with a ripple (280ms).
 
 ## Motion language
+Principle: motion confirms, it never performs. Nothing jumps at the user: content fades and rises a few pixels (6% of its height), sizes ease, and only the three signature moments are allowed to be expressive.
+
 - fast 140ms / base 240ms / slow 420ms / signature 650ms.
 - Curves: standard `Cubic(0.2, 0, 0, 1)`, emphasized overshoot `Cubic(0.34, 1.4, 0.64, 1)`, decelerate `Cubic(0, 0, 0, 1)`.
 - Press feedback everywhere: scale to 0.96 over fast, standard curve, plus selection haptic on toggles.

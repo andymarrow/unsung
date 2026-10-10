@@ -62,7 +62,10 @@ class StudioSession extends ChangeNotifier {
     required this.takes,
     required this.permissions,
     this.semitones = 0,
-  });
+    AudioPlayer? music,
+    AudioRecorder? recorder,
+  })  : music = music ?? AudioPlayer(),
+        _recorder = recorder ?? AudioRecorder();
 
   final Song song;
   final KaraokeTrack track;
@@ -70,9 +73,10 @@ class StudioSession extends ChangeNotifier {
   final Permissions permissions;
   int semitones;
 
-  final music = AudioPlayer();
+  /// The instrumental. Injectable for tests, like the recorder.
+  final AudioPlayer music;
   final history = PitchHistory();
-  final _recorder = AudioRecorder();
+  final AudioRecorder _recorder;
   final _tracker = PitchTracker();
   final _stats = SingingStats();
 

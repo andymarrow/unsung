@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:unsung/core/widgets/visibility_toggle.dart';
 import 'package:unsung/features/social/domain/models.dart';
+import 'package:unsung/features/social/presentation/profile_view.dart';
+import 'package:unsung/features/social/presentation/social_providers.dart';
+import 'package:unsung/features/social/presentation/widgets/post_card.dart';
 import 'package:unsung/features/stage/presentation/stage_screen.dart';
 
+import 'helpers/demo_social.dart';
 import 'helpers/pump.dart';
 
 void main() {
@@ -70,5 +74,39 @@ void main() {
     expect(find.text('EVERYONE'), findsOneWidget);
     expect(find.byIcon(Icons.podcasts_rounded), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('post card and profile survive 200% text scale', (tester) async {
+    await pumpScreen(
+      tester,
+      Scaffold(
+        body: ListView(
+          children: [
+            PostCard(post: demoPosts.first),
+            const SizedBox(
+              height: 900,
+              child:
+                  ProfileView(userId: 'u1', action: FollowButton(userId: 'u1')),
+            ),
+          ],
+        ),
+      ),
+      overrides: [
+        profileProvider.overrideWith((ref, id) async => demoHanna),
+        statsProvider.overrideWith(
+          (ref, id) async => const ProfileStats(
+              publicPosts: 12,
+              likesReceived: 318,
+              followers: 87,
+              following: 40),
+        ),
+        postsByProvider.overrideWith((ref, id) async => const []),
+        followingProvider.overrideWith((ref, id) async => false),
+      ],
+      textScale: 2,
+    );
+    await tester.pump(const Duration(seconds: 1));
+    expect(tester.takeException(), isNull);
+    expect(find.text('FOLLOWERS'), findsOneWidget);
   });
 }
