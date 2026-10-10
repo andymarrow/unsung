@@ -43,3 +43,11 @@ Future<void> pumpScreen(
   );
   await tester.pump(const Duration(milliseconds: 600));
 }
+
+/// Pumps several frames so animations that start late (tickers take their
+/// start time from the next frame) reach their end state before a golden.
+Future<void> settleFrames(WidgetTester tester, {int frames = 12}) async {
+  for (var i = 0; i < frames; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}

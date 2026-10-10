@@ -72,7 +72,6 @@ class CueButton extends StatelessWidget {
           color: c.cue,
           borderRadius: BorderRadius.circular(Radii.full),
         ),
-        alignment: Alignment.center,
         child: content,
       ),
     );

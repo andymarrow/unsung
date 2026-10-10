@@ -14,6 +14,7 @@ void main() {
   for (final b in Brightness.values) {
     testWidgets('onboarding ${b.name}', (tester) async {
       await pumpScreen(tester, const OnboardingScreen(), brightness: b);
+      await settleFrames(tester);
       await expectLater(
         find.byType(OnboardingScreen),
         matchesGoldenFile('onboarding_${b.name}.png'),
