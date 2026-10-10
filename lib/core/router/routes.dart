@@ -12,7 +12,7 @@ abstract final class Routes {
   static const post = '/post/:postId';
   static const profile = '/profile/:userId';
   static const signIn = '/sign-in';
-  static const editProfile = '/me/edit';
+  static const editProfile = '/edit-profile';
 
   static String rehearseFor(String songId) => '/rehearse/$songId';
   static String studioFor(String songId) => '/studio/$songId';

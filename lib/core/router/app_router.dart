@@ -11,6 +11,10 @@ import 'package:unsung/features/library/presentation/library_screen.dart';
 import 'package:unsung/features/me/presentation/me_screen.dart';
 import 'package:unsung/features/onboarding/onboarding_screen.dart';
 import 'package:unsung/features/player/rehearse_screen.dart';
+import 'package:unsung/features/social/presentation/edit_profile_screen.dart';
+import 'package:unsung/features/social/presentation/post_screen.dart';
+import 'package:unsung/features/social/presentation/profile_screen.dart';
+import 'package:unsung/features/social/presentation/sign_in_screen.dart';
 import 'package:unsung/features/stage/presentation/stage_screen.dart';
 import 'package:unsung/features/studio/presentation/review_screen.dart';
 import 'package:unsung/features/studio/presentation/studio_screen.dart';
@@ -104,6 +108,28 @@ final routerProvider = Provider<GoRouter>((ref) {
           key: state.pageKey,
           child: StudioScreen(songId: state.pathParameters['songId']!),
         ),
+      ),
+      GoRoute(
+        path: Routes.signIn,
+        parentNavigatorKey: _rootKey,
+        builder: (_, __) => const SignInScreen(),
+      ),
+      GoRoute(
+        path: Routes.editProfile,
+        parentNavigatorKey: _rootKey,
+        builder: (_, __) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: Routes.post,
+        parentNavigatorKey: _rootKey,
+        builder: (_, state) =>
+            PostScreen(postId: state.pathParameters['postId']!),
+      ),
+      GoRoute(
+        path: Routes.profile,
+        parentNavigatorKey: _rootKey,
+        builder: (_, state) =>
+            ProfileScreen(userId: state.pathParameters['userId']!),
       ),
       GoRoute(
         path: Routes.review,

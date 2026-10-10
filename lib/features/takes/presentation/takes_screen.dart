@@ -124,7 +124,9 @@ class TakeRow extends StatelessWidget {
                 ),
                 const SizedBox(width: Space.xs),
                 TapeLabel(
-                  take.isPublic ? 'Public' : 'Private',
+                  take.isPublic
+                      ? 'On stage'
+                      : (take.postId != null ? 'Uploaded' : 'Private'),
                   icon: take.isPublic
                       ? Icons.podcasts_rounded
                       : Icons.lock_rounded,
