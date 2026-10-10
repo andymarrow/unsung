@@ -62,20 +62,23 @@ class SocialRepository {
     if (m.contains('expired') || m.contains('invalid')) {
       return "That code didn't work. Check it, or ask for a new one.";
     }
-    if (m.contains('rate')) return 'Too many tries. Wait a minute and try again.';
+    if (m.contains('rate'))
+      return 'Too many tries. Wait a minute and try again.';
     return e.message;
   }
 
   static String _dbMessage(PostgrestException e) {
     if (e.code == '23505') return 'That handle is taken. Try another.';
-    if (e.code == '23514') return "Something you typed doesn't fit. Check the lengths.";
+    if (e.code == '23514')
+      return "Something you typed doesn't fit. Check the lengths.";
     return "The Stage didn't respond properly. Try again.";
   }
 
   // Auth ----------------------------------------------------------------------
 
   Future<void> sendCode(String email) => _guard(
-        () => _db.auth.signInWithOtp(email: email.trim(), shouldCreateUser: true),
+        () =>
+            _db.auth.signInWithOtp(email: email.trim(), shouldCreateUser: true),
       );
 
   Future<void> verifyCode(String email, String code) => _guard(
@@ -96,7 +99,8 @@ class SocialRepository {
       });
 
   Future<ProfileStats> stats(String id) => _guard(() async {
-        final row = await _db.from('profile_stats').select().eq('id', id).maybeSingle();
+        final row =
+            await _db.from('profile_stats').select().eq('id', id).maybeSingle();
         return row == null ? const ProfileStats() : ProfileStats.fromJson(row);
       });
 
@@ -123,25 +127,38 @@ class SocialRepository {
 
   Future<List<Post>> _withLikes(List<Map<String, dynamic>> rows) async {
     final me = userId;
-    if (rows.isEmpty || me == null) return [for (final r in rows) Post.fromJson(r)];
+    if (rows.isEmpty || me == null)
+      return [for (final r in rows) Post.fromJson(r)];
     final ids = [for (final r in rows) r['id']! as String];
-    final liked = await _db.from('likes').select('post_id').eq('user_id', me).inFilter('post_id', ids);
+    final liked = await _db
+        .from('likes')
+        .select('post_id')
+        .eq('user_id', me)
+        .inFilter('post_id', ids);
     final set = {for (final l in liked) l['post_id']! as String};
-    return [for (final r in rows) Post.fromJson(r, likedByMe: set.contains(r['id']))];
+    return [
+      for (final r in rows) Post.fromJson(r, likedByMe: set.contains(r['id']))
+    ];
   }
 
   Future<List<Post>> feed(FeedScope scope, {int page = 0}) => _guard(() async {
         final from = page * pageSize;
-        var query = _db.from('posts').select(_postSelect).eq('visibility', 'public');
+        var query =
+            _db.from('posts').select(_postSelect).eq('visibility', 'public');
         if (scope == FeedScope.following) {
           final me = userId;
           if (me == null) return const <Post>[];
-          final follows = await _db.from('follows').select('followee_id').eq('follower_id', me);
+          final follows = await _db
+              .from('follows')
+              .select('followee_id')
+              .eq('follower_id', me);
           final ids = [for (final f in follows) f['followee_id']! as String];
           if (ids.isEmpty) return const <Post>[];
           query = query.inFilter('author_id', ids);
         }
-        final rows = await query.order('created_at', ascending: false).range(from, from + pageSize - 1);
+        final rows = await query
+            .order('created_at', ascending: false)
+            .range(from, from + pageSize - 1);
         return _withLikes(rows);
       });
 
@@ -157,7 +174,8 @@ class SocialRepository {
       });
 
   Future<Post> post(String id) => _guard(() async {
-        final row = await _db.from('posts').select(_postSelect).eq('id', id).single();
+        final row =
+            await _db.from('posts').select(_postSelect).eq('id', id).single();
         return (await _withLikes([row])).single;
       });
 
@@ -176,7 +194,8 @@ class SocialRepository {
         await _db.storage.from(_bucket).upload(
               path,
               File(mix),
-              fileOptions: const FileOptions(contentType: 'audio/mp4', upsert: true),
+              fileOptions:
+                  const FileOptions(contentType: 'audio/mp4', upsert: true),
             );
         final row = await _db
             .from('posts')
@@ -201,7 +220,9 @@ class SocialRepository {
       );
 
   Future<void> updateCaption(String postId, String caption) => _guard(
-        () => _db.from('posts').update({'caption': caption.trim()}).eq('id', postId),
+        () => _db
+            .from('posts')
+            .update({'caption': caption.trim()}).eq('id', postId),
       );
 
   Future<void> deletePost(Post post) => _guard(() async {
@@ -212,10 +233,14 @@ class SocialRepository {
   /// Signed URL for playback, cached until shortly before it expires.
   Future<String> audioUrl(Post post) => _guard(() async {
         final cached = _urls[post.audioPath];
-        if (cached != null && cached.$2.isAfter(DateTime.now())) return cached.$1;
+        if (cached != null && cached.$2.isAfter(DateTime.now()))
+          return cached.$1;
         const ttl = Duration(hours: 1);
-        final url = await _db.storage.from(_bucket).createSignedUrl(post.audioPath, ttl.inSeconds);
-        _urls[post.audioPath] = (url, DateTime.now().add(ttl - const Duration(minutes: 5)));
+        final url = await _db.storage
+            .from(_bucket)
+            .createSignedUrl(post.audioPath, ttl.inSeconds);
+        _urls[post.audioPath] =
+            (url, DateTime.now().add(ttl - const Duration(minutes: 5)));
         return url;
       });
 
@@ -226,7 +251,11 @@ class SocialRepository {
       );
 
   Future<void> unlike(String postId) => _guard(
-        () => _db.from('likes').delete().eq('post_id', postId).eq('user_id', userId!),
+        () => _db
+            .from('likes')
+            .delete()
+            .eq('post_id', postId)
+            .eq('user_id', userId!),
       );
 
   Future<List<Comment>> comments(String postId) => _guard(() async {
@@ -242,7 +271,8 @@ class SocialRepository {
   Future<Comment> addComment(String postId, String body) => _guard(() async {
         final row = await _db
             .from('comments')
-            .insert({'post_id': postId, 'author_id': userId, 'body': body.trim()})
+            .insert(
+                {'post_id': postId, 'author_id': userId, 'body': body.trim()})
             .select(_commentSelect)
             .single();
         return Comment.fromJson(row);
@@ -264,11 +294,17 @@ class SocialRepository {
       });
 
   Future<void> follow(String id) => _guard(
-        () => _db.from('follows').insert({'follower_id': userId, 'followee_id': id}),
+        () => _db
+            .from('follows')
+            .insert({'follower_id': userId, 'followee_id': id}),
       );
 
   Future<void> unfollow(String id) => _guard(
-        () => _db.from('follows').delete().eq('follower_id', userId!).eq('followee_id', id),
+        () => _db
+            .from('follows')
+            .delete()
+            .eq('follower_id', userId!)
+            .eq('followee_id', id),
       );
 }
 

@@ -62,26 +62,34 @@ class _PostBody extends ConsumerWidget {
               PostCard(post: post),
               if (mine) _OwnerPanel(post: post),
               Padding(
-                padding: const EdgeInsets.fromLTRB(Space.gutter, Space.lg, Space.gutter, Space.sm),
+                padding: const EdgeInsets.fromLTRB(
+                    Space.gutter, Space.lg, Space.gutter, Space.sm),
                 child: Text('COMMENTS', style: context.type.labelMuted),
               ),
               ...switch (comments) {
                 AsyncData(:final value) when value.isEmpty => [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Space.gutter),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: Space.gutter),
                       child: Text(
-                        post.isPublic ? 'No comments yet. Say something kind.' : 'Only you can see this take, so comments are off.',
+                        post.isPublic
+                            ? 'No comments yet. Say something kind.'
+                            : 'Only you can see this take, so comments are off.',
                         style: context.type.bodyMuted,
                       ),
                     ),
                   ],
                 AsyncData(:final value) => [
-                    for (final c in value) _CommentTile(comment: c, canDelete: c.author.id == me || mine),
+                    for (final c in value)
+                      _CommentTile(
+                          comment: c, canDelete: c.author.id == me || mine),
                   ],
                 AsyncError(:final error) => [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Space.gutter),
-                      child: Text(toFailure(error).message, style: context.type.bodyMuted),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: Space.gutter),
+                      child: Text(toFailure(error).message,
+                          style: context.type.bodyMuted),
                     ),
                   ],
                 _ => [const RowSkeletonList(count: 2)],
@@ -116,7 +124,8 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
       unawaited(HapticFeedback.mediumImpact());
     } on Object catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(toFailure(e).message)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(toFailure(e).message)));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -127,7 +136,9 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
     final takes = ref.read(takesProvider).valueOrNull ?? const <Take>[];
     for (final t in takes) {
       if (t.postId == widget.post.id) {
-        await ref.read(takesProvider.notifier).upsert(t.copyWith(visibility: v));
+        await ref
+            .read(takesProvider.notifier)
+            .upsert(t.copyWith(visibility: v));
       }
     }
   }
@@ -138,12 +149,17 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
       builder: (d) => AlertDialog(
         backgroundColor: d.colors.surface,
         title: Text('Remove from the Stage?', style: d.type.heading),
-        content: Text('Likes and comments go with it. The take stays on your phone.', style: d.type.bodyMuted),
+        content: Text(
+            'Likes and comments go with it. The take stays on your phone.',
+            style: d.type.bodyMuted),
         actions: [
-          TextButton(onPressed: () => Navigator.of(d).pop(false), child: Text('KEEP', style: d.type.label)),
+          TextButton(
+              onPressed: () => Navigator.of(d).pop(false),
+              child: Text('KEEP', style: d.type.label)),
           TextButton(
             onPressed: () => Navigator.of(d).pop(true),
-            child: Text('REMOVE', style: d.type.label.copyWith(color: d.colors.cue)),
+            child: Text('REMOVE',
+                style: d.type.label.copyWith(color: d.colors.cue)),
           ),
         ],
       ),
@@ -155,7 +171,11 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
     for (final t in takes) {
       if (t.postId == widget.post.id) {
         await ref.read(takesProvider.notifier).upsert(
-              Take.fromJson({...t.toJson(), 'postId': null, 'visibility': TakeVisibility.private.name}),
+              Take.fromJson({
+                ...t.toJson(),
+                'postId': null,
+                'visibility': TakeVisibility.private.name
+              }),
             );
       }
     }
@@ -167,9 +187,12 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
     final type = context.type;
     final public = widget.post.isPublic;
     return Container(
-      margin: const EdgeInsets.fromLTRB(Space.gutter, Space.md, Space.gutter, 0),
+      margin:
+          const EdgeInsets.fromLTRB(Space.gutter, Space.md, Space.gutter, 0),
       padding: const EdgeInsets.all(Space.md),
-      decoration: BoxDecoration(color: context.colors.raised, borderRadius: BorderRadius.circular(Radii.card)),
+      decoration: BoxDecoration(
+          color: context.colors.raised,
+          borderRadius: BorderRadius.circular(Radii.card)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -180,8 +203,14 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
             runSpacing: Space.xs,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              ToggleChip(label: 'Only me', selected: !public, onTap: () => unawaited(_set(TakeVisibility.private))),
-              ToggleChip(label: 'Everyone', selected: public, onTap: () => unawaited(_set(TakeVisibility.public))),
+              ToggleChip(
+                  label: 'Only me',
+                  selected: !public,
+                  onTap: () => unawaited(_set(TakeVisibility.private))),
+              ToggleChip(
+                  label: 'Everyone',
+                  selected: public,
+                  onTap: () => unawaited(_set(TakeVisibility.public))),
               AnimatedOpacity(
                 opacity: _busy ? 1 : 0,
                 duration: Motion.of(context, Motion.fast),
@@ -220,7 +249,8 @@ class _CommentTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final type = context.type;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Space.gutter, vertical: Space.xs),
+      padding: const EdgeInsets.symmetric(
+          horizontal: Space.gutter, vertical: Space.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -234,7 +264,9 @@ class _CommentTile extends ConsumerWidget {
                   TextSpan(
                     children: [
                       TextSpan(text: comment.author.name, style: type.rowTitle),
-                      TextSpan(text: '  ${timeAgo(comment.createdAt)}', style: type.rowMeta),
+                      TextSpan(
+                          text: '  ${timeAgo(comment.createdAt)}',
+                          style: type.rowMeta),
                     ],
                   ),
                 ),
@@ -247,7 +279,9 @@ class _CommentTile extends ConsumerWidget {
             RoundIconButton(
               icon: Icons.close_rounded,
               label: 'Delete comment',
-              onTap: () => unawaited(ref.read(commentsProvider(comment.postId).notifier).remove(comment)),
+              onTap: () => unawaited(ref
+                  .read(commentsProvider(comment.postId).notifier)
+                  .remove(comment)),
             ),
         ],
       ),
@@ -284,7 +318,8 @@ class _ComposerState extends ConsumerState<_Composer> {
       ref.invalidate(postProvider(widget.postId));
     } on Object catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(toFailure(e).message)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(toFailure(e).message)));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -295,11 +330,13 @@ class _ComposerState extends ConsumerState<_Composer> {
   Widget build(BuildContext context) {
     final c = context.colors;
     return DecoratedBox(
-      decoration: BoxDecoration(color: c.surface, border: Border(top: BorderSide(color: c.hairline))),
+      decoration: BoxDecoration(
+          color: c.surface, border: Border(top: BorderSide(color: c.hairline))),
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(Space.gutter, Space.xs, Space.xs, Space.xs),
+          padding: const EdgeInsets.fromLTRB(
+              Space.gutter, Space.xs, Space.xs, Space.xs),
           child: Row(
             children: [
               Expanded(
@@ -311,7 +348,8 @@ class _ComposerState extends ConsumerState<_Composer> {
                   style: context.type.body,
                   textInputAction: TextInputAction.send,
                   onSubmitted: (_) => unawaited(_send()),
-                  decoration: const InputDecoration(hintText: 'Add a comment', counterText: ''),
+                  decoration: const InputDecoration(
+                      hintText: 'Add a comment', counterText: ''),
                 ),
               ),
               const SizedBox(width: Space.xs),

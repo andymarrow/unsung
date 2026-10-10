@@ -61,7 +61,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
 
   Future<void> _verify() => _run(() async {
-        await ref.read(socialRepositoryProvider).verifyCode(_email.text, _code.text);
+        await ref
+            .read(socialRepositoryProvider)
+            .verifyCode(_email.text, _code.text);
         unawaited(HapticFeedback.mediumImpact());
         if (mounted) context.go(Routes.me);
       });
@@ -82,7 +84,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             children: [
               Text('SIGN IN', style: type.labelMuted),
               const SizedBox(height: Space.xs),
-              Text(_codeSent ? 'Check your inbox' : 'Claim your name on the Stage', style: type.title),
+              Text(
+                  _codeSent
+                      ? 'Check your inbox'
+                      : 'Claim your name on the Stage',
+                  style: type.title),
               const SizedBox(height: Space.sm),
               Text(
                 _codeSent
@@ -100,10 +106,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         autofocus: true,
                         keyboardType: TextInputType.number,
                         maxLength: _codeLength,
-                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         style: type.title.copyWith(letterSpacing: Space.sm),
                         textAlign: TextAlign.center,
-                        decoration: const InputDecoration(hintText: '000000', counterText: ''),
+                        decoration: const InputDecoration(
+                            hintText: '000000', counterText: ''),
                         onChanged: (v) {
                           if (v.length == _codeLength) unawaited(_verify());
                         },
@@ -116,7 +125,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         autofillHints: const [AutofillHints.email],
                         textInputAction: TextInputAction.send,
                         style: type.body,
-                        decoration: const InputDecoration(hintText: 'you@example.com'),
+                        decoration:
+                            const InputDecoration(hintText: 'you@example.com'),
                         onSubmitted: (_) => unawaited(_send()),
                       ),
               ),
@@ -126,13 +136,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     ? const SizedBox(width: double.infinity)
                     : Padding(
                         padding: const EdgeInsets.only(top: Space.sm),
-                        child: Text(_error!, style: type.rowMeta.copyWith(color: c.cue)),
+                        child: Text(_error!,
+                            style: type.rowMeta.copyWith(color: c.cue)),
                       ),
               ),
               const SizedBox(height: Space.lg),
               CueButton(
                 label: _codeSent ? 'Verify' : 'Send code',
-                icon: _codeSent ? Icons.check_rounded : Icons.mail_outline_rounded,
+                icon: _codeSent
+                    ? Icons.check_rounded
+                    : Icons.mail_outline_rounded,
                 expand: true,
                 busy: _busy,
                 onTap: () => unawaited(_codeSent ? _verify() : _send()),

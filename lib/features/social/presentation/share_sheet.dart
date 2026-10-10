@@ -24,7 +24,9 @@ Future<void> shareTake(BuildContext context, WidgetRef ref, Take take) async {
   }
   if (!repo.configured) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Sharing isn't connected in this build yet. Your take is saved on this phone.")),
+      const SnackBar(
+          content: Text(
+              "Sharing isn't connected in this build yet. Your take is saved on this phone.")),
     );
     return;
   }
@@ -69,9 +71,14 @@ class _ShareSheetState extends ConsumerState<ShareSheet> {
       _error = null;
     });
     try {
-      final post = await ref.read(shareActionsProvider).publish(widget.take, _visibility, _caption.text);
+      final post = await ref
+          .read(shareActionsProvider)
+          .publish(widget.take, _visibility, _caption.text);
       await ref.read(takesProvider.notifier).upsert(
-            widget.take.copyWith(postId: post.id, visibility: _visibility, caption: _caption.text.trim()),
+            widget.take.copyWith(
+                postId: post.id,
+                visibility: _visibility,
+                caption: _caption.text.trim()),
           );
       unawaited(HapticFeedback.heavyImpact());
       if (!mounted) return;
@@ -111,7 +118,8 @@ class _ShareSheetState extends ConsumerState<ShareSheet> {
             maxLines: 3,
             minLines: 1,
             style: type.body,
-            decoration: const InputDecoration(hintText: 'Say something about this take'),
+            decoration: const InputDecoration(
+                hintText: 'Say something about this take'),
           ),
           const SizedBox(height: Space.sm),
           Text('WHO CAN HEAR IT', style: type.labelMuted),
@@ -123,12 +131,14 @@ class _ShareSheetState extends ConsumerState<ShareSheet> {
               ToggleChip(
                 label: 'Only me',
                 selected: !public,
-                onTap: () => setState(() => _visibility = TakeVisibility.private),
+                onTap: () =>
+                    setState(() => _visibility = TakeVisibility.private),
               ),
               ToggleChip(
                 label: 'Everyone',
                 selected: public,
-                onTap: () => setState(() => _visibility = TakeVisibility.public),
+                onTap: () =>
+                    setState(() => _visibility = TakeVisibility.public),
               ),
             ],
           ),
@@ -141,7 +151,8 @@ class _ShareSheetState extends ConsumerState<ShareSheet> {
           ),
           if (_error != null) ...[
             const SizedBox(height: Space.sm),
-            Text(_error!, style: type.rowMeta.copyWith(color: context.colors.cue)),
+            Text(_error!,
+                style: type.rowMeta.copyWith(color: context.colors.cue)),
           ],
           const SizedBox(height: Space.lg),
           CueButton(

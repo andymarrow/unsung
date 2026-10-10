@@ -34,13 +34,15 @@ class _StageScreenState extends ConsumerState<StageScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(Space.gutter, Space.lg, Space.gutter, Space.sm),
+              padding: const EdgeInsets.fromLTRB(
+                  Space.gutter, Space.lg, Space.gutter, Space.sm),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Stage', style: context.type.title),
                   const SizedBox(height: Space.xxs),
-                  Text('VOICES FROM EVERYWHERE', style: context.type.labelMuted),
+                  Text('VOICES FROM EVERYWHERE',
+                      style: context.type.labelMuted),
                 ],
               ),
             ),
@@ -49,7 +51,8 @@ class _StageScreenState extends ConsumerState<StageScreen> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(Space.gutter, 0, Space.gutter, Space.sm),
+                      padding: const EdgeInsets.fromLTRB(
+                          Space.gutter, 0, Space.gutter, Space.sm),
                       child: Wrap(
                         spacing: Space.xs,
                         runSpacing: Space.xs,
@@ -57,12 +60,14 @@ class _StageScreenState extends ConsumerState<StageScreen> {
                           ToggleChip(
                             label: 'For you',
                             selected: _scope == FeedScope.forYou,
-                            onTap: () => setState(() => _scope = FeedScope.forYou),
+                            onTap: () =>
+                                setState(() => _scope = FeedScope.forYou),
                           ),
                           ToggleChip(
                             label: 'Following',
                             selected: _scope == FeedScope.following,
-                            onTap: () => setState(() => _scope = FeedScope.following),
+                            onTap: () =>
+                                setState(() => _scope = FeedScope.following),
                           ),
                         ],
                       ),
@@ -88,21 +93,24 @@ class _Feed extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final feed = ref.watch(feedProvider(scope));
     return switch (feed) {
-      AsyncData(:final value) when value.posts.isEmpty => scope == FeedScope.forYou
-          ? EmptyState(
-              icon: Icons.nightlife_rounded,
-              kicker: 'Quiet night',
-              title: 'Nobody has taken the stage yet',
-              message: 'Be the first. Save a take, then share it publicly from your Takes.',
-              actionLabel: 'Open Takes',
-              onAction: () => context.go(Routes.takes),
-            )
-          : const EmptyState(
-              icon: Icons.group_add_rounded,
-              kicker: 'Following',
-              title: 'Follow voices you love',
-              message: 'Open a singer from For you and tap Follow. Their new takes show up here.',
-            ),
+      AsyncData(:final value) when value.posts.isEmpty =>
+        scope == FeedScope.forYou
+            ? EmptyState(
+                icon: Icons.nightlife_rounded,
+                kicker: 'Quiet night',
+                title: 'Nobody has taken the stage yet',
+                message:
+                    'Be the first. Save a take, then share it publicly from your Takes.',
+                actionLabel: 'Open Takes',
+                onAction: () => context.go(Routes.takes),
+              )
+            : const EmptyState(
+                icon: Icons.group_add_rounded,
+                kicker: 'Following',
+                title: 'Follow voices you love',
+                message:
+                    'Open a singer from For you and tap Follow. Their new takes show up here.',
+              ),
       AsyncData(:final value) => RefreshIndicator(
           onRefresh: () => ref.refresh(feedProvider(scope).future),
           child: NotificationListener<ScrollNotification>(

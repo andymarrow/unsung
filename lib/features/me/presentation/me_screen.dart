@@ -25,7 +25,8 @@ class MeScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(Space.gutter, Space.lg, Space.xs, 0),
+              padding: const EdgeInsets.fromLTRB(
+                  Space.gutter, Space.lg, Space.xs, 0),
               child: Row(
                 children: [
                   Expanded(child: Text('Me', style: context.type.title)),
@@ -50,7 +51,8 @@ class MeScreen extends ConsumerWidget {
                           label: 'Edit profile',
                           icon: Icons.edit_rounded,
                           expand: true,
-                          onTap: () => unawaited(context.push(Routes.editProfile)),
+                          onTap: () =>
+                              unawaited(context.push(Routes.editProfile)),
                         ),
                       ),
               ),
@@ -67,12 +69,16 @@ class MeScreen extends ConsumerWidget {
       builder: (d) => AlertDialog(
         backgroundColor: d.colors.surface,
         title: Text('Sign out?', style: d.type.heading),
-        content: Text('Your takes stay on this phone.', style: d.type.bodyMuted),
+        content:
+            Text('Your takes stay on this phone.', style: d.type.bodyMuted),
         actions: [
-          TextButton(onPressed: () => Navigator.of(d).pop(false), child: Text('STAY', style: d.type.label)),
+          TextButton(
+              onPressed: () => Navigator.of(d).pop(false),
+              child: Text('STAY', style: d.type.label)),
           TextButton(
             onPressed: () => Navigator.of(d).pop(true),
-            child: Text('SIGN OUT', style: d.type.label.copyWith(color: d.colors.cue)),
+            child: Text('SIGN OUT',
+                style: d.type.label.copyWith(color: d.colors.cue)),
           ),
         ],
       ),

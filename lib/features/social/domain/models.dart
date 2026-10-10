@@ -29,7 +29,8 @@ class Profile {
   /// Up to two initials for the monogram avatar.
   String get initials {
     final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty);
-    final s = parts.take(2).map((p) => String.fromCharCode(p.runes.first)).join();
+    final s =
+        parts.take(2).map((p) => String.fromCharCode(p.runes.first)).join();
     return s.isEmpty ? '?' : s.toUpperCase();
   }
 }

@@ -28,13 +28,18 @@ void main() {
   });
 
   test('initials and time ago', () {
-    expect(const Profile(id: '1', handle: 'x', displayName: 'Hanna Bekele').initials, 'HB');
+    expect(
+        const Profile(id: '1', handle: 'x', displayName: 'Hanna Bekele')
+            .initials,
+        'HB');
     final now = DateTime(2026, 10, 10, 12);
-    expect(timeAgo(now.subtract(const Duration(minutes: 5)), now: now), '5 min');
+    expect(
+        timeAgo(now.subtract(const Duration(minutes: 5)), now: now), '5 min');
     expect(timeAgo(now.subtract(const Duration(hours: 2)), now: now), '2 h');
   });
 
-  testWidgets('stage explains itself when no server is configured', (tester) async {
+  testWidgets('stage explains itself when no server is configured',
+      (tester) async {
     await pumpScreen(tester, const StageScreen());
     await tester.pump(const Duration(seconds: 1));
     expect(find.text('The Stage opens soon'), findsOneWidget);

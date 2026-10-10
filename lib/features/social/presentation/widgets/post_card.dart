@@ -35,7 +35,8 @@ class PostCard extends ConsumerWidget {
     Future<void> play() async {
       final error = await ref.read(stagePlayerProvider.notifier).toggle(post);
       if (error != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error)));
       }
     }
 
@@ -48,7 +49,9 @@ class PostCard extends ConsumerWidget {
         decoration: BoxDecoration(
           color: c.surface,
           borderRadius: BorderRadius.circular(Radii.card),
-          border: mine ? Border.all(color: c.cue.withValues(alpha: Alphas.glowStrong)) : null,
+          border: mine
+              ? Border.all(color: c.cue.withValues(alpha: Alphas.glowStrong))
+              : null,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,12 +60,21 @@ class PostCard extends ConsumerWidget {
               _AuthorRow(post: post),
               const SizedBox(height: Space.sm),
             ],
-            Text(post.songTitle, maxLines: 2, overflow: TextOverflow.ellipsis, style: type.heading),
+            Text(post.songTitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: type.heading),
             if (post.artist != null)
-              Text('originally by ${post.artist}', maxLines: 1, overflow: TextOverflow.ellipsis, style: type.rowMeta),
+              Text('originally by ${post.artist}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: type.rowMeta),
             if (post.caption.isNotEmpty) ...[
               const SizedBox(height: Space.xs),
-              Text(post.caption, maxLines: 3, overflow: TextOverflow.ellipsis, style: type.body),
+              Text(post.caption,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: type.body),
             ],
             const SizedBox(height: Space.sm),
             Row(
@@ -75,10 +87,13 @@ class PostCard extends ConsumerWidget {
                 const SizedBox(width: Space.sm),
                 Expanded(
                   child: Waveform(
-                    peaks: post.peaks.isEmpty ? const [0.3, 0.5, 0.3] : post.peaks,
+                    peaks:
+                        post.peaks.isEmpty ? const [0.3, 0.5, 0.3] : post.peaks,
                     progress: progress.clamp(0.0, 1.0),
                     onSeek: mine
-                        ? (f) => unawaited(ref.read(stagePlayerProvider.notifier).seek(post, f))
+                        ? (f) => unawaited(ref
+                            .read(stagePlayerProvider.notifier)
+                            .seek(post, f))
                         : null,
                   ),
                 ),
@@ -96,15 +111,19 @@ class PostCard extends ConsumerWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.mode_comment_outlined, size: Sizes.iconMd, color: c.inkMuted),
+                      Icon(Icons.mode_comment_outlined,
+                          size: Sizes.iconMd, color: c.inkMuted),
                       const SizedBox(width: Space.xxs),
-                      Text('${post.commentCount}', style: type.numeral.copyWith(color: c.inkMuted)),
+                      Text('${post.commentCount}',
+                          style: type.numeral.copyWith(color: c.inkMuted)),
                     ],
                   ),
                 ),
                 const SizedBox(width: Space.xs),
-                if (!post.isPublic) const TapeLabel('Only you', icon: Icons.lock_rounded),
-                TapeLabel('${(post.inTune * 100).round()}% in tune', tone: TapeTone.outline),
+                if (!post.isPublic)
+                  const TapeLabel('Only you', icon: Icons.lock_rounded),
+                TapeLabel('${(post.inTune * 100).round()}% in tune',
+                    tone: TapeTone.outline),
               ],
             ),
           ],
@@ -135,7 +154,8 @@ class _AuthorRow extends StatelessWidget {
               TextSpan(
                 children: [
                   TextSpan(text: post.author.name, style: type.rowTitle),
-                  TextSpan(text: '  @${post.author.handle}', style: type.rowMeta),
+                  TextSpan(
+                      text: '  @${post.author.handle}', style: type.rowMeta),
                 ],
               ),
               maxLines: 1,
@@ -150,7 +170,8 @@ class _AuthorRow extends StatelessWidget {
 }
 
 class _MiniPlay extends StatelessWidget {
-  const _MiniPlay({required this.playing, required this.loading, required this.onTap});
+  const _MiniPlay(
+      {required this.playing, required this.loading, required this.onTap});
 
   final bool playing;
   final bool loading;
@@ -167,11 +188,13 @@ class _MiniPlay extends StatelessWidget {
         duration: Motion.of(context, Motion.fast),
         width: Sizes.tap,
         height: Sizes.tap,
-        decoration: BoxDecoration(color: playing ? c.cue : c.ink, shape: BoxShape.circle),
+        decoration: BoxDecoration(
+            color: playing ? c.cue : c.ink, shape: BoxShape.circle),
         child: loading
             ? Padding(
                 padding: const EdgeInsets.all(Space.sm),
-                child: CircularProgressIndicator(strokeWidth: Sizes.stroke, color: c.stage),
+                child: CircularProgressIndicator(
+                    strokeWidth: Sizes.stroke, color: c.stage),
               )
             : Icon(
                 playing ? Icons.pause_rounded : Icons.play_arrow_rounded,

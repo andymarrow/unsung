@@ -15,7 +15,11 @@ import '../helpers/fakes.dart';
 import '../helpers/fonts.dart';
 import '../helpers/pump.dart';
 
-const _hanna = Profile(id: 'u1', handle: 'hanna_b', displayName: 'Hanna Bekele', bio: 'Night-bus soprano. Learning harmonies one take at a time.');
+const _hanna = Profile(
+    id: 'u1',
+    handle: 'hanna_b',
+    displayName: 'Hanna Bekele',
+    bio: 'Night-bus soprano. Learning harmonies one take at a time.');
 const _dawit = Profile(id: 'u2', handle: 'dawit', displayName: 'Dawit');
 
 final _posts = [
@@ -71,7 +75,8 @@ void main() {
         brightness: b,
       );
       await tester.pump(const Duration(seconds: 1));
-      await expectLater(find.byType(Scaffold), matchesGoldenFile('stage_feed_${b.name}.png'));
+      await expectLater(
+          find.byType(Scaffold), matchesGoldenFile('stage_feed_${b.name}.png'));
     });
   }
 
@@ -86,19 +91,25 @@ void main() {
       overrides: [
         profileProvider.overrideWith((ref, id) async => _hanna),
         statsProvider.overrideWith(
-          (ref, id) async => const ProfileStats(publicPosts: 12, likesReceived: 318, followers: 87, following: 40),
+          (ref, id) async => const ProfileStats(
+              publicPosts: 12,
+              likesReceived: 318,
+              followers: 87,
+              following: 40),
         ),
         postsByProvider.overrideWith((ref, id) async => [_posts.first]),
         followingProvider.overrideWith((ref, id) async => false),
       ],
     );
     await tester.pump(const Duration(seconds: 1));
-    await expectLater(find.byType(Scaffold), matchesGoldenFile('profile_dark.png'));
+    await expectLater(
+        find.byType(Scaffold), matchesGoldenFile('profile_dark.png'));
   });
 
   testWidgets('stage without a server', (tester) async {
     await pumpScreen(tester, const StageScreen());
     await tester.pump(const Duration(seconds: 1));
-    await expectLater(find.byType(StageScreen), matchesGoldenFile('stage_offline_dark.png'));
+    await expectLater(
+        find.byType(StageScreen), matchesGoldenFile('stage_offline_dark.png'));
   });
 }

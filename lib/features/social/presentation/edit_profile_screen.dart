@@ -80,7 +80,8 @@ class _FormState extends ConsumerState<_Form> {
       if (mounted) Navigator.of(context).pop();
     } on Object catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(toFailure(e).message)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(toFailure(e).message)));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -102,7 +103,8 @@ class _FormState extends ConsumerState<_Form> {
             autocorrect: false,
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9_]')),
-              TextInputFormatter.withFunction((_, v) => v.copyWith(text: v.text.toLowerCase())),
+              TextInputFormatter.withFunction(
+                  (_, v) => v.copyWith(text: v.text.toLowerCase())),
             ],
             decoration: const InputDecoration(prefixText: '@'),
             validator: (v) => _handlePattern.hasMatch(v ?? '')
@@ -126,7 +128,8 @@ class _FormState extends ConsumerState<_Form> {
             style: type.body,
             maxLength: _bioMax,
             maxLines: 3,
-            decoration: const InputDecoration(hintText: 'Shower tenor. Car-ride soprano.'),
+            decoration: const InputDecoration(
+                hintText: 'Shower tenor. Car-ride soprano.'),
           ),
           const SizedBox(height: Space.lg),
           CueButton(

@@ -41,7 +41,8 @@ class _LikeButtonState extends ConsumerState<LikeButton>
     }
     final error = await ref.read(likesProvider.notifier).toggle(widget.post);
     if (error != null && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error)));
     }
   }
 
@@ -70,7 +71,9 @@ class _LikeButtonState extends ConsumerState<LikeButton>
                 child: AnimatedSwitcher(
                   duration: Motion.of(context, Motion.fast),
                   child: Icon(
-                    liked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                    liked
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
                     key: ValueKey(liked),
                     color: liked ? c.cue : c.ink,
                     size: Sizes.icon,
@@ -81,10 +84,12 @@ class _LikeButtonState extends ConsumerState<LikeButton>
               AnimatedSwitcher(
                 duration: Motion.of(context, Motion.fast),
                 transitionBuilder: (child, a) => SlideTransition(
-                  position: Tween(begin: const Offset(0, 0.4), end: Offset.zero).animate(a),
+                  position: Tween(begin: const Offset(0, 0.4), end: Offset.zero)
+                      .animate(a),
                   child: FadeTransition(opacity: a, child: child),
                 ),
-                child: Text('$count', key: ValueKey(count), style: context.type.numeral),
+                child: Text('$count',
+                    key: ValueKey(count), style: context.type.numeral),
               ),
             ],
           ),

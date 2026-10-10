@@ -41,7 +41,11 @@ final postProvider = FutureProvider.autoDispose.family<Post, String>(
 
 /// Paged feed.
 class FeedState {
-  const FeedState({this.posts = const [], this.page = 0, this.done = false, this.loadingMore = false});
+  const FeedState(
+      {this.posts = const [],
+      this.page = 0,
+      this.done = false,
+      this.loadingMore = false});
 
   final List<Post> posts;
   final int page;
@@ -49,20 +53,23 @@ class FeedState {
   final bool loadingMore;
 }
 
-class FeedController extends AutoDisposeFamilyAsyncNotifier<FeedState, FeedScope> {
+class FeedController
+    extends AutoDisposeFamilyAsyncNotifier<FeedState, FeedScope> {
   SocialRepository get _repo => ref.read(socialRepositoryProvider);
 
   @override
   Future<FeedState> build(FeedScope scope) async {
     ref.watch(authUserIdProvider);
     final posts = await _repo.feed(scope);
-    return FeedState(posts: posts, done: posts.length < SocialRepository.pageSize);
+    return FeedState(
+        posts: posts, done: posts.length < SocialRepository.pageSize);
   }
 
   Future<void> more() async {
     final s = state.valueOrNull;
     if (s == null || s.done || s.loadingMore) return;
-    state = AsyncData(FeedState(posts: s.posts, page: s.page, loadingMore: true));
+    state =
+        AsyncData(FeedState(posts: s.posts, page: s.page, loadingMore: true));
     try {
       final next = await _repo.feed(arg, page: s.page + 1);
       state = AsyncData(
@@ -78,8 +85,8 @@ class FeedController extends AutoDisposeFamilyAsyncNotifier<FeedState, FeedScope
   }
 }
 
-final feedProvider =
-    AsyncNotifierProvider.autoDispose.family<FeedController, FeedState, FeedScope>(
+final feedProvider = AsyncNotifierProvider.autoDispose
+    .family<FeedController, FeedState, FeedScope>(
   FeedController.new,
 );
 
@@ -97,7 +104,8 @@ class LikesController extends Notifier<Map<String, (bool, int)>> {
     state = {...state, p.id: next};
     try {
       final repo = ref.read(socialRepositoryProvider);
-      if (repo.userId == null) throw const AuthFailure('Sign in to like takes.');
+      if (repo.userId == null)
+        throw const AuthFailure('Sign in to like takes.');
       await (liked ? repo.unlike(p.id) : repo.like(p.id));
       return null;
     } on Object catch (e) {
@@ -108,9 +116,11 @@ class LikesController extends Notifier<Map<String, (bool, int)>> {
 }
 
 final likesProvider =
-    NotifierProvider<LikesController, Map<String, (bool, int)>>(LikesController.new);
+    NotifierProvider<LikesController, Map<String, (bool, int)>>(
+        LikesController.new);
 
-class CommentsController extends AutoDisposeFamilyAsyncNotifier<List<Comment>, String> {
+class CommentsController
+    extends AutoDisposeFamilyAsyncNotifier<List<Comment>, String> {
   @override
   Future<List<Comment>> build(String postId) =>
       ref.watch(socialRepositoryProvider).comments(postId);
@@ -129,8 +139,8 @@ class CommentsController extends AutoDisposeFamilyAsyncNotifier<List<Comment>, S
   }
 }
 
-final commentsProvider =
-    AsyncNotifierProvider.autoDispose.family<CommentsController, List<Comment>, String>(
+final commentsProvider = AsyncNotifierProvider.autoDispose
+    .family<CommentsController, List<Comment>, String>(
   CommentsController.new,
 );
 
@@ -140,7 +150,11 @@ final followingProvider = FutureProvider.autoDispose.family<bool, String>(
 
 /// One player for the whole Stage, so only one take plays at a time.
 class StagePlayback {
-  const StagePlayback({this.postId, this.playing = false, this.loading = false, this.position = Duration.zero});
+  const StagePlayback(
+      {this.postId,
+      this.playing = false,
+      this.loading = false,
+      this.position = Duration.zero});
 
   final String? postId;
   final bool playing;

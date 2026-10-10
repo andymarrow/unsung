@@ -53,7 +53,8 @@ class ProfileView extends ConsumerWidget {
                 AsyncData(:final value) => [
                     SliverList.separated(
                       itemCount: value.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(height: Space.sm),
                       itemBuilder: (_, i) => Entrance(
                         index: i,
                         child: PostCard(post: value[i], showAuthor: false),
@@ -68,7 +69,9 @@ class ProfileView extends ConsumerWidget {
                       ),
                     ),
                   ],
-                _ => [const SliverToBoxAdapter(child: RowSkeletonList(count: 3))],
+                _ => [
+                    const SliverToBoxAdapter(child: RowSkeletonList(count: 3))
+                  ],
               },
               const SliverToBoxAdapter(child: SizedBox(height: Space.xxl)),
             ],
@@ -92,9 +95,11 @@ class _Header extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final type = context.type;
-    final stats = ref.watch(statsProvider(profile.id)).valueOrNull ?? const ProfileStats();
+    final stats = ref.watch(statsProvider(profile.id)).valueOrNull ??
+        const ProfileStats();
     return Padding(
-      padding: const EdgeInsets.fromLTRB(Space.gutter, Space.md, Space.gutter, Space.lg),
+      padding: const EdgeInsets.fromLTRB(
+          Space.gutter, Space.md, Space.gutter, Space.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -106,8 +111,12 @@ class _Header extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(profile.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: type.title),
-                    Text('@${profile.handle}'.toUpperCase(), style: type.labelMuted),
+                    Text(profile.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: type.title),
+                    Text('@${profile.handle}'.toUpperCase(),
+                        style: type.labelMuted),
                   ],
                 ),
               ),
@@ -152,9 +161,14 @@ class _Stat extends StatelessWidget {
               TweenAnimationBuilder<double>(
                 tween: Tween(end: value.toDouble()),
                 duration: Motion.of(context, Motion.signature),
-                builder: (_, v, __) => Text('${v.round()}', style: context.type.heading),
+                builder: (_, v, __) =>
+                    Text('${v.round()}', style: context.type.heading),
               ),
-              Text(label.toUpperCase(), maxLines: 1, overflow: TextOverflow.fade, softWrap: false, style: context.type.labelMuted),
+              Text(label.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  style: context.type.labelMuted),
             ],
           ),
         ),
@@ -184,13 +198,17 @@ class _FollowButtonState extends ConsumerState<FollowButton> {
     });
     try {
       final repo = ref.read(socialRepositoryProvider);
-      if (repo.userId == null) throw const AuthFailure('Sign in to follow singers.');
-      await (following ? repo.unfollow(widget.userId) : repo.follow(widget.userId));
+      if (repo.userId == null)
+        throw const AuthFailure('Sign in to follow singers.');
+      await (following
+          ? repo.unfollow(widget.userId)
+          : repo.follow(widget.userId));
       ref.invalidate(statsProvider(widget.userId));
     } on Object catch (e) {
       if (!mounted) return;
       setState(() => _override = following);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(toFailure(e).message)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(toFailure(e).message)));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -198,7 +216,8 @@ class _FollowButtonState extends ConsumerState<FollowButton> {
 
   @override
   Widget build(BuildContext context) {
-    final server = ref.watch(followingProvider(widget.userId)).valueOrNull ?? false;
+    final server =
+        ref.watch(followingProvider(widget.userId)).valueOrNull ?? false;
     final following = _override ?? server;
     return following
         ? QuietButton(
