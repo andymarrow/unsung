@@ -78,14 +78,15 @@ Bottom bar with 4 destinations around a central Sing affordance: **Library**, **
 ## Launch (v0.3)
 Built on what the best launch sequences share (Airbnb's self-drawing Bélo, Headspace's morphs, Apple's content-first launch screens): the first frame is the system splash, one hero motion is made from the brand itself, type arrives with intent, and the exit becomes the first screen. Under two seconds, never waiting on work.
 
-The Unsung story, 1.75s + a 420ms dissolve: the U mark's cue underline wakes into a waveform → the U breathes open on the width axis and "nsung" opens beside it letter by letter → the voice lifts out of the waveform as a cue ribbon while the bars settle to tape grey → the bars close into one cue line under the whole word (dropping to clear the g), the stage light comes up and the tagline arrives → it swells slightly and dissolves into the Library, whose ambient light is the same light. Tap to skip; reduce-motion shows the lockup and fades. Native splash (all Android versions) draws the mark at 288dp so the hand-off frame is identical.
+The Unsung story, 1.75s + a 420ms dissolve: the U mark's cue underline wakes into a waveform → the U breathes open on the width axis and "nsung" opens beside it letter by letter → the voice lifts out of the waveform as a cue ribbon while the bars settle to tape grey → the bars close into one cue line under the whole word (dropping to clear the g) and the tagline arrives → it swells slightly and dissolves into the Library, whose ambient light is the same light. Tap to skip; reduce-motion shows the lockup and fades. Native splash (all Android versions) draws the mark at 288dp so the hand-off frame is identical. No light effects: the backdrop is the app's own.
 
-## Glass (v0.3)
-The owner asked for an Apple "Liquid Glass" level of polish, so glass moved from "transient layers only" to a system, with rules that keep lyrics legible:
-- **Ambient stage light** (`AmbientLight`) drifts behind the shell: two cue pools and one ember on a 36s loop, 16% (dark) / 10% (light). It is what the glass catches; it never sits behind lyrics.
-- **GlassSurface**: tint (`glass`), a specular rim brightest top-left (`glassEdge`), a sheen across the top (`glassSheen`). Real backdrop blur (`frost`) only on floating layers: the tab bar (18) and sheets (24). Cards on the ambient light use tint + rim + sheen without blur, which reads the same and costs nothing.
-- **Floating tab bar**: a glass capsule inset 12 from the edges; a brighter glass lens glides under the selected tab on the emphasized curve (420ms).
-- Studio and Rehearse stay solid: nothing moves behind the words you sing.
+## Surfaces (v0.3.1): neutral, accent-only colour
+Owner direction: colour is an accent, never a background; no glows, no shadows, nothing floats.
+- **Backdrop**: the flat stage colour (warm near-black / neutral off-white `#F5F4F1`) with a static film grain at 3.5–5%, so big areas read as matte paper rather than a flat fill.
+- **Cue orange** only marks action and state: primary buttons, the Sing button, READY tags, the active lyric, progress, the active tab's short underline.
+- **Surfaces**: cards are `surface` with a hairline border. Frost (backdrop blur over a translucent fill) is used only where a layer sits over scrolling content: the docked tab bar and sheets, each with a hairline edge.
+- **Tab bar**: docked to the bottom edge, full width, hairline on top. No floating capsule, no sliding lens.
+- **No** glow, drop shadow, coloured gradient or ambient light anywhere, including the Spotlight (a clean circular reveal), the record button, the pitch ribbon, the Unsinging ribbon and the splash.
 
 ## Loading
 - Skeletons shimmer with one shared band of light that crosses the whole screen, not per block.

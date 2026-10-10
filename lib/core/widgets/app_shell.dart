@@ -1,11 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:unsung/core/router/spotlight_page.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
-import 'package:unsung/core/widgets/ambient_light.dart';
-import 'package:unsung/core/widgets/glass.dart';
+import 'package:unsung/core/widgets/backdrop.dart';
 import 'package:unsung/core/widgets/pressable.dart';
 
 /// Shell with the "tape deck" bottom bar: two tabs, the Sing button, two tabs.
@@ -57,78 +58,40 @@ class AppShell extends StatelessWidget {
       );
     }
 
-    // Bar slots: two tabs, Sing, two tabs. The lens sits under a tab.
-    final current = shell.currentIndex;
-    final lensSlot = current < 2 ? current : current + 1;
-
     return Scaffold(
       backgroundColor: c.stage,
-      // Content scrolls under the floating bar; Scaffold adds the bar's
-      // height to the body's bottom padding.
+      // Lists scroll under the translucent bar; Scaffold adds its height to
+      // the body's bottom padding.
       extendBody: true,
-      body: AmbientLight(child: shell),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        minimum: const EdgeInsets.fromLTRB(
-          Sizes.glassBarInset,
-          0,
-          Sizes.glassBarInset,
-          Sizes.glassBarInset,
-        ),
-        child: GlassSurface(
-          radius: Radii.full,
-          blur: Blurs.bar,
-          child: SizedBox(
-            height: Sizes.glassBar,
-            child: LayoutBuilder(
-              builder: (context, box) {
-                final slot = box.maxWidth / 5;
-                return Stack(
+      body: Backdrop(child: shell),
+      // Docked to the bottom edge, like a system bar: frosted, with a
+      // hairline on top. Nothing floats.
+      bottomNavigationBar: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: Blurs.bar, sigmaY: Blurs.bar),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: c.glass,
+              border: Border(top: BorderSide(color: c.hairline)),
+            ),
+            child: SafeArea(
+              top: false,
+              child: SizedBox(
+                height: Sizes.navBar,
+                child: Row(
                   children: [
-                    AnimatedPositioned(
-                      duration: Motion.of(context, Motion.slow),
-                      curve: Motion.emphasized,
-                      left: slot * lensSlot + Space.xxs,
-                      top: Space.xxs,
-                      bottom: Space.xxs,
-                      width: slot - Space.xs,
-                      child: const _Lens(),
-                    ),
-                    Row(
-                      children: [
-                        tab(0),
-                        tab(1),
-                        Expanded(
-                          child: Center(child: SingButton(onTap: onSing)),
-                        ),
-                        tab(2),
-                        tab(3),
-                      ],
-                    ),
+                    tab(0),
+                    tab(1),
+                    Expanded(child: Center(child: SingButton(onTap: onSing))),
+                    tab(2),
+                    tab(3),
                   ],
-                );
-              },
+                ),
+              ),
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-/// The selected tab's lens: a brighter pill of glass that glides between
-/// tabs, like a drop of water moving under the bar.
-class _Lens extends StatelessWidget {
-  const _Lens();
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return GlassSurface(
-      radius: Radii.full,
-      frost: false,
-      tint: c.glassSheen,
-      child: const SizedBox.expand(),
     );
   }
 }
@@ -179,6 +142,18 @@ class _TabItem extends StatelessWidget {
               style: context.type.nav
                   .copyWith(color: selected ? c.ink : c.inkMuted),
             ),
+            const SizedBox(height: Space.xxs),
+            // The active tab's accent: a short cue mark, nothing more.
+            AnimatedContainer(
+              duration: d,
+              curve: Motion.standard,
+              width: selected ? Space.sm : 0,
+              height: Sizes.stroke,
+              decoration: BoxDecoration(
+                color: c.cue,
+                borderRadius: BorderRadius.circular(Radii.full),
+              ),
+            ),
           ],
         ),
       ),
@@ -186,7 +161,7 @@ class _TabItem extends StatelessWidget {
   }
 }
 
-/// The record affordance: a cue disc with a soft glow.
+/// The record affordance: a solid cue pill.
 class SingButton extends StatelessWidget {
   const SingButton(
       {required this.onTap, this.size = Sizes.recordButton, super.key});
@@ -210,12 +185,6 @@ class SingButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: c.cue,
             borderRadius: BorderRadius.circular(Radii.full),
-            boxShadow: [
-              BoxShadow(
-                color: c.cue.withValues(alpha: Alphas.glowStrong),
-                blurRadius: Space.lg,
-              ),
-            ],
           ),
           child: Icon(Icons.mic_rounded, color: c.onCue, size: Sizes.iconLg),
         ),

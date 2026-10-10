@@ -4,7 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:unsung/core/theme/app_theme.dart';
-import 'package:unsung/core/widgets/ambient_light.dart';
+import 'package:unsung/core/widgets/backdrop.dart';
 import 'package:unsung/features/splash/splash.dart';
 
 import '../helpers/fonts.dart';
@@ -33,10 +33,7 @@ void main() {
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          Opacity(
-                            opacity: SplashBeats.light.transform(t),
-                            child: const AmbientLight(),
-                          ),
+                          const Backdrop(),
                           CustomPaint(
                             painter: SplashPainter(
                               t: t,

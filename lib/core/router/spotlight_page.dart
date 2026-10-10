@@ -8,9 +8,9 @@ import 'package:unsung/core/theme/tokens.dart';
 
 /// Signature moment 3: "The Spotlight".
 ///
-/// The studio opens as a circle of light expanding from the bottom centre
-/// (where the record and Sing buttons live): first a flash of cue light,
-/// then the studio is revealed through the growing circle.
+/// The studio is revealed through a circle opening from the bottom centre,
+/// where the Sing and record buttons live, while the button itself morphs
+/// into the record disc (see [spotlightShuttle]). Shape only: no glow.
 CustomTransitionPage<void> spotlightPage({
   required LocalKey key,
   required Widget child,
@@ -24,48 +24,18 @@ CustomTransitionPage<void> spotlightPage({
       if (Motion.reduced(context)) {
         return FadeTransition(opacity: animation, child: child);
       }
-      // Emphasized: the circle overshoots past the screen edge and settles,
-      // which reads as light swelling rather than a wipe.
       final reveal = CurvedAnimation(
         parent: animation,
         curve: Motion.emphasized,
         reverseCurve: Motion.standard,
       );
-      final flash = CurvedAnimation(
-        parent: animation,
-        curve: const Interval(0, 0.6, curve: Motion.standard),
-      );
       return AnimatedBuilder(
-        animation: animation,
+        animation: reveal,
         child: child,
-        builder: (context, child) {
-          final c = context.colors;
-          // Flash rises then falls back as the page comes through.
-          final glow = math.sin(flash.value * math.pi);
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              ClipPath(
-                clipper: _CircleReveal(reveal.value),
-                child: child,
-              ),
-              IgnorePointer(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: RadialGradient(
-                      center: Alignment.bottomCenter,
-                      radius: 0.2 + reveal.value * 1.3,
-                      colors: [
-                        c.cue.withValues(alpha: glow * Alphas.glowStrong),
-                        c.cue.withValues(alpha: 0),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+        builder: (context, child) => ClipPath(
+          clipper: _CircleReveal(reveal.value),
+          child: child,
+        ),
       );
     },
   );
@@ -90,12 +60,6 @@ Widget spotlightShuttle(
         decoration: BoxDecoration(
           color: c.cue,
           borderRadius: BorderRadius.circular(Radii.full),
-          boxShadow: [
-            BoxShadow(
-              color: c.cue.withValues(alpha: Alphas.glowStrong),
-              blurRadius: Space.lg + Space.sm * t,
-            ),
-          ],
         ),
         child: Opacity(
           opacity: (1 - t * 2).clamp(0, 1),

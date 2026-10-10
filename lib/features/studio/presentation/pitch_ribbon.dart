@@ -109,12 +109,6 @@ class PitchRibbonPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..strokeWidth = Sizes.strokeBold;
-    final glow = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = Sizes.strokeBold * 2
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, Blurs.pitch)
-      ..color = tune.withValues(alpha: Alphas.glow);
 
     Offset? prev;
     var prevTuned = false;
@@ -132,7 +126,6 @@ class PitchRibbonPainter extends CustomPainter {
         final age = 1 - i / history.length;
         final alpha = math.max(0.15, 1 - age * 0.85);
         final colour = (tuned && prevTuned) ? tune : line;
-        if (tuned && prevTuned) canvas.drawLine(prev, p, glow);
         canvas.drawLine(
           prev,
           p,
@@ -145,13 +138,7 @@ class PitchRibbonPainter extends CustomPainter {
     }
 
     if (last != null && !history.at(history.length - 1).isNaN) {
-      canvas
-        ..drawCircle(
-          last,
-          Sizes.strokeBold * 3,
-          Paint()..color = head.withValues(alpha: Alphas.glow),
-        )
-        ..drawCircle(last, Sizes.strokeBold * 1.5, Paint()..color = head);
+      canvas.drawCircle(last, Sizes.strokeBold * 1.5, Paint()..color = head);
     }
   }
 

@@ -47,13 +47,9 @@ class PostCard extends ConsumerWidget {
       semanticLabel: '${post.author.name} sings ${post.songTitle}',
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Space.gutter),
-        // Glass on the ambient light; your own posts carry a cue tint.
         child: GlassSurface(
           frost: false,
           padding: const EdgeInsets.all(Space.md),
-          tint: mine
-              ? Color.alphaBlend(c.cue.withValues(alpha: Alphas.ghost), c.glass)
-              : null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -8,8 +8,8 @@ import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
+import 'package:unsung/core/widgets/backdrop.dart';
 import 'package:unsung/core/widgets/buttons.dart';
-import 'package:unsung/core/widgets/cue_glow.dart';
 import 'package:unsung/features/onboarding/beat_visuals.dart';
 
 class _Beat {
@@ -79,9 +79,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final c = context.colors;
     final last = _index == _beats.length - 1;
     return Scaffold(
-      body: CueGlow(
-        alignment: Alignment.bottomCenter,
-        radius: 1.1,
+      body: Backdrop(
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 – quiet surfaces
+
+- Colour is an accent only. The drifting ambient light is gone; the backdrop is the neutral stage colour with a fine static film grain. Light theme moves to a cleaner off-white.
+- No glows or shadows anywhere: Sing and record buttons, Spotlight transition (now a clean circular reveal), pitch ribbon, Unsinging ribbon, splash, onboarding, sign-in.
+- Tab bar docked to the bottom edge (frosted, hairline top) instead of floating; the active tab gets a short cue underline.
+- Cards are plain surfaces with a hairline; no sheen, no tint on your own posts.
+
 ## 0.3.0 – glass
 
 - Liquid-glass system: ambient stage light behind the app, glass surfaces with a specular rim and sheen, frosted sheets with a lit edge, glassy inputs.

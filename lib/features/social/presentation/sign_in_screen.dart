@@ -9,8 +9,8 @@ import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
+import 'package:unsung/core/widgets/backdrop.dart';
 import 'package:unsung/core/widgets/buttons.dart';
-import 'package:unsung/core/widgets/cue_glow.dart';
 import 'package:unsung/features/social/data/social_repository.dart';
 
 /// Passwordless sign-in: email → 6-digit code.
@@ -74,9 +74,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     final c = context.colors;
     return Scaffold(
       appBar: AppBar(),
-      body: CueGlow(
-        alignment: Alignment.topRight,
-        radius: 1.1,
+      body: Backdrop(
         child: SafeArea(
           top: false,
           child: ListView(

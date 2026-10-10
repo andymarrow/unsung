@@ -7,7 +7,7 @@ import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/theme/typography.dart';
-import 'package:unsung/core/widgets/ambient_light.dart';
+import 'package:unsung/core/widgets/backdrop.dart';
 
 /// The launch sequence. It starts on the exact frame Android's splash shows
 /// (the U over its cue underline, see res/drawable/launch_background.xml),
@@ -18,8 +18,8 @@ import 'package:unsung/core/widgets/ambient_light.dart';
 ///    on the same variable-font width axis the lyrics use,
 /// 3. the voice lifts out of the waveform as a cue ribbon and rises through
 ///    the word while the bars settle to tape grey (the Unsinging),
-/// 4. the bars close back into one cue line under the whole word, the stage
-///    light comes up, and the splash dissolves into the app.
+/// 4. the bars close back into one cue line under the whole word, the
+///    tagline arrives, and the splash dissolves into the app.
 ///
 /// Tap anywhere to skip. With reduce-motion it shows the finished lockup and
 /// fades. It never waits on anything: the app is already built underneath.
@@ -91,13 +91,9 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    ColoredBox(color: c.stage),
-                    // The stage light comes up as the word settles: the
-                    // same light the app runs on, so the hand-off is seamless.
-                    Opacity(
-                      opacity: SplashBeats.light.transform(t),
-                      child: const AmbientLight(),
-                    ),
+                    // The same backdrop the app runs on, so the hand-off is
+                    // seamless.
+                    const Backdrop(),
                     CustomPaint(
                       painter: SplashPainter(
                         t: t,
@@ -133,7 +129,6 @@ abstract final class SplashBeats {
   static const voice = Interval(0.40, 0.82, curve: Motion.decelerate);
   static const tape = Interval(0.42, 0.62, curve: Motion.standard);
   static const settle = Interval(0.64, 0.86, curve: Motion.emphasized);
-  static const light = Interval(0.42, 0.95, curve: Motion.standard);
   static const tagline = Interval(0.74, 0.96, curve: Motion.decelerate);
 }
 
@@ -282,7 +277,7 @@ class SplashPainter extends CustomPainter {
     }
   }
 
-  /// The voice: a glowing cue line traced through the bar tips that lifts
+  /// The voice: a fine cue line traced through the bar tips that lifts
   /// up through the word and fades, painted behind the letters.
   void _paintVoice(Canvas canvas, Rect stripe, double textTop, double glyph) {
     final v = SplashBeats.voice.transform(t);
@@ -305,23 +300,14 @@ class SplashPainter extends CustomPainter {
         path.quadraticBezierTo(px, py, (px + x) / 2, (py + y) / 2);
       }
     }
-    canvas
-      ..drawPath(
-        path,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = Sizes.strokeBold * 2
-          ..color = cue.withValues(alpha: Alphas.glowStrong * fade)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, Blurs.voice),
-      )
-      ..drawPath(
-        path,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = Sizes.stroke
-          ..strokeCap = StrokeCap.round
-          ..color = cue.withValues(alpha: fade),
-      );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = Sizes.stroke
+        ..strokeCap = StrokeCap.round
+        ..color = cue.withValues(alpha: fade),
+    );
   }
 
   void _paintTagline(Canvas canvas, Offset centre, Rect stripe) {

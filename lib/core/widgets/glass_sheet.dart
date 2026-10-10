@@ -18,9 +18,9 @@ Future<T?> showGlassSheet<T>(
     isScrollControlled: true,
     useSafeArea: true,
     backgroundColor: c.glass,
-    // A rim of light along the sheet's top edge, like the edge of a pane.
+    // A hairline along the top edge, where the sheet meets the page.
     shape: RoundedRectangleBorder(
-      side: BorderSide(color: c.glassEdge),
+      side: BorderSide(color: c.hairline),
       borderRadius:
           const BorderRadius.vertical(top: Radius.circular(Radii.sheet)),
     ),

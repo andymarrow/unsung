@@ -10,8 +10,8 @@ import 'package:unsung/core/router/spotlight_page.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
+import 'package:unsung/core/widgets/backdrop.dart';
 import 'package:unsung/core/widgets/buttons.dart';
-import 'package:unsung/core/widgets/cue_glow.dart';
 import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/core/widgets/pressable.dart';
 import 'package:unsung/core/widgets/state_views.dart';
@@ -137,10 +137,7 @@ class _StudioState extends ConsumerState<_Studio> {
               duration: Motion.of(context, Motion.slow),
               curve: Motion.standard,
               color: context.colors.stage,
-              child: CueGlow(
-                alignment: Alignment.bottomCenter,
-                radius: 1.2,
-                intensity: live ? Alphas.glow : Alphas.ghost,
+              child: Backdrop(
                 child: SafeArea(
                   child: switch (phase) {
                     StudioPhase.needsMic => EmptyState(
@@ -407,13 +404,6 @@ class _RecordButton extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: recording ? c.ink : c.cue,
-            boxShadow: [
-              BoxShadow(
-                color: c.cue.withValues(
-                    alpha: recording ? Alphas.glowStrong : Alphas.glow),
-                blurRadius: Space.xl,
-              ),
-            ],
           ),
           child: Center(
             child: busy

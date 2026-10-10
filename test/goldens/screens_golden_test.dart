@@ -11,7 +11,6 @@ import 'package:unsung/app.dart';
 import 'package:unsung/core/platform/permissions.dart';
 import 'package:unsung/core/prefs.dart';
 import 'package:unsung/core/result.dart';
-import 'package:unsung/core/widgets/ambient_light.dart';
 import 'package:unsung/features/library/presentation/library_screen.dart';
 import 'package:unsung/features/library/presentation/song_sheet.dart';
 import 'package:unsung/features/links/presentation/link_sheet.dart';
@@ -50,7 +49,6 @@ Future<void> _overLibrary(
 Future<void> _pumpApp(WidgetTester tester, Brightness brightness) async {
   SharedPreferences.setMockInitialValues({PrefKeys.onboarded: true});
   final prefs = await SharedPreferences.getInstance();
-  AmbientLight.debugStill = true;
   tester.view
     ..physicalSize = phone
     ..devicePixelRatio = 3;
