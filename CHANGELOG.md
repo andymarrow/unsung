@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.3 – white, glass, fixes
+
+- **Fix: tabs drew on top of each other.** A tab you left never finished fading out (its fade was paused with the tab), so every visited screen stayed visible underneath. Hidden tabs now fade out and stop painting; their state is kept. Regression test added.
+- **Fix: YouTube "Bring it in" could hang for minutes.** The phone now finds the audio with a 20-second limit per try, works through four YouTube clients, downloads in 2 MB ranges that must keep sending (15 s idle limit, 4 min overall), and ends with a clear message instead of a spinner. "Finding audio" shows until bytes arrive, then a percentage. Tests for the downloader.
+- **White.** The app runs on the light theme, including the launch splash (dark-ink mark on off-white) and light system bars. The dark theme is kept for later.
+- **Glass is back, Apple-style:** translucent panes with a lit specular rim, a soft top sheen and a hairline for shape, over a softly shaded neutral backdrop. Used for the tab bar (frosted), sheets, cards, secondary buttons, chips, search and header buttons. Still no drop shadows or glows.
+
 ## 0.3.2 – clean and premium
 
 - Neutral graphite palette (dark) and a cleaner off-white (light); the cue orange is the only colour on screen.

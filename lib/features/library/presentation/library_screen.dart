@@ -9,6 +9,7 @@ import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
 import 'package:unsung/core/widgets/entrance.dart';
 import 'package:unsung/core/widgets/equalizer.dart';
+import 'package:unsung/core/widgets/glass.dart';
 import 'package:unsung/core/widgets/state_views.dart';
 import 'package:unsung/core/widgets/toggle_chip.dart';
 import 'package:unsung/features/karaoke/presentation/karaoke_controller.dart';
@@ -306,23 +307,28 @@ class _SongListState extends ConsumerState<_SongList> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: Space.gutter),
-              child: TextField(
-                onChanged: ref.read(libraryQueryProvider.notifier).setText,
-                textInputAction: TextInputAction.search,
-                style: context.type.body,
-                decoration: InputDecoration(
-                  hintText: 'Search songs, artists, albums',
-                  isDense: true,
-                  constraints:
-                      const BoxConstraints.tightFor(height: Sizes.field),
-                  prefixIcon: Icon(
-                    Icons.search_rounded,
-                    size: Sizes.icon,
-                    color: context.colors.inkMuted,
+              child: GlassSurface(
+                radius: Radii.full,
+                frost: false,
+                child: TextField(
+                  onChanged: ref.read(libraryQueryProvider.notifier).setText,
+                  textInputAction: TextInputAction.search,
+                  style: context.type.body,
+                  decoration: InputDecoration(
+                    hintText: 'Search songs, artists, albums',
+                    isDense: true,
+                    filled: false,
+                    constraints:
+                        const BoxConstraints.tightFor(height: Sizes.field),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      size: Sizes.icon,
+                      color: context.colors.inkMuted,
+                    ),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
                   ),
-                  border: _pill(context),
-                  enabledBorder: _pill(context),
-                  focusedBorder: _pill(context, focused: true),
                 ),
               ),
             ),
@@ -411,16 +417,6 @@ class _SongListState extends ConsumerState<_SongList> {
       ],
     );
   }
-}
-
-/// The search field is a pill, like the filter pills under it.
-OutlineInputBorder _pill(BuildContext context, {bool focused = false}) {
-  final c = context.colors;
-  return OutlineInputBorder(
-    borderRadius: BorderRadius.circular(Radii.full),
-    borderSide:
-        BorderSide(color: focused ? c.ink.withValues(alpha: 0.4) : c.hairline),
-  );
 }
 
 /// Exposed for the Sing button: pick a ready song quickly.

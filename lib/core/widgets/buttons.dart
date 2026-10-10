@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
+import 'package:unsung/core/widgets/glass.dart';
 import 'package:unsung/core/widgets/pressable.dart';
 
 /// Primary action. Solid cue pill. Used once per screen at most.
@@ -78,8 +79,8 @@ class CueButton extends StatelessWidget {
   }
 }
 
-/// Secondary action. Same size as [CueButton], on a neutral raised fill, so
-/// a pair reads as one decision with a single lit choice.
+/// Secondary action. Same size as [CueButton], as a clear glass pill, so a
+/// pair reads as one decision with a single lit choice.
 class QuietButton extends StatelessWidget {
   const QuietButton({
     required this.label,
@@ -101,38 +102,38 @@ class QuietButton extends StatelessWidget {
       onTap: onTap,
       haptic: PressHaptic.selection,
       semanticLabel: label,
-      child: Container(
+      child: SizedBox(
         height: Sizes.button,
-        padding: const EdgeInsets.symmetric(horizontal: Space.lg),
-        decoration: BoxDecoration(
-          color: c.raised,
-          borderRadius: BorderRadius.circular(Radii.full),
-        ),
-        child: Row(
-          mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, size: Sizes.iconMd, color: c.ink),
-              const SizedBox(width: Space.xs),
-            ],
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: context.type.button,
+        child: GlassSurface(
+          radius: Radii.full,
+          frost: false,
+          padding: const EdgeInsets.symmetric(horizontal: Space.lg),
+          child: Row(
+            mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: Sizes.iconMd, color: c.ink),
+                const SizedBox(width: Space.xs),
+              ],
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.type.button,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-/// Round icon-only button with a semantic label. [filled] gives it a
-/// surface disc with a hairline ring, for header actions.
+/// Round icon-only button with a semantic label. [filled] puts it on a
+/// glass disc, for header actions.
 class RoundIconButton extends StatelessWidget {
   const RoundIconButton({
     required this.icon,
@@ -154,21 +155,20 @@ class RoundIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final glyph = Icon(icon, size: Sizes.icon, color: active ? c.cue : c.ink);
     return Pressable(
       onTap: onTap,
       haptic: PressHaptic.selection,
       semanticLabel: label,
-      child: AnimatedContainer(
-        duration: Motion.of(context, Motion.fast),
-        curve: Motion.standard,
-        width: Sizes.tap,
-        height: Sizes.tap,
-        decoration: BoxDecoration(
-          color: filled ? c.surface : Colors.transparent,
-          shape: BoxShape.circle,
-          border: filled ? Border.all(color: c.hairline) : null,
-        ),
-        child: Icon(icon, size: Sizes.icon, color: active ? c.cue : c.ink),
+      child: SizedBox.square(
+        dimension: Sizes.tap,
+        child: filled
+            ? GlassSurface(
+                radius: Radii.full,
+                frost: false,
+                child: Center(child: glyph),
+              )
+            : Center(child: glyph),
       ),
     );
   }

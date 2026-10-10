@@ -93,6 +93,13 @@ Owner direction: colour is an accent, never a background; no glows, no shadows, 
 - **Tab bar**: docked to the bottom edge, full width, hairline on top. No floating capsule, no sliding lens.
 - **No** glow, drop shadow, coloured gradient or ambient light anywhere, including the Spotlight (a clean circular reveal), the record button, the pitch ribbon, the Unsinging ribbon and the splash.
 
+## White and glass (v0.3.3)
+Owner direction: white for now, and the glass back, like Apple's.
+- The app runs on the light theme only (splash included). Dark stays implemented.
+- **Glass** = translucent white fill (62%), a 1px specular rim that is bright at the top-left and fades round the edge, a soft sheen across the top, and a hairline so the pane keeps its shape on white. Frosted (blurred) only where it sits over moving content: the tab bar and sheets. No drop shadows.
+- The backdrop gets soft neutral shading (two pools of grey, one of light, no colour) so the glass has something to show.
+- Where: tab bar, sheets, cards (Stage, Takes, starter shelf), secondary buttons, chips at rest, search, header icon buttons. The cue stays solid: primary buttons, the Sing key, READY.
+
 ## Clean & premium (v0.3.2)
 From the owner's references (see Inspiration): the same neutral rules, tightened.
 - **One lit choice per decision.** Paired actions are equal-sized pills side by side (Sing | Rehearse); only one is cue. Secondary is a neutral raised pill, not a ghost.

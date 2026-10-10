@@ -8,6 +8,7 @@ import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/entrance.dart';
+import 'package:unsung/core/widgets/glass.dart';
 import 'package:unsung/core/widgets/pressable.dart';
 import 'package:unsung/core/widgets/state_views.dart';
 import 'package:unsung/core/widgets/tape_label.dart';
@@ -106,64 +107,62 @@ class TakeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final type = context.type;
-    final c = context.colors;
     return Pressable(
       onTap: onTap,
       semanticLabel:
           '${take.songTitle}, ${take.isPublic ? 'public' : 'private'} take',
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: Space.gutter),
-        padding: const EdgeInsets.all(Space.gutter),
-        decoration: BoxDecoration(
-          color: c.surface,
-          border: Border.all(color: c.hairline),
-          borderRadius: BorderRadius.circular(Radii.card),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(take.songTitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: type.rowTitle),
-                ),
-                const SizedBox(width: Space.xs),
-                TapeLabel(
-                  take.isPublic
-                      ? 'On stage'
-                      : (take.postId != null ? 'Uploaded' : 'Private'),
-                  icon: take.isPublic
-                      ? Icons.podcasts_rounded
-                      : Icons.lock_rounded,
-                  tone: take.isPublic ? TapeTone.cue : TapeTone.neutral,
-                ),
-              ],
-            ),
-            const SizedBox(height: Space.xxs),
-            Text(
-              '${take.artist ?? 'Unknown artist'} · ${_when(take.createdAt)}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: type.rowMeta,
-            ),
-            const SizedBox(height: Space.sm),
-            Waveform(peaks: take.peaks.isEmpty ? const [0.2, 0.2] : take.peaks),
-            const SizedBox(height: Space.sm),
-            // One quiet meta line instead of a row of boxed tags.
-            Text(
-              [
-                formatDuration(take.duration),
-                'IN TUNE ${(take.inTune * 100).round()}%',
-                if (take.mixPath == null) 'NOT MIXED YET',
-              ].join('  ·  '),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: type.labelMuted,
-            ),
-          ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Space.gutter),
+        child: GlassSurface(
+          frost: false,
+          padding: const EdgeInsets.all(Space.gutter),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(take.songTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: type.rowTitle),
+                  ),
+                  const SizedBox(width: Space.xs),
+                  TapeLabel(
+                    take.isPublic
+                        ? 'On stage'
+                        : (take.postId != null ? 'Uploaded' : 'Private'),
+                    icon: take.isPublic
+                        ? Icons.podcasts_rounded
+                        : Icons.lock_rounded,
+                    tone: take.isPublic ? TapeTone.cue : TapeTone.neutral,
+                  ),
+                ],
+              ),
+              const SizedBox(height: Space.xxs),
+              Text(
+                '${take.artist ?? 'Unknown artist'} · ${_when(take.createdAt)}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: type.rowMeta,
+              ),
+              const SizedBox(height: Space.sm),
+              Waveform(
+                  peaks: take.peaks.isEmpty ? const [0.2, 0.2] : take.peaks),
+              const SizedBox(height: Space.sm),
+              // One quiet meta line instead of a row of boxed tags.
+              Text(
+                [
+                  formatDuration(take.duration),
+                  'IN TUNE ${(take.inTune * 100).round()}%',
+                  if (take.mixPath == null) 'NOT MIXED YET',
+                ].join('  ·  '),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: type.labelMuted,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -10,11 +10,17 @@ from PIL import Image, ImageDraw, ImageFont
 STAGE = (15, 13, 12, 255)
 INK = (244, 238, 230, 255)
 CUE = (255, 91, 36, 255)
+
+# The launch splash is white (the app runs on the light theme), so it gets
+# its own mark in dark ink with the light theme's cue.
+SPLASH_STAGE = "#F6F5F3"
+SPLASH_INK = (20, 20, 21, 255)
+SPLASH_CUE = (194, 65, 12, 255)
 FONT = "assets/fonts/BricolageGrotesque.ttf"
 RES = pathlib.Path("android/app/src/main/res")
 
 
-def mark(size, with_bg=True, scale=1.0):
+def mark(size, with_bg=True, scale=1.0, ink=INK, cue=CUE):
     img = Image.new("RGBA", (size, size), STAGE if with_bg else (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     font = ImageFont.truetype(FONT, int(size * 0.62 * scale))
@@ -28,10 +34,10 @@ def mark(size, with_bg=True, scale=1.0):
     stripe_h = size * 0.075 * scale
     gap = size * 0.045 * scale
     y = (size - (h + gap + stripe_h)) / 2 - box[1]
-    d.text((x, y), "U", font=font, fill=INK)
+    d.text((x, y), "U", font=font, fill=ink)
     # The blank line you sing into: a cue underline as wide as the glyph.
     top = y + box[3] + gap
-    d.rectangle([x + box[0], top, x + box[2], top + stripe_h], fill=CUE)
+    d.rectangle([x + box[0], top, x + box[2], top + stripe_h], fill=cue)
     return img
 
 
@@ -55,6 +61,9 @@ for name, f in densities.items():
     # Adaptive foreground: 108dp canvas, art kept inside the 66dp safe zone.
     fg = int(108 * f)
     mark(fg * 4, with_bg=False, scale=0.62).resize((fg, fg), Image.LANCZOS).save(d / "ic_launcher_foreground.png")
+    mark(fg * 4, with_bg=False, scale=0.62, ink=SPLASH_INK, cue=SPLASH_CUE).resize(
+        (fg, fg), Image.LANCZOS
+    ).save(d / "splash_foreground.png")
 
 any_dpi = RES / "mipmap-anydpi-v26"
 any_dpi.mkdir(parents=True, exist_ok=True)
@@ -71,6 +80,9 @@ values = RES / "values"
 values.mkdir(parents=True, exist_ok=True)
 (values / "ic_launcher_background.xml").write_text(
     '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="ic_launcher_background">#0F0D0C</color>\n</resources>\n'
+)
+(values / "splash_background.xml").write_text(
+    f'<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="splash_background">{SPLASH_STAGE}</color>\n</resources>\n'
 )
 mark(1024).save("docs/icon-1024.png")
 print("icons written")

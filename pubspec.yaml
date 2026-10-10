@@ -1,7 +1,7 @@
 name: unsung
 description: Turn the songs on your phone into karaoke, sing, and share.
 publish_to: none
-version: 0.3.2+5
+version: 0.3.3+6
 
 environment:
   sdk: ">=3.5.0 <4.0.0"

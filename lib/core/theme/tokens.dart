@@ -18,6 +18,8 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
     required this.scrim,
     required this.glass,
     required this.glassSheen,
+    required this.glassRim,
+    required this.ambient,
   });
 
   // Neutral graphite: no warm cast, so the cue is the only colour on screen.
@@ -33,8 +35,10 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
     tune: Color(0xFF5BF0A0),
     hairline: Color(0x17F2F2F0),
     scrim: Color(0xB30D0D0E),
-    glass: Color(0xE017171A),
+    glass: Color(0xB81C1C20),
     glassSheen: Color(0x12FFFFFF),
+    glassRim: Color(0x40FFFFFF),
+    ambient: Color(0xFF1D1D21),
   );
 
   static const light = UnsungColors(
@@ -49,8 +53,10 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
     tune: Color(0xFF0E8A4F),
     hairline: Color(0x14141415),
     scrim: Color(0x99141415),
-    glass: Color(0xE6FFFFFF),
+    glass: Color(0x9EFFFFFF),
     glassSheen: Color(0x66FFFFFF),
+    glassRim: Color(0xF2FFFFFF),
+    ambient: Color(0xFFDCDBD7),
   );
 
   /// Page background.
@@ -92,6 +98,12 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
   /// The light band in loading shimmers.
   final Color glassSheen;
 
+  /// The specular edge of glass: bright where light catches the rim.
+  final Color glassRim;
+
+  /// Neutral shading in the backdrop, so glass has something to show.
+  final Color ambient;
+
   @override
   UnsungColors copyWith({
     Color? stage,
@@ -107,6 +119,8 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
     Color? scrim,
     Color? glass,
     Color? glassSheen,
+    Color? glassRim,
+    Color? ambient,
   }) {
     return UnsungColors(
       stage: stage ?? this.stage,
@@ -122,6 +136,8 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
       scrim: scrim ?? this.scrim,
       glass: glass ?? this.glass,
       glassSheen: glassSheen ?? this.glassSheen,
+      glassRim: glassRim ?? this.glassRim,
+      ambient: ambient ?? this.ambient,
     );
   }
 
@@ -142,6 +158,8 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
       scrim: Color.lerp(scrim, other.scrim, t)!,
       glass: Color.lerp(glass, other.glass, t)!,
       glassSheen: Color.lerp(glassSheen, other.glassSheen, t)!,
+      glassRim: Color.lerp(glassRim, other.glassRim, t)!,
+      ambient: Color.lerp(ambient, other.ambient, t)!,
     );
   }
 }
@@ -267,6 +285,12 @@ abstract final class Alphas {
   static const double disabled = 0.38;
   static const double glass = 0.72;
   static const double ghost = 0.08;
+
+  /// Glass: the sheen at the top of a pane, and how much of the rim's
+  /// light is left across the middle and at the far corner.
+  static const double sheen = 0.5;
+  static const double rimMid = 0.15;
+  static const double rimEnd = 0.55;
 
   /// Film grain over the stage: present, never noticed.
   static const double grainDark = 0.05;

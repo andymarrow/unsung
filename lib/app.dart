@@ -59,8 +59,9 @@ class _UnsungAppState extends ConsumerState<UnsungApp> {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      // Dark is the primary experience; ThemeMode.system (default) lets the
-      // device setting win.
+      // The owner's call for now: Unsung is white. The dark theme is kept
+      // complete so it can come back as an option.
+      themeMode: ThemeMode.light,
       routerConfig: ref.watch(routerProvider),
       // The app builds underneath while the splash plays, so nothing waits.
       builder: (context, child) => Stack(

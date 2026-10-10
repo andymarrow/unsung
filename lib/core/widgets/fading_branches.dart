@@ -31,7 +31,7 @@ class FadingBranches extends StatelessWidget {
   }
 }
 
-class _Branch extends StatelessWidget {
+class _Branch extends StatefulWidget {
   const _Branch({
     required this.active,
     required this.duration,
@@ -43,20 +43,44 @@ class _Branch extends StatelessWidget {
   final Widget child;
 
   @override
+  State<_Branch> createState() => _BranchState();
+}
+
+class _BranchState extends State<_Branch> {
+  /// False once a hidden tab has finished fading out: it is then not
+  /// painted at all, so transparent screens never show through each other.
+  late bool _painted = widget.active;
+
+  @override
+  void didUpdateWidget(_Branch old) {
+    super.didUpdateWidget(old);
+    if (widget.active) _painted = true;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      ignoring: !active,
-      child: TickerMode(
-        enabled: active,
+    final active = widget.active;
+    // The fade itself must keep ticking while the tab hides; only the
+    // tab's own content is paused.
+    return Offstage(
+      offstage: !_painted,
+      child: IgnorePointer(
+        ignoring: !active,
         child: AnimatedOpacity(
           opacity: active ? 1 : 0,
-          duration: duration,
+          duration: widget.duration,
           curve: Motion.standard,
+          onEnd: () {
+            if (!widget.active && mounted) setState(() => _painted = false);
+          },
           child: AnimatedScale(
             scale: active ? 1 : Motion.tabScale,
-            duration: duration,
+            duration: widget.duration,
             curve: Motion.decelerate,
-            child: ExcludeSemantics(excluding: !active, child: child),
+            child: TickerMode(
+              enabled: active,
+              child: ExcludeSemantics(excluding: !active, child: widget.child),
+            ),
           ),
         ),
       ),

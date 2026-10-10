@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Android 12+ system splash: the stage colour with the U mark. The
-     Flutter splash (lib/features/splash) starts on this exact frame. -->
+<!-- Android 12+ system splash: the light stage colour with the U mark in
+     dark ink. The Flutter splash (lib/features/splash) starts on this exact
+     frame. -->
 <resources>
-    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
-        <item name="android:windowSplashScreenBackground">#0F0D0C</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/splash_foreground</item>
         <item name="android:windowBackground">@drawable/launch_background</item>
-        <item name="android:statusBarColor">#0F0D0C</item>
-        <item name="android:navigationBarColor">#0F0D0C</item>
+        <item name="android:statusBarColor">@color/splash_background</item>
+        <item name="android:navigationBarColor">@color/splash_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
-    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
-        <item name="android:windowBackground">@color/ic_launcher_background</item>
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@color/splash_background</item>
     </style>
 </resources>

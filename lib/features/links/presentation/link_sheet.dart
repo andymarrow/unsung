@@ -295,7 +295,7 @@ class _PreviewCard extends StatelessWidget {
                                 child: busy
                                     ? TapeLabel(
                                         pct == null
-                                            ? 'Fetching'
+                                            ? 'Finding audio'
                                             : 'Fetching $pct%',
                                         key: const ValueKey('busy'),
                                         tone: TapeTone.outline,

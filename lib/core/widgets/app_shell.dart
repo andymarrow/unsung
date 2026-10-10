@@ -7,6 +7,7 @@ import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/backdrop.dart';
+import 'package:unsung/core/widgets/glass.dart';
 import 'package:unsung/core/widgets/pressable.dart';
 
 /// Shell with the "tape deck" bottom bar: two tabs, the Sing button, two tabs.
@@ -64,20 +65,24 @@ class AppShell extends StatelessWidget {
       // the body's bottom padding.
       extendBody: true,
       body: Backdrop(child: shell),
-      // Docked to the bottom edge, like a system bar: frosted, with a
-      // hairline on top. Nothing floats.
+      // Docked to the bottom edge, like a system bar: frosted glass with a
+      // lit rim on top. Nothing floats.
       bottomNavigationBar: ClipRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: Blurs.bar, sigmaY: Blurs.bar),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: c.glass,
+          child: Container(
+            decoration: glassFill(context),
+            // The glass edge: a hairline for shape with the lit rim under it.
+            foregroundDecoration: BoxDecoration(
               border: Border(top: BorderSide(color: c.hairline)),
             ),
             child: SafeArea(
               top: false,
-              child: SizedBox(
+              child: Container(
                 height: Sizes.navBar,
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: c.glassRim)),
+                ),
                 child: Row(
                   children: [
                     tab(0),
