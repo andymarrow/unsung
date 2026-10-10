@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unsung/app.dart';
+import 'package:unsung/core/env.dart';
 import 'package:unsung/core/prefs.dart';
 import 'package:unsung/core/storage/app_files.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Env.hasBackend) {
+    await Supabase.initialize(
+      url: Env.supabaseUrl,
+      anonKey: Env.supabaseAnonKey,
+    );
+  }
   final (prefs, files) = await (
     SharedPreferences.getInstance(),
     AppFiles.open(),

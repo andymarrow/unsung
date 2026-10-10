@@ -20,6 +20,7 @@ import 'package:unsung/features/karaoke/domain/karaoke_track.dart';
 import 'package:unsung/features/karaoke/presentation/karaoke_controller.dart';
 import 'package:unsung/features/library/domain/song.dart';
 import 'package:unsung/features/player/widgets.dart';
+import 'package:unsung/features/social/presentation/share_sheet.dart';
 import 'package:unsung/features/studio/data/takes_repository.dart';
 import 'package:unsung/features/studio/domain/take.dart';
 import 'package:unsung/features/studio/presentation/takes_controller.dart';
@@ -236,6 +237,14 @@ class _ReviewState extends ConsumerState<_Review> {
           ],
         ),
         actions: [
+          if (take.mixPath != null)
+            RoundIconButton(
+              icon: take.postId == null
+                  ? Icons.ios_share_rounded
+                  : Icons.podcasts_rounded,
+              label: take.postId == null ? 'Share take' : 'View on the Stage',
+              onTap: () => unawaited(shareTake(context, ref, take)),
+            ),
           RoundIconButton(
               icon: Icons.delete_outline_rounded,
               label: 'Delete take',
