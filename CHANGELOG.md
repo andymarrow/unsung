@@ -6,6 +6,7 @@
 - Floating glass tab bar with a lens that glides under the selected tab.
 - Stage post cards on glass (your own carry a faint cue tint).
 - Loading: a shared shimmer sweep on skeletons; an equalizer for music-related waits (library scan, lyrics, link fetch, buffering).
+- Launch sequence: the U mark's underline becomes a waveform, the word opens on the variable width axis, the voice lifts away, the line settles under "Unsung" and the stage light rises into the app. Native splash matches its first frame on every Android version.
 - "Start with a classic": a shelf of 12 well-known songs (official YouTube uploads). Tapping one opens From a link pre-filled; nothing is downloaded until you bring it in.
 
 ## 0.2.0 – songs from links, review fixes

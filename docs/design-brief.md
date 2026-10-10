@@ -75,6 +75,11 @@ Bottom bar with 4 destinations around a central Sing affordance: **Library**, **
 2. **Breathing lyrics.** The active line fills left-to-right with cue in sync with the music (line-timed LRC, word-timed if available) while its `wdth` axis expands 82→100 and weight eases up: the words physically open as they are sung. Upcoming line is larger and brighter than past lines (past lines fade to inkFaint). Scroll uses a 420ms decelerate curve. Reduce-motion: no width animation, colour fill only.
 3. **The Spotlight.** Pressing the record button throws a radial cue light that expands from the button to fill the screen and reveals the Studio (circular clip reveal, 600ms emphasized), with a heavy haptic on "3-2-1-sing". Going public on a take flips the lock into a broadcast mark with a ripple (280ms).
 
+## Launch (v0.3)
+Built on what the best launch sequences share (Airbnb's self-drawing Bélo, Headspace's morphs, Apple's content-first launch screens): the first frame is the system splash, one hero motion is made from the brand itself, type arrives with intent, and the exit becomes the first screen. Under two seconds, never waiting on work.
+
+The Unsung story, 1.75s + a 420ms dissolve: the U mark's cue underline wakes into a waveform → the U breathes open on the width axis and "nsung" opens beside it letter by letter → the voice lifts out of the waveform as a cue ribbon while the bars settle to tape grey → the bars close into one cue line under the whole word (dropping to clear the g), the stage light comes up and the tagline arrives → it swells slightly and dissolves into the Library, whose ambient light is the same light. Tap to skip; reduce-motion shows the lockup and fades. Native splash (all Android versions) draws the mark at 288dp so the hand-off frame is identical.
+
 ## Glass (v0.3)
 The owner asked for an Apple "Liquid Glass" level of polish, so glass moved from "transient layers only" to a system, with rules that keep lyrics legible:
 - **Ambient stage light** (`AmbientLight`) drifts behind the shell: two cue pools and one ember on a 36s loop, 16% (dark) / 10% (light). It is what the glass catches; it never sits behind lyrics.

@@ -8,9 +8,13 @@ import 'package:unsung/core/router/app_router.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/features/links/domain/link.dart';
 import 'package:unsung/features/links/presentation/link_sheet.dart';
+import 'package:unsung/features/splash/splash.dart';
 
 class UnsungApp extends ConsumerStatefulWidget {
-  const UnsungApp({super.key});
+  const UnsungApp({this.splash = true, super.key});
+
+  /// Plays the launch sequence over the app on start.
+  final bool splash;
 
   @override
   ConsumerState<UnsungApp> createState() => _UnsungAppState();
@@ -18,6 +22,7 @@ class UnsungApp extends ConsumerStatefulWidget {
 
 class _UnsungAppState extends ConsumerState<UnsungApp> {
   StreamSubscription<String>? _shares;
+  late bool _splash = widget.splash;
 
   @override
   void initState() {
@@ -57,6 +62,13 @@ class _UnsungAppState extends ConsumerState<UnsungApp> {
       // Dark is the primary experience; ThemeMode.system (default) lets the
       // device setting win.
       routerConfig: ref.watch(routerProvider),
+      // The app builds underneath while the splash plays, so nothing waits.
+      builder: (context, child) => Stack(
+        children: [
+          child!,
+          if (_splash) Splash(onDone: () => setState(() => _splash = false)),
+        ],
+      ),
     );
   }
 }

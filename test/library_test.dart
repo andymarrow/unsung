@@ -16,8 +16,8 @@ void main() {
     expect(find.textContaining('8 SONGS · 3 READY'), findsOneWidget);
     expect(find.text('START WITH A CLASSIC'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Paper Moons'), 200,
-        scrollable: find.byWidgetPredicate((w) =>
-            w is Scrollable && w.axisDirection == AxisDirection.down));
+        scrollable: find.byWidgetPredicate(
+            (w) => w is Scrollable && w.axisDirection == AxisDirection.down));
     expect(find.text('Paper Moons'), findsOneWidget);
     expect(find.text('READY'), findsWidgets);
   });

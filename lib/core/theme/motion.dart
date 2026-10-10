@@ -24,6 +24,13 @@ abstract final class Motion {
   /// One loop of the ambient stage light. Slow enough to feel still.
   static const ambient = Duration(seconds: 36);
 
+  /// The launch story, before the exit dissolve (kept under two seconds
+  /// in total, per platform guidance).
+  static const splash = Duration(milliseconds: 1750);
+
+  /// How much the splash swells as it dissolves into the app.
+  static const splashExitScale = 0.04;
+
   /// One full cycle of the equalizer bars.
   static const eqBeat = Duration(milliseconds: 1800);
 

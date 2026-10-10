@@ -64,7 +64,7 @@ Future<void> _pumpApp(WidgetTester tester, Brightness brightness) async {
         ...libraryOverrides(),
         ...linkOverrides(FakeLinkSource()),
       ],
-      child: const UnsungApp(),
+      child: const UnsungApp(splash: false),
     ),
   );
   await settleFrames(tester);
