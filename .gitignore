@@ -39,3 +39,9 @@ dart_defines.json
 server/.venv/
 server/__pycache__/
 *.pyc
+
+# Rendered by golden tests; CI publishes them to docs/screenshots
+test/goldens/*.png
+
+# Not committed: CI resolves against the current stable Flutter
+pubspec.lock
