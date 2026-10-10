@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:unsung/core/result.dart';
 import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/tokens.dart';
@@ -18,7 +17,7 @@ import 'package:unsung/features/library/presentation/library_controller.dart';
 import 'package:unsung/features/lyrics/data/lyrics_repository.dart';
 import 'package:unsung/features/lyrics/domain/lyrics.dart';
 import 'package:unsung/features/lyrics/presentation/lyrics_editor_sheet.dart';
-import 'package:unsung/features/lyrics/presentation/lyrics_view.dart';
+import 'package:unsung/features/lyrics/presentation/lyrics_slot.dart';
 import 'package:unsung/features/player/rehearse_controller.dart';
 import 'package:unsung/features/player/widgets.dart';
 
@@ -135,20 +134,12 @@ class _RehearseRoomState extends ConsumerState<_RehearseRoom> {
           : Column(
               children: [
                 Expanded(
-                  child: switch (lyrics) {
-                    AsyncData(:final value) => LyricsView(
-                        lyrics: value,
-                        position: _r.position,
-                        offset: _state.lyricsOffset,
-                        onAddLyrics: () =>
-                            unawaited(showLyricsEditor(context, song)),
-                      ),
-                    AsyncError(:final error) => ErrorState(
-                        failure: toFailure(error),
-                        onRetry: () => ref.invalidate(lyricsProvider(song)),
-                      ),
-                    _ => const _LyricsLoading(),
-                  },
+                  child: LyricsSlot(
+                    song: song,
+                    position: _r.position,
+                    offset: _state.lyricsOffset,
+                    running: _state.playing,
+                  ),
                 ),
                 _Deck(
                   state: _state,
@@ -248,27 +239,6 @@ class _RehearseRoomState extends ConsumerState<_RehearseRoom> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _LyricsLoading extends StatelessWidget {
-  const _LyricsLoading();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(Space.gutter),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Skeleton(width: Sizes.artworkHero, height: Space.lg),
-          SizedBox(height: Space.md),
-          Skeleton(width: Sizes.artworkHero * 1.2, height: Space.xl),
-          SizedBox(height: Space.md),
-          Skeleton(width: Sizes.artworkHero * 0.8, height: Space.lg),
-        ],
       ),
     );
   }

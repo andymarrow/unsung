@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:unsung/core/router/spotlight_page.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
@@ -161,6 +162,7 @@ class SingButton extends StatelessWidget {
       semanticLabel: 'Sing a song',
       child: Hero(
         tag: 'spotlight',
+        flightShuttleBuilder: spotlightShuttle,
         child: Container(
           width: size,
           height: size * 0.72,

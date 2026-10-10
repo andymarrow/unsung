@@ -18,15 +18,17 @@ CustomTransitionPage<void> spotlightPage({
   return CustomTransitionPage<void>(
     key: key,
     child: child,
-    transitionDuration: Motion.signature,
+    transitionDuration: Motion.spotlight,
     reverseTransitionDuration: Motion.slow,
     transitionsBuilder: (context, animation, secondary, child) {
       if (Motion.reduced(context)) {
         return FadeTransition(opacity: animation, child: child);
       }
+      // Emphasized: the circle overshoots past the screen edge and settles,
+      // which reads as light swelling rather than a wipe.
       final reveal = CurvedAnimation(
         parent: animation,
-        curve: Motion.decelerate,
+        curve: Motion.emphasized,
         reverseCurve: Motion.standard,
       );
       final flash = CurvedAnimation(
@@ -69,6 +71,41 @@ CustomTransitionPage<void> spotlightPage({
   );
 }
 
+/// Hero flight between the Sing pill and the record disc: the cue shape
+/// morphs (the rect is interpolated by the Hero; both ends are fully round)
+/// while the mic fades out, so nothing pops when the Studio lands.
+Widget spotlightShuttle(
+  BuildContext flightContext,
+  Animation<double> animation,
+  HeroFlightDirection direction,
+  BuildContext fromContext,
+  BuildContext toContext,
+) {
+  final c = flightContext.colors;
+  return AnimatedBuilder(
+    animation: animation,
+    builder: (context, _) {
+      final t = animation.value;
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          color: c.cue,
+          borderRadius: BorderRadius.circular(Radii.full),
+          boxShadow: [
+            BoxShadow(
+              color: c.cue.withValues(alpha: Alphas.glowStrong),
+              blurRadius: Space.lg + Space.sm * t,
+            ),
+          ],
+        ),
+        child: Opacity(
+          opacity: (1 - t * 2).clamp(0, 1),
+          child: Icon(Icons.mic_rounded, color: c.onCue, size: Sizes.iconLg),
+        ),
+      );
+    },
+  );
+}
+
 class _CircleReveal extends CustomClipper<Path> {
   _CircleReveal(this.t);
 
@@ -80,9 +117,9 @@ class _CircleReveal extends CustomClipper<Path> {
     final far = math.sqrt(
       math.pow(size.width / 2, 2) + math.pow(size.height, 2),
     );
+    final radius = far * t + Sizes.recordButton / 2 * (1 - t);
     return Path()
-      ..addOval(Rect.fromCircle(
-          center: centre, radius: far * t + Sizes.recordButton / 2 * (1 - t)));
+      ..addOval(Rect.fromCircle(center: centre, radius: math.max(0, radius)));
   }
 
   @override

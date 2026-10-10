@@ -96,7 +96,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
       heading: display(22, 650, width: 90),
       lyricActive: display(34, 750, width: 82, height: 1.1, tracking: -0.01),
       lyricNext: display(26, 600, width: 90),
-      lyricPast: display(22, 500, width: 90, color: c.inkFaint),
+      lyricPast: display(24, 600, width: 90, color: c.inkFaint),
       body: display(16, 420, height: 1.45),
       bodyMuted: display(16, 420, height: 1.45, color: c.inkMuted),
       rowTitle: display(17, 620, width: 92, height: 1.2),

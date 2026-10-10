@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:unsung/core/platform/permissions.dart';
 import 'package:unsung/core/router/routes.dart';
+import 'package:unsung/core/router/spotlight_page.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
@@ -19,9 +20,7 @@ import 'package:unsung/features/karaoke/domain/karaoke_track.dart';
 import 'package:unsung/features/karaoke/presentation/karaoke_controller.dart';
 import 'package:unsung/features/library/domain/song.dart';
 import 'package:unsung/features/library/presentation/library_controller.dart';
-import 'package:unsung/features/lyrics/data/lyrics_repository.dart';
-import 'package:unsung/features/lyrics/presentation/lyrics_editor_sheet.dart';
-import 'package:unsung/features/lyrics/presentation/lyrics_view.dart';
+import 'package:unsung/features/lyrics/presentation/lyrics_slot.dart';
 import 'package:unsung/features/player/rehearse_controller.dart';
 import 'package:unsung/features/player/widgets.dart';
 import 'package:unsung/features/studio/data/takes_repository.dart';
@@ -119,7 +118,6 @@ class _StudioState extends ConsumerState<_Studio> {
 
   @override
   Widget build(BuildContext context) {
-    final lyrics = ref.watch(lyricsProvider(widget.song));
     final offset = ref.read(lyricsOffsetsProvider).get(widget.song.id);
 
     return ListenableBuilder(
@@ -176,18 +174,12 @@ class _StudioState extends ConsumerState<_Studio> {
                             child: Stack(
                               children: [
                                 Positioned.fill(
-                                  child: lyrics.when(
-                                    data: (l) => LyricsView(
-                                      lyrics: l,
-                                      position: _s.position,
-                                      offset: offset,
-                                      topInset: Space.md,
-                                      onAddLyrics: () => unawaited(
-                                        showLyricsEditor(context, widget.song),
-                                      ),
-                                    ),
-                                    error: (_, __) => const SizedBox.shrink(),
-                                    loading: () => const SizedBox.shrink(),
+                                  child: LyricsSlot(
+                                    song: widget.song,
+                                    position: _s.position,
+                                    offset: offset,
+                                    topInset: Space.md,
+                                    running: live,
                                   ),
                                 ),
                                 if (phase == StudioPhase.countdown)
@@ -406,6 +398,7 @@ class _RecordButton extends StatelessWidget {
       semanticLabel: recording ? 'Stop recording' : 'Start recording',
       child: Hero(
         tag: 'spotlight',
+        flightShuttleBuilder: spotlightShuttle,
         child: AnimatedContainer(
           duration: d,
           curve: Motion.emphasized,

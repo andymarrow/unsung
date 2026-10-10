@@ -197,16 +197,26 @@ abstract final class Sizes {
   static const double scrubRail = 20;
   static const double scrubBubble = 56;
 
+  /// Waveform bars.
+  static const double waveBar = 2;
+  static const double waveGap = 2;
+
   /// The visibility switch.
   static const double switchWidth = 48;
   static const double switchHeight = 28;
   static const double switchThumb = 18;
 }
 
-/// Backdrop blur strengths.
+/// Blur strengths.
 abstract final class Blurs {
   /// Frosted glass on transient sheets.
   static const double glass = 24;
+
+  /// Glow under the lifting vocal ribbon.
+  static const double voice = 6;
+
+  /// Glow on the live pitch trail.
+  static const double pitch = 3;
 }
 
 /// Opacities used for glows and overlays.

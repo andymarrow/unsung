@@ -28,13 +28,12 @@ class UnsingBeatVisual extends StatefulWidget {
 
 class _UnsingBeatVisualState extends State<UnsingBeatVisual>
     with SingleTickerProviderStateMixin {
-  static const _loop = Duration(milliseconds: 4200);
   static final _inst = _envelope(1, 120);
   static final _voice = _envelope(4, 120);
 
   late final AnimationController _c = AnimationController(
     vsync: this,
-    duration: _loop,
+    duration: Motion.onboardingLoop,
   );
 
   @override

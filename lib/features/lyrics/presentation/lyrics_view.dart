@@ -23,10 +23,15 @@ class LyricsView extends StatefulWidget {
     this.offset = Duration.zero,
     this.onAddLyrics,
     this.topInset = Space.lg,
+    this.running = true,
     super.key,
   });
 
   final Lyrics lyrics;
+
+  /// False while playback is paused: the frame clock stops (no work, no
+  /// battery) and the view shows the current position once.
+  final bool running;
 
   /// Polled every frame. Use an interpolating clock such as
   /// `AudioPlayer.position` so the fill is smooth between updates.
@@ -54,13 +59,26 @@ class _LyricsViewState extends State<LyricsView>
   void initState() {
     super.initState();
     _rekey();
-    _ticker.start();
+    _syncTicker();
   }
 
   @override
   void didUpdateWidget(LyricsView old) {
     super.didUpdateWidget(old);
     if (!identical(old.lyrics, widget.lyrics)) _rekey();
+    _syncTicker();
+  }
+
+  void _syncTicker() {
+    if (widget.running && !_ticker.isActive) {
+      unawaited(_ticker.start());
+    } else if (!widget.running) {
+      if (_ticker.isActive) _ticker.stop();
+      // Show where we are (e.g. after a seek while paused).
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _tick(Duration.zero);
+      });
+    }
   }
 
   void _rekey() {
@@ -251,6 +269,8 @@ class _SyncedLine extends StatelessWidget {
   }
 }
 
+/// The line being sung. Rows are broken using each word's fully open width,
+/// so a word widening as it is sung never pushes another onto the next row.
 class _ActiveLine extends StatelessWidget {
   const _ActiveLine({required this.line, required this.now});
 
@@ -262,28 +282,81 @@ class _ActiveLine extends StatelessWidget {
     final type = context.type;
     final c = context.colors;
     final reduced = Motion.reduced(context);
-    final space = type.lyricActive.fontSize! * 0.28;
+    final base = type.lyricActive;
+    final space = base.fontSize! * Lyric.wordGap;
+    final scaler = MediaQuery.textScalerOf(context);
     return Semantics(
       liveRegion: true,
       label: line.text,
       child: ExcludeSemantics(
-        child: Wrap(
-          spacing: space,
-          runSpacing: Space.xxs,
-          children: [
-            for (var i = 0; i < line.words.length; i++)
-              _Word(
-                text: line.words[i].text,
-                fill: line.wordFill(i, now),
-                base: type.lyricActive,
-                sung: c.cue,
-                unsung: c.ink,
-                animate: !reduced,
-              ),
-          ],
+        child: LayoutBuilder(
+          builder: (context, box) {
+            final rows = _rows(
+              [for (final w in line.words) w.text],
+              _Word.styleAt(base, 1),
+              scaler,
+              box.maxWidth,
+              space,
+            );
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final row in rows)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: Space.xxs),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final i in row) ...[
+                          if (i != row.first) SizedBox(width: space),
+                          _Word(
+                            text: line.words[i].text,
+                            fill: line.wordFill(i, now),
+                            base: base,
+                            sung: c.cue,
+                            unsung: c.ink,
+                            animate: !reduced,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );
+  }
+
+  /// Greedy row packing on open-width metrics. Returns word indexes per row.
+  static List<List<int>> _rows(
+    List<String> words,
+    TextStyle open,
+    TextScaler scaler,
+    double maxWidth,
+    double space,
+  ) {
+    final rows = <List<int>>[[]];
+    var x = 0.0;
+    for (var i = 0; i < words.length; i++) {
+      final w = (TextPainter(
+        text: TextSpan(text: words[i], style: open),
+        textDirection: TextDirection.ltr,
+        textScaler: scaler,
+        maxLines: 1,
+      )..layout())
+          .width;
+      final needed = rows.last.isEmpty ? w : x + space + w;
+      if (rows.last.isNotEmpty && needed > maxWidth) {
+        rows.add([i]);
+        x = w;
+      } else {
+        rows.last.add(i);
+        x = needed;
+      }
+    }
+    return rows;
   }
 }
 
@@ -304,38 +377,43 @@ class _Word extends StatelessWidget {
   final Color unsung;
   final bool animate;
 
-  static const _closedWidth = 82.0;
-  static const _openWidth = 100.0;
-  static const _closedWeight = 650.0;
-  static const _openWeight = 780.0;
+  /// [base] with the width and weight axes at [open] (0 closed, 1 open).
+  static TextStyle styleAt(TextStyle base, double open) {
+    final width =
+        Lyric.closedWidth + (Lyric.openWidth - Lyric.closedWidth) * open;
+    final weight =
+        Lyric.closedWeight + (Lyric.openWeight - Lyric.closedWeight) * open;
+    return base.copyWith(
+      fontWeight: Axes.nearestWeight(weight),
+      fontVariations: Axes.display(
+        weight: weight,
+        width: width,
+        opticalSize: base.fontSize,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final opened = fill > 0;
     return TweenAnimationBuilder<double>(
-      tween: Tween(end: opened ? 1 : 0),
+      tween: Tween(end: fill > 0 ? 1 : 0),
       duration: animate ? Motion.base : Duration.zero,
       curve: Motion.emphasized,
       builder: (context, open, _) {
-        final width = _closedWidth + (_openWidth - _closedWidth) * open;
-        final weight = _closedWeight + (_openWeight - _closedWeight) * open;
+        final style = styleAt(base, open);
+        // Only the word being sung right now needs a gradient (one layer);
+        // the others are plain colour.
+        if (fill <= 0 || fill >= 1) {
+          return Text(text,
+              style: style.copyWith(color: fill >= 1 ? sung : unsung));
+        }
         return ShaderMask(
           blendMode: BlendMode.srcIn,
           shaderCallback: (bounds) => LinearGradient(
             colors: [sung, sung, unsung, unsung],
             stops: [0, fill, fill, 1],
           ).createShader(bounds),
-          child: Text(
-            text,
-            style: base.copyWith(
-              fontWeight: Axes.nearestWeight(weight),
-              fontVariations: Axes.display(
-                weight: weight,
-                width: width,
-                opticalSize: base.fontSize,
-              ),
-            ),
-          ),
+          child: Text(text, style: style),
         );
       },
     );

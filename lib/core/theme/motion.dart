@@ -15,6 +15,24 @@ abstract final class Motion {
   /// Fraction of a turn the visibility mark spins as it flips.
   static const flipTurns = -0.12;
 
+  /// The Spotlight reveal into the Studio (brief: 600ms, emphasized).
+  static const spotlight = Duration(milliseconds: 600);
+
+  /// Inactive tabs sit a hair smaller, so the incoming one settles in.
+  static const tabScale = 0.985;
+
+  /// Rise distance for staggered list entrances.
+  static const rise = 12.0;
+
+  /// Peak scale of the like-button pop.
+  static const popScale = 1.35;
+
+  /// One loop of the onboarding Unsinging illustration.
+  static const onboardingLoop = Duration(milliseconds: 4200);
+
+  /// Wait after the last edit before re-rendering a preview mix.
+  static const debounce = Duration(milliseconds: 500);
+
   /// How far content rises as it fades in, as a fraction of its height.
   static const riseFraction = 0.06;
 
@@ -42,4 +60,16 @@ abstract final class Motion {
   /// [d], or zero when reduce-motion is on.
   static Duration of(BuildContext context, Duration d) =>
       reduced(context) ? Duration.zero : d;
+}
+
+/// Breathing-lyrics axes: the active word opens from closed to open as it
+/// is sung (variable-font width and weight), ending on the brief's 750.
+abstract final class Lyric {
+  static const closedWidth = 82.0;
+  static const openWidth = 100.0;
+  static const closedWeight = 680.0;
+  static const openWeight = 750.0;
+
+  /// Gap between words, as a fraction of the font size.
+  static const wordGap = 0.28;
 }

@@ -74,22 +74,20 @@ class WaveformPainter extends CustomPainter {
   final Color played;
   final Color unplayed;
 
-  static const _barWidth = 2.0;
-  static const _gap = 2.0;
-
   @override
   void paint(Canvas canvas, Size size) {
     if (peaks.isEmpty || size.width <= 0) return;
-    final bars = (size.width / (_barWidth + _gap)).floor().clamp(1, 400);
+    final bars =
+        (size.width / (Sizes.waveBar + Sizes.waveGap)).floor().clamp(1, 400);
     final paint = Paint()
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = _barWidth;
+      ..strokeWidth = Sizes.waveBar;
     final mid = size.height / 2;
     for (var i = 0; i < bars; i++) {
       final t = i / bars;
       final peak = peaks[(t * peaks.length).floor().clamp(0, peaks.length - 1)];
-      final h = math.max(_barWidth, peak.clamp(0.0, 1.0) * size.height);
-      final x = i * (_barWidth + _gap) + _barWidth / 2;
+      final h = math.max(Sizes.waveBar, peak.clamp(0.0, 1.0) * size.height);
+      final x = i * (Sizes.waveBar + Sizes.waveGap) + Sizes.waveBar / 2;
       paint.color = t <= progress ? played : unplayed;
       canvas.drawLine(Offset(x, mid - h / 2), Offset(x, mid + h / 2), paint);
     }

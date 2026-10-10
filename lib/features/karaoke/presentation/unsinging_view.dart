@@ -194,7 +194,7 @@ class UnsingingPainter extends CustomPainter {
           ribbon,
           stroke
             ..strokeWidth = _bar * 4
-            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, Blurs.voice)
             ..shader = LinearGradient(
               colors: [
                 voice.withValues(alpha: 0),

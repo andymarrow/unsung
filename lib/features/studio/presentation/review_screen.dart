@@ -87,7 +87,6 @@ class _ReviewState extends ConsumerState<_Review> {
   Duration _dur = Duration.zero;
   bool _playing = false;
 
-  static const _debounceDelay = Duration(milliseconds: 500);
   static const _syncStepMs = 20;
   static const _maxVoiceGain = 2.0;
 
@@ -124,7 +123,7 @@ class _ReviewState extends ConsumerState<_Review> {
   void _change(MixSettings next) {
     setState(() => _settings = next);
     _debounce?.cancel();
-    _debounce = Timer(_debounceDelay, () => unawaited(_renderPreview()));
+    _debounce = Timer(Motion.debounce, () => unawaited(_renderPreview()));
   }
 
   Future<void> _renderPreview() async {

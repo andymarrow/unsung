@@ -29,8 +29,6 @@ class _EntranceState extends State<Entrance>
     ),
   );
 
-  static const _rise = 12.0;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -55,7 +53,7 @@ class _EntranceState extends State<Entrance>
       builder: (context, child) => Opacity(
         opacity: _t.value,
         child: Transform.translate(
-          offset: Offset(0, (1 - _t.value) * _rise),
+          offset: Offset(0, (1 - _t.value) * Motion.rise),
           child: child,
         ),
       ),

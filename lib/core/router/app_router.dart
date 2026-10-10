@@ -7,6 +7,7 @@ import 'package:unsung/core/prefs.dart';
 import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/router/spotlight_page.dart';
 import 'package:unsung/core/widgets/app_shell.dart';
+import 'package:unsung/core/widgets/fading_branches.dart';
 import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/features/library/presentation/library_screen.dart';
 import 'package:unsung/features/me/presentation/me_screen.dart';
@@ -56,11 +57,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.onboarding,
         builder: (_, __) => const OnboardingScreen(),
       ),
-      StatefulShellRoute.indexedStack(
+      StatefulShellRoute(
         builder: (context, state, shell) => AppShell(
           shell: shell,
           onSing: () => _openSingPicker(context),
         ),
+        navigatorContainerBuilder: (context, shell, children) =>
+            FadingBranches(index: shell.currentIndex, children: children),
         branches: [
           StatefulShellBranch(
             routes: [

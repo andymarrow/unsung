@@ -52,8 +52,10 @@ class _LikeButtonState extends ConsumerState<LikeButton>
     final (liked, count) = ref.read(likesProvider.notifier).of(widget.post);
     final c = context.colors;
     final scale = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1, end: 1.35), weight: 35),
-      TweenSequenceItem(tween: Tween(begin: 1.35, end: 1), weight: 65),
+      TweenSequenceItem(
+          tween: Tween(begin: 1, end: Motion.popScale), weight: 35),
+      TweenSequenceItem(
+          tween: Tween(begin: Motion.popScale, end: 1), weight: 65),
     ]).animate(CurvedAnimation(parent: _pop, curve: Motion.emphasized));
 
     return Semantics(
