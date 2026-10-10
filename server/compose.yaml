@@ -1,0 +1,14 @@
+# Studio server plus the optional proof-of-origin token provider that keeps
+# YouTube link import reliable. `docker compose up -d`, then point the app's
+# SEPARATION_API_URL at port 8000.
+services:
+  studio:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      POT_PROVIDER_URL: http://pot:4416
+    depends_on: [pot]
+    restart: unless-stopped
+  pot:
+    image: brainicism/bgutil-ytdlp-pot-provider:latest
+    restart: unless-stopped

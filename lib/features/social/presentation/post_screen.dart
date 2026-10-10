@@ -146,27 +146,14 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
   }
 
   Future<void> _delete() async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (d) => AlertDialog(
-        backgroundColor: d.colors.surface,
-        title: Text('Remove from the Stage?', style: d.type.heading),
-        content: Text(
-            'Likes and comments go with it. The take stays on your phone.',
-            style: d.type.bodyMuted),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(d).pop(false),
-              child: Text('KEEP', style: d.type.label)),
-          TextButton(
-            onPressed: () => Navigator.of(d).pop(true),
-            child: Text('REMOVE',
-                style: d.type.label.copyWith(color: d.colors.cue)),
-          ),
-        ],
-      ),
+    final ok = await confirmSheet(
+      context,
+      title: 'Remove from the Stage?',
+      message: 'Likes and comments go with it. The take stays on your phone.',
+      confirmLabel: 'Remove',
+      icon: Icons.delete_outline_rounded,
     );
-    if (!(ok ?? false)) return;
+    if (!ok) return;
     await ref.read(stagePlayerProvider.notifier).stop();
     await ref.read(shareActionsProvider).delete(widget.post);
     final takes = ref.read(takesProvider).valueOrNull ?? const <Take>[];

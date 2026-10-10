@@ -16,6 +16,7 @@ import 'package:unsung/features/library/presentation/alphabet_scrub.dart';
 import 'package:unsung/features/library/presentation/library_controller.dart';
 import 'package:unsung/features/library/presentation/song_row.dart';
 import 'package:unsung/features/library/presentation/song_sheet.dart';
+import 'package:unsung/features/links/presentation/link_sheet.dart';
 
 class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
@@ -54,6 +55,16 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
       body: SafeArea(
         bottom: false,
         child: switch (library) {
+          AsyncData(value: LibraryNeedsAccess(:final blocked, :final imported))
+              when imported.isNotEmpty =>
+            _SongList(
+              songs: imported,
+              banner: _AccessBanner(
+                blocked: blocked,
+                onAllow: () => unawaited(
+                    ref.read(libraryProvider.notifier).requestAccess()),
+              ),
+            ),
           AsyncData(value: LibraryNeedsAccess(:final blocked)) => _NeedsAccess(
               blocked: blocked,
               onAllow: () =>
@@ -69,6 +80,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
                   actionLabel: 'Check again',
                   onAction: () =>
                       unawaited(ref.read(libraryProvider.notifier).refresh()),
+                  secondaryLabel: 'Bring one in from YouTube',
+                  secondaryIcon: Icons.link_rounded,
+                  onSecondary: () => unawaited(showLinkSheet(context)),
                 )
               : _SongList(songs: songs),
           AsyncError(:final error) => ErrorState(
@@ -112,12 +126,60 @@ class _Header extends StatelessWidget {
         Space.gutter,
         Space.md,
       ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Library', style: context.type.title),
+                const SizedBox(height: Space.xxs),
+                Text(subtitle, style: context.type.labelMuted),
+              ],
+            ),
+          ),
+          const SizedBox(width: Space.sm),
+          RoundIconButton(
+            icon: Icons.add_link_rounded,
+            label: 'Bring in a song from a YouTube link',
+            filled: true,
+            onTap: () => unawaited(showLinkSheet(context)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Shown above imported songs while music access is still off.
+class _AccessBanner extends StatelessWidget {
+  const _AccessBanner({required this.blocked, required this.onAllow});
+
+  final bool blocked;
+  final VoidCallback onAllow;
+
+  @override
+  Widget build(BuildContext context) {
+    final type = context.type;
+    return Container(
+      margin:
+          const EdgeInsets.fromLTRB(Space.gutter, 0, Space.gutter, Space.sm),
+      padding: const EdgeInsets.all(Space.md),
+      decoration: BoxDecoration(
+        color: context.colors.raised,
+        borderRadius: BorderRadius.circular(Radii.card),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Library', style: context.type.title),
-          const SizedBox(height: Space.xxs),
-          Text(subtitle, style: context.type.labelMuted),
+          Text('Songs on this phone are hidden until you allow music access.',
+              style: type.rowMeta),
+          const SizedBox(height: Space.sm),
+          QuietButton(
+            label: blocked ? 'Open settings' : 'Allow music access',
+            onTap: onAllow,
+          ),
         ],
       ),
     );
@@ -141,14 +203,20 @@ class _NeedsAccess extends StatelessWidget {
           : 'Unsung reads the songs saved on this phone so you can turn them into karaoke. Your files never leave your phone unless you share a take.',
       actionLabel: blocked ? 'Open settings' : 'Allow music access',
       onAction: onAllow,
+      secondaryLabel: 'Or bring one in from YouTube',
+      secondaryIcon: Icons.link_rounded,
+      onSecondary: () => unawaited(showLinkSheet(context)),
     );
   }
 }
 
 class _SongList extends ConsumerStatefulWidget {
-  const _SongList({required this.songs});
+  const _SongList({required this.songs, this.banner});
 
   final List<Song> songs;
+
+  /// Optional notice between the header and the search field.
+  final Widget? banner;
 
   /// Below this many songs the list is short enough to scroll by hand.
   static const scrubFrom = 24;
@@ -207,6 +275,7 @@ class _SongListState extends ConsumerState<_SongList> {
               subtitle: '${songs.length} SONGS · $readyCount READY TO SING',
             ),
           ),
+          if (widget.banner != null) SliverToBoxAdapter(child: widget.banner),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: Space.gutter),

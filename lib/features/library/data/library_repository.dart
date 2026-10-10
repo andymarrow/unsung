@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,8 +17,7 @@ class LibraryRepository {
     final raw = await _audio.querySongs();
     // MediaStore already sorts by title; sorting again keeps the alphabet
     // scrub correct whatever the platform returns.
-    return [for (final m in raw) Song.fromMap(m)]
-      ..sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
+    return sortSongs([for (final m in raw) Song.fromMap(m)]);
   }
 
   /// Cover art, cached in memory (LRU). Null when the file has none.
@@ -27,11 +27,18 @@ class LibraryRepository {
       _art[song.id] = hit;
       return hit;
     }
-    final bytes = await _audio.artwork(song.uri, size: 384);
+    final bytes = song.artPath != null
+        ? await _file(song.artPath!)
+        : await _audio.artwork(song.uri, size: 384);
     _art[song.id] = bytes;
     if (_art.length > _artCacheSize) _art.remove(_art.keys.first);
     return bytes;
   }
+}
+
+Future<Uint8List?> _file(String path) async {
+  final f = File(path);
+  return f.existsSync() ? f.readAsBytes() : null;
 }
 
 final libraryRepositoryProvider = Provider<LibraryRepository>(

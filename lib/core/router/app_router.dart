@@ -21,7 +21,9 @@ import 'package:unsung/features/studio/presentation/review_screen.dart';
 import 'package:unsung/features/studio/presentation/studio_screen.dart';
 import 'package:unsung/features/takes/presentation/takes_screen.dart';
 
-final _rootKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+/// The app's top navigator. Sheets opened from outside a screen (e.g. a
+/// shared link arriving) use its context.
+final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 /// The Sing button: pick a ready song, then open the studio.
 void _openSingPicker(BuildContext context) {
@@ -40,7 +42,7 @@ void _openSingPicker(BuildContext context) {
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    navigatorKey: _rootKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: Routes.library,
     redirect: (context, state) {
       final onboarded = ref.read(onboardedProvider);
@@ -96,13 +98,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: Routes.rehearse,
-        parentNavigatorKey: _rootKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (_, state) =>
             RehearseScreen(songId: state.pathParameters['songId']!),
       ),
       GoRoute(
         path: Routes.studio,
-        parentNavigatorKey: _rootKey,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (_, state) => spotlightPage(
           key: state.pageKey,
           child: StudioScreen(songId: state.pathParameters['songId']!),
@@ -110,29 +112,29 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: Routes.signIn,
-        parentNavigatorKey: _rootKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (_, __) => const SignInScreen(),
       ),
       GoRoute(
         path: Routes.editProfile,
-        parentNavigatorKey: _rootKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (_, __) => const EditProfileScreen(),
       ),
       GoRoute(
         path: Routes.post,
-        parentNavigatorKey: _rootKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (_, state) =>
             PostScreen(postId: state.pathParameters['postId']!),
       ),
       GoRoute(
         path: Routes.profile,
-        parentNavigatorKey: _rootKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (_, state) =>
             ProfileScreen(userId: state.pathParameters['userId']!),
       ),
       GoRoute(
         path: Routes.review,
-        parentNavigatorKey: _rootKey,
+        parentNavigatorKey: rootNavigatorKey,
         builder: (_, state) =>
             ReviewScreen(takeId: state.pathParameters['takeId']!),
       ),

@@ -14,6 +14,9 @@ class EmptyState extends StatelessWidget {
     this.icon,
     this.actionLabel,
     this.onAction,
+    this.secondaryLabel,
+    this.secondaryIcon,
+    this.onSecondary,
     super.key,
   });
 
@@ -23,6 +26,11 @@ class EmptyState extends StatelessWidget {
   final IconData? icon;
   final String? actionLabel;
   final VoidCallback? onAction;
+
+  /// A quieter second way forward, under the main action.
+  final String? secondaryLabel;
+  final IconData? secondaryIcon;
+  final VoidCallback? onSecondary;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +64,14 @@ class EmptyState extends StatelessWidget {
               if (actionLabel != null && onAction != null) ...[
                 const SizedBox(height: Space.lg),
                 CueButton(label: actionLabel!, onTap: onAction),
+              ],
+              if (secondaryLabel != null && onSecondary != null) ...[
+                const SizedBox(height: Space.sm),
+                QuietButton(
+                  label: secondaryLabel!,
+                  icon: secondaryIcon,
+                  onTap: onSecondary,
+                ),
               ],
             ],
           ),

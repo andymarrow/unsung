@@ -5,16 +5,20 @@ import 'package:unsung/core/platform/permissions.dart';
 import 'package:unsung/core/result.dart';
 import 'package:unsung/features/library/data/library_repository.dart';
 import 'package:unsung/features/library/domain/song.dart';
+import 'package:unsung/features/links/data/link_repository.dart';
 
 sealed class LibraryState {
   const LibraryState();
 }
 
 final class LibraryNeedsAccess extends LibraryState {
-  const LibraryNeedsAccess({required this.blocked});
+  const LibraryNeedsAccess({required this.blocked, this.imported = const []});
 
   /// The user must enable access in system settings.
   final bool blocked;
+
+  /// Songs brought in from links, usable without music access.
+  final List<Song> imported;
 }
 
 final class LibraryLoaded extends LibraryState {
@@ -26,22 +30,63 @@ final class LibraryLoaded extends LibraryState {
 class LibraryController extends AsyncNotifier<LibraryState> {
   Permissions get _perms => ref.read(permissionsProvider);
   LibraryRepository get _repo => ref.read(libraryRepositoryProvider);
+  LinkRepository get _links => ref.read(linkRepositoryProvider);
 
   @override
   Future<LibraryState> build() async {
     final access = await _perms.music();
     if (access != Access.granted) {
-      return LibraryNeedsAccess(blocked: access == Access.blocked);
+      return LibraryNeedsAccess(
+        blocked: access == Access.blocked,
+        imported: await _imported(),
+      );
     }
     return _load();
   }
 
+  Future<List<Song>> _imported() async {
+    try {
+      return await _links.songs();
+    } on Object {
+      return const []; // Imports never block the device library.
+    }
+  }
+
   Future<LibraryState> _load() async {
     try {
-      return LibraryLoaded(await _repo.songs());
+      final all = [...await _repo.songs(), ...await _imported()];
+      return LibraryLoaded(sortSongs(all));
     } on Object catch (e) {
       throw toFailure(e);
     }
+  }
+
+  /// Adds a song that was just imported from a link, without a reload.
+  void addImported(Song song) {
+    state = AsyncData(switch (state.valueOrNull) {
+      LibraryLoaded(:final songs) => LibraryLoaded(
+          sortSongs([...songs.where((s) => s.id != song.id), song])),
+      LibraryNeedsAccess(:final blocked, :final imported) => LibraryNeedsAccess(
+          blocked: blocked,
+          imported:
+              sortSongs([...imported.where((s) => s.id != song.id), song]),
+        ),
+      _ => LibraryLoaded([song]),
+    });
+  }
+
+  /// Deletes an imported song's files and drops it from the list.
+  Future<void> removeImported(Song song) async {
+    await _links.remove(song);
+    state = AsyncData(switch (state.valueOrNull) {
+      LibraryLoaded(:final songs) =>
+        LibraryLoaded([...songs.where((s) => s.id != song.id)]),
+      LibraryNeedsAccess(:final blocked, :final imported) => LibraryNeedsAccess(
+          blocked: blocked,
+          imported: [...imported.where((s) => s.id != song.id)],
+        ),
+      _ => const LibraryLoaded([]),
+    });
   }
 
   Future<void> requestAccess() async {
@@ -52,7 +97,10 @@ class LibraryController extends AsyncNotifier<LibraryState> {
     }
     final access = await _perms.requestMusic();
     if (access != Access.granted) {
-      state = AsyncData(LibraryNeedsAccess(blocked: access == Access.blocked));
+      state = AsyncData(LibraryNeedsAccess(
+        blocked: access == Access.blocked,
+        imported: await _imported(),
+      ));
       return;
     }
     state = const AsyncLoading();
@@ -71,8 +119,11 @@ final libraryProvider = AsyncNotifierProvider<LibraryController, LibraryState>(
 
 /// All songs once loaded, else empty. Handy for lookups by id.
 final songsProvider = Provider<List<Song>>((ref) {
-  final s = ref.watch(libraryProvider).valueOrNull;
-  return s is LibraryLoaded ? s.songs : const [];
+  return switch (ref.watch(libraryProvider).valueOrNull) {
+    LibraryLoaded(:final songs) => songs,
+    LibraryNeedsAccess(:final imported) => imported,
+    _ => const [],
+  };
 });
 
 final songByIdProvider = Provider.family<Song?, String>((ref, id) {

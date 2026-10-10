@@ -69,18 +69,22 @@ class _UnsingingViewState extends State<UnsingingView>
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _settle,
-          builder: (context, _) => CustomPaint(
-            size: Size(double.infinity, widget.height),
-            painter: UnsingingPainter(
-              progress: widget.done ? 1 : widget.progress,
-              settle: Motion.emphasized.transform(_settle.value),
-              instrumental: widget.instrumentalPeaks,
-              vocal: widget.vocalPeaks,
-              band: c.ink,
-              ghost: c.raised,
-              voice: c.cue,
-            ),
-          ),
+          builder: (context, _) {
+            final settle = Motion.emphasized.transform(_settle.value);
+            return CustomPaint(
+              size: Size(double.infinity, widget.height),
+              painter: UnsingingPainter(
+                progress: widget.done ? 1 : widget.progress,
+                settle: settle,
+                instrumental: widget.instrumentalPeaks,
+                vocal: widget.vocalPeaks,
+                // Bright while it's being worked on; settles to tape grey.
+                band: Color.lerp(c.ink, c.inkMuted, settle.clamp(0, 1))!,
+                ghost: c.raised,
+                voice: c.cue,
+              ),
+            );
+          },
         ),
       ),
     );

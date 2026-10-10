@@ -13,6 +13,7 @@ import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
+import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/core/widgets/state_views.dart';
 import 'package:unsung/core/widgets/tape_label.dart';
 import 'package:unsung/core/widgets/waveform.dart';
@@ -190,26 +191,14 @@ class _ReviewState extends ConsumerState<_Review> {
   }
 
   Future<void> _delete() async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (d) => AlertDialog(
-        backgroundColor: d.colors.surface,
-        title: Text('Delete this take?', style: d.type.heading),
-        content: Text('The recording and its mix are removed from this phone.',
-            style: d.type.bodyMuted),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(d).pop(false),
-              child: Text('KEEP', style: d.type.label)),
-          TextButton(
-            onPressed: () => Navigator.of(d).pop(true),
-            child: Text('DELETE',
-                style: d.type.label.copyWith(color: d.colors.cue)),
-          ),
-        ],
-      ),
+    final ok = await confirmSheet(
+      context,
+      title: 'Delete this take?',
+      message: 'The recording and its mix are removed from this phone.',
+      confirmLabel: 'Delete',
+      icon: Icons.delete_outline_rounded,
     );
-    if (!(ok ?? false)) return;
+    if (!ok) return;
     await _player.stop();
     await ref.read(takesProvider.notifier).delete(widget.take);
     if (mounted) context.go(Routes.takes);

@@ -7,6 +7,7 @@ import 'package:unsung/core/router/routes.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
+import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/features/social/data/social_repository.dart';
 import 'package:unsung/features/social/presentation/profile_view.dart';
 import 'package:unsung/features/social/presentation/social_providers.dart';
@@ -64,26 +65,14 @@ class MeScreen extends ConsumerWidget {
   }
 
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (d) => AlertDialog(
-        backgroundColor: d.colors.surface,
-        title: Text('Sign out?', style: d.type.heading),
-        content:
-            Text('Your takes stay on this phone.', style: d.type.bodyMuted),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(d).pop(false),
-              child: Text('STAY', style: d.type.label)),
-          TextButton(
-            onPressed: () => Navigator.of(d).pop(true),
-            child: Text('SIGN OUT',
-                style: d.type.label.copyWith(color: d.colors.cue)),
-          ),
-        ],
-      ),
+    final ok = await confirmSheet(
+      context,
+      title: 'Sign out?',
+      message: 'Your takes stay on this phone.',
+      confirmLabel: 'Sign out',
+      cancelLabel: 'Stay',
     );
-    if (ok ?? false) {
+    if (ok) {
       await ref.read(stagePlayerProvider.notifier).stop();
       await ref.read(socialRepositoryProvider).signOut();
     }

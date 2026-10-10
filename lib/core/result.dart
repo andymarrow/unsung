@@ -34,6 +34,11 @@ final class AuthFailure extends AppFailure {
   const AuthFailure(super.message);
 }
 
+/// A pasted link that can't become a song (not YouTube, private, too long…).
+final class LinkFailure extends AppFailure {
+  const LinkFailure(super.message);
+}
+
 final class CancelledFailure extends AppFailure {
   const CancelledFailure() : super('Cancelled.');
 }

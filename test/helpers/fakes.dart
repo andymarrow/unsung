@@ -3,12 +3,18 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:unsung/core/platform/native_audio.dart';
 import 'package:unsung/core/platform/permissions.dart';
+import 'package:unsung/core/result.dart';
 import 'package:unsung/core/storage/app_files.dart';
 import 'package:unsung/features/karaoke/domain/karaoke_track.dart';
 import 'package:unsung/features/karaoke/presentation/karaoke_controller.dart';
 import 'package:unsung/features/library/domain/song.dart';
+import 'package:unsung/features/links/data/link_repository.dart';
+import 'package:unsung/features/links/data/link_sources.dart';
+import 'package:unsung/features/links/domain/link.dart';
 
 /// Invented demo catalogue (no real artists) for tests and screenshots.
 const demoSongs = <(String, String, String, int)>[
@@ -102,4 +108,45 @@ List<Override> libraryOverrides({Access access = Access.granted}) => [
         AppFiles(Directory.systemTemp.createTempSync('unsung')),
       ),
       karaokeTracksProvider.overrideWith(FakeTracks.new),
+    ];
+
+/// A link source that answers instantly with an invented song.
+class FakeLinkSource implements LinkSource {
+  FakeLinkSource({this.fail});
+
+  /// When set, downloads fail with this.
+  final AppFailure? fail;
+  int downloads = 0;
+
+  @override
+  Future<LinkPreview> resolve(String videoId) async => LinkPreview(
+        videoId: videoId,
+        title: 'Velvet Hours',
+        artist: 'Ode to June',
+        duration: const Duration(minutes: 3, seconds: 41),
+      );
+
+  @override
+  Future<void> download(
+    LinkPreview preview,
+    File out, {
+    required void Function(double? progress) onProgress,
+    required bool Function() cancelled,
+  }) async {
+    downloads++;
+    if (fail != null) throw fail!;
+    onProgress(0.5);
+    await out.writeAsBytes([1, 2, 3]);
+    onProgress(1);
+  }
+}
+
+List<Override> linkOverrides(LinkSource source) => [
+      linkRepositoryProvider.overrideWith(
+        (ref) => LinkRepository(
+          AppFiles(Directory.systemTemp.createTempSync('unsung-links')),
+          sources: [source],
+          client: MockClient((_) async => http.Response('', 404)),
+        ),
+      ),
     ];

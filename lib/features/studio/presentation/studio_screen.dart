@@ -11,6 +11,7 @@ import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/buttons.dart';
 import 'package:unsung/core/widgets/cue_glow.dart';
+import 'package:unsung/core/widgets/glass_sheet.dart';
 import 'package:unsung/core/widgets/pressable.dart';
 import 'package:unsung/core/widgets/state_views.dart';
 import 'package:unsung/core/widgets/tape_label.dart';
@@ -105,28 +106,15 @@ class _StudioState extends ConsumerState<_Studio> {
 
   Future<bool> _confirmLeave() async {
     if (_s.phase != StudioPhase.recording) return true;
-    final leave = await showDialog<bool>(
-      context: context,
-      builder: (d) => AlertDialog(
-        backgroundColor: d.colors.surface,
-        title: Text('Throw this take away?', style: d.type.heading),
-        content: Text("You're mid-song. Leaving now discards it.",
-            style: d.type.bodyMuted),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(d).pop(false),
-            child: Text('KEEP SINGING', style: d.type.label),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(d).pop(true),
-            child: Text('DISCARD',
-                style: d.type.label.copyWith(color: d.colors.cue)),
-          ),
-        ],
-      ),
+    final leave = await confirmSheet(
+      context,
+      title: 'Throw this take away?',
+      message: "You're mid-song. Leaving now discards it.",
+      confirmLabel: 'Discard',
+      cancelLabel: 'Keep singing',
     );
-    if (leave ?? false) await _s.discard();
-    return leave ?? false;
+    if (leave) await _s.discard();
+    return leave;
   }
 
   @override

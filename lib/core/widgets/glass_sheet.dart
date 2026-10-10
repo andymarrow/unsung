@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:unsung/core/theme/app_theme.dart';
 import 'package:unsung/core/theme/tokens.dart';
+import 'package:unsung/core/widgets/buttons.dart';
 
 /// Modal bottom sheet on frosted glass: the page behind stays faintly
 /// visible, which says "this is temporary". Glass is used only on transient
@@ -25,4 +26,53 @@ Future<T?> showGlassSheet<T>(
       child: builder(sheet),
     ),
   );
+}
+
+/// A short yes/no on glass, for destructive or leaving actions. Resolves to
+/// true only when the user confirms.
+Future<bool> confirmSheet(
+  BuildContext context, {
+  required String title,
+  required String message,
+  required String confirmLabel,
+  String cancelLabel = 'Keep',
+  IconData? icon,
+}) async {
+  final ok = await showGlassSheet<bool>(
+    context,
+    builder: (sheet) {
+      final type = sheet.type;
+      return Padding(
+        padding: EdgeInsets.fromLTRB(
+          Space.gutter,
+          0,
+          Space.gutter,
+          Space.lg + MediaQuery.paddingOf(sheet).bottom,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(title, style: type.heading),
+            const SizedBox(height: Space.xs),
+            Text(message, style: type.bodyMuted),
+            const SizedBox(height: Space.lg),
+            CueButton(
+              label: confirmLabel,
+              icon: icon,
+              expand: true,
+              onTap: () => Navigator.of(sheet).pop(true),
+            ),
+            const SizedBox(height: Space.sm),
+            QuietButton(
+              label: cancelLabel,
+              expand: true,
+              onTap: () => Navigator.of(sheet).pop(false),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+  return ok ?? false;
 }

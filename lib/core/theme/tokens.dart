@@ -185,6 +185,13 @@ abstract final class Sizes {
   static const double pitchRibbon = 140;
   static const double maxContentWidth = 560;
 
+  /// Link preview thumbnail; video frames are 16:9.
+  static const double linkThumb = 78;
+  static const double videoAspect = 16 / 9;
+
+  /// Indeterminate progress segment, as a fraction of the track.
+  static const double progressSegment = 0.3;
+
   /// Alphabet scrub rail width (fits inside the page gutter) and the
   /// letter bubble shown while scrubbing.
   static const double scrubRail = 20;

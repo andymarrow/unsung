@@ -15,6 +15,9 @@ abstract final class Motion {
   /// Fraction of a turn the visibility mark spins as it flips.
   static const flipTurns = -0.12;
 
+  /// How far content rises as it fades in, as a fraction of its height.
+  static const riseFraction = 0.06;
+
   /// Per-item delay for staggered list entrances, and the cap.
   static const stagger = Duration(milliseconds: 30);
   static const staggerMaxItems = 8;

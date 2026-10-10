@@ -70,7 +70,7 @@ class _TypeCover extends StatelessWidget {
             right: 0,
             bottom: size * 0.18,
             height: size * 0.06,
-            child: ColoredBox(color: c.cue),
+            child: ColoredBox(color: c.hairline),
           ),
           Center(
             child: Text(

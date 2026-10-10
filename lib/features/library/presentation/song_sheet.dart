@@ -12,6 +12,7 @@ import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/artwork.dart';
 import 'package:unsung/core/widgets/buttons.dart';
 import 'package:unsung/core/widgets/glass_sheet.dart';
+import 'package:unsung/core/widgets/pressable.dart';
 import 'package:unsung/core/widgets/tape_label.dart';
 import 'package:unsung/core/widgets/toggle_chip.dart';
 import 'package:unsung/features/karaoke/domain/karaoke_track.dart';
@@ -49,6 +50,24 @@ class _SongSheetState extends ConsumerState<SongSheet> {
   void _start() {
     unawaited(ref.read(karaokeJobsProvider.notifier).start(song, _mode));
   }
+
+  /// Imported songs live only in the app; this deletes the audio, cover and
+  /// any karaoke made from it.
+  void _deleteImport() => unawaited(() async {
+        final ok = await confirmSheet(
+          context,
+          title: 'Delete this download?',
+          message:
+              'The song and its karaoke leave this phone. Your takes stay. You can bring it in again from the link.',
+          confirmLabel: 'Delete',
+          icon: Icons.delete_outline_rounded,
+        );
+        if (!ok || !mounted) return;
+        final navigator = Navigator.of(context);
+        await ref.read(karaokeTracksProvider.notifier).remove(song.id);
+        await ref.read(libraryProvider.notifier).removeImported(song);
+        navigator.pop();
+      }());
 
   void _go(String location) {
     Navigator.of(context).pop();
@@ -109,6 +128,8 @@ class _SongSheetState extends ConsumerState<SongSheet> {
                       runSpacing: Space.xs,
                       children: [
                         TapeLabel(formatDuration(song.duration)),
+                        if (song.isImported)
+                          const TapeLabel('YouTube', tone: TapeTone.outline),
                         if (track != null)
                           TapeLabel(
                             track.mode == SeparationMode.studio
@@ -159,12 +180,14 @@ class _SongSheetState extends ConsumerState<SongSheet> {
                     onRemove: () => unawaited(
                       ref.read(karaokeTracksProvider.notifier).remove(song.id),
                     ),
+                    onDeleteImport: song.isImported ? _deleteImport : null,
                   ),
                 null => _Idle(
                     key: const ValueKey('idle'),
                     mode: _mode,
                     onMode: (m) => setState(() => _mode = m),
                     onStart: _start,
+                    onDeleteImport: song.isImported ? _deleteImport : null,
                   ),
               },
             ),
@@ -180,12 +203,14 @@ class _Idle extends StatelessWidget {
     required this.mode,
     required this.onMode,
     required this.onStart,
+    this.onDeleteImport,
     super.key,
   });
 
   final SeparationMode mode;
   final ValueChanged<SeparationMode> onMode;
   final VoidCallback onStart;
+  final VoidCallback? onDeleteImport;
 
   @override
   Widget build(BuildContext context) {
@@ -227,6 +252,15 @@ class _Idle extends StatelessWidget {
           expand: true,
           onTap: onStart,
         ),
+        if (onDeleteImport != null) ...[
+          const SizedBox(height: Space.sm),
+          QuietButton(
+            label: 'Delete download',
+            icon: Icons.delete_outline_rounded,
+            expand: true,
+            onTap: onDeleteImport,
+          ),
+        ],
       ],
     );
   }
@@ -305,6 +339,7 @@ class _Ready extends StatelessWidget {
     required this.onRehearse,
     required this.onRedo,
     required this.onRemove,
+    this.onDeleteImport,
     super.key,
   });
 
@@ -316,6 +351,7 @@ class _Ready extends StatelessWidget {
   final VoidCallback onRehearse;
   final VoidCallback onRedo;
   final VoidCallback onRemove;
+  final VoidCallback? onDeleteImport;
 
   @override
   Widget build(BuildContext context) {
@@ -352,40 +388,47 @@ class _Ready extends StatelessWidget {
             ],
           ),
         ],
+        const SizedBox(height: Space.sm),
+        Text(
+          track.mode == SeparationMode.studio
+              ? 'Separated on your studio server. Voice out, band in.'
+              : 'Unsung on this phone. Voice out, band in.',
+          style: type.rowMeta,
+        ),
         const SizedBox(height: Space.lg),
-        Row(
-          children: [
-            Expanded(
-              child: QuietButton(
-                label: 'Rehearse',
-                icon: Icons.headphones_rounded,
-                expand: true,
-                onTap: onRehearse,
-              ),
-            ),
-            const SizedBox(width: Space.sm),
-            Expanded(
-              child: CueButton(
-                label: 'Sing',
-                icon: Icons.mic_rounded,
-                expand: true,
-                onTap: onSing,
-              ),
-            ),
-          ],
+        CueButton(
+          label: 'Sing',
+          icon: Icons.mic_rounded,
+          expand: true,
+          onTap: onSing,
         ),
         const SizedBox(height: Space.sm),
+        QuietButton(
+          label: 'Rehearse first',
+          icon: Icons.headphones_rounded,
+          expand: true,
+          onTap: onRehearse,
+        ),
+        const SizedBox(height: Space.lg),
+        Container(height: Sizes.hairline, color: c.hairline),
+        const SizedBox(height: Space.xs),
         Wrap(
-          alignment: WrapAlignment.spaceBetween,
+          spacing: Space.xs,
+          runSpacing: Space.xs,
           children: [
-            TextButton(
-              onPressed: onRedo,
-              child: Text('UNSING AGAIN', style: type.labelMuted),
-            ),
-            TextButton(
-              onPressed: onRemove,
-              child: Text('REMOVE KARAOKE', style: type.labelMuted),
-            ),
+            _MoreAction(
+                icon: Icons.refresh_rounded,
+                label: 'Unsing again',
+                onTap: onRedo),
+            _MoreAction(
+                icon: Icons.layers_clear_rounded,
+                label: 'Remove karaoke',
+                onTap: onRemove),
+            if (onDeleteImport != null)
+              _MoreAction(
+                  icon: Icons.delete_outline_rounded,
+                  label: 'Delete download',
+                  onTap: onDeleteImport!),
           ],
         ),
       ],
@@ -423,6 +466,41 @@ class _SettlingState extends State<_Settling> {
       instrumentalPeaks: widget.track.instrumentalPeaks,
       vocalPeaks: widget.track.vocalPeaks,
       height: Sizes.waveformCompact,
+    );
+  }
+}
+
+/// Secondary action: icon + mono label, no fill, full tap target.
+class _MoreAction extends StatelessWidget {
+  const _MoreAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Pressable(
+      onTap: onTap,
+      haptic: PressHaptic.selection,
+      semanticLabel: label,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: Space.xs, vertical: Space.sm),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: Sizes.iconMd, color: c.inkMuted),
+            const SizedBox(width: Space.xs),
+            Text(label.toUpperCase(), style: context.type.labelMuted),
+          ],
+        ),
+      ),
     );
   }
 }
