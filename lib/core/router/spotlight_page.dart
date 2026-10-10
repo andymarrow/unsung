@@ -81,7 +81,8 @@ class _CircleReveal extends CustomClipper<Path> {
       math.pow(size.width / 2, 2) + math.pow(size.height, 2),
     );
     return Path()
-      ..addOval(Rect.fromCircle(center: centre, radius: far * t + Sizes.recordButton / 2 * (1 - t)));
+      ..addOval(Rect.fromCircle(
+          center: centre, radius: far * t + Sizes.recordButton / 2 * (1 - t)));
   }
 
   @override

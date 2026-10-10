@@ -16,11 +16,20 @@ import 'package:unsung/features/studio/data/wav_writer.dart';
 import 'package:unsung/features/studio/domain/pitch.dart';
 import 'package:unsung/features/studio/domain/take.dart';
 
-enum StudioPhase { preparing, needsMic, ready, countdown, recording, saving, failed }
+enum StudioPhase {
+  preparing,
+  needsMic,
+  ready,
+  countdown,
+  recording,
+  saving,
+  failed
+}
 
 /// Scrolling pitch history for the ribbon (MIDI note numbers, NaN = silent).
 class PitchHistory extends ChangeNotifier {
-  PitchHistory({this.length = 180}) : values = Float64List(length)..fillRange(0, length, double.nan);
+  PitchHistory({this.length = 180})
+      : values = Float64List(length)..fillRange(0, length, double.nan);
 
   final int length;
   final Float64List values;
@@ -99,7 +108,8 @@ class StudioSession extends ChangeNotifier {
       await music.setFilePath(track.path);
       await setKey(semitones);
       var access = await permissions.microphone();
-      if (access != Access.granted) access = await permissions.requestMicrophone();
+      if (access != Access.granted)
+        access = await permissions.requestMicrophone();
       if (access != Access.granted) {
         micBlocked = access == Access.blocked;
         _set(StudioPhase.needsMic);

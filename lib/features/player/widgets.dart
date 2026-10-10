@@ -126,7 +126,8 @@ class LevelSlider extends StatelessWidget {
             value: value.clamp(0, 1),
             onChanged: onChanged,
             onChangeEnd: onChangeEnd,
-            semanticFormatterCallback: (v) => display ?? '${(v * 100).round()}%',
+            semanticFormatterCallback: (v) =>
+                display ?? '${(v * 100).round()}%',
           ),
         ),
         SizedBox(
@@ -144,7 +145,8 @@ class LevelSlider extends StatelessWidget {
 
 /// 1:02 / 3:47
 class TimeReadout extends StatelessWidget {
-  const TimeReadout({required this.position, required this.duration, super.key});
+  const TimeReadout(
+      {required this.position, required this.duration, super.key});
 
   final Duration position;
   final Duration duration;

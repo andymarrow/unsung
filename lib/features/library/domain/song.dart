@@ -19,10 +19,12 @@ class Song {
         artist: m['artist'] as String?,
         album: m['album'] as String?,
         uri: m['uri']! as String,
-        duration: Duration(milliseconds: (m['durationMs'] as num?)?.toInt() ?? 0),
+        duration:
+            Duration(milliseconds: (m['durationMs'] as num?)?.toInt() ?? 0),
         addedAt: (m['addedAt'] as num?) == null
             ? null
-            : DateTime.fromMillisecondsSinceEpoch((m['addedAt']! as num).toInt()),
+            : DateTime.fromMillisecondsSinceEpoch(
+                (m['addedAt']! as num).toInt()),
       );
 
   final String id;

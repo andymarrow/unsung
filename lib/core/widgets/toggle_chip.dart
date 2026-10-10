@@ -40,7 +40,9 @@ class ToggleChip extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            count == null ? label.toUpperCase() : '${label.toUpperCase()}  $count',
+            count == null
+                ? label.toUpperCase()
+                : '${label.toUpperCase()}  $count',
             style: context.type.label.copyWith(color: fg),
           ),
         ),

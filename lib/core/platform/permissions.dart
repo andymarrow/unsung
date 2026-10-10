@@ -22,7 +22,8 @@ class Permissions {
     return _fold(r.values);
   }
 
-  Future<Access> microphone() async => _fold([await Permission.microphone.status]);
+  Future<Access> microphone() async =>
+      _fold([await Permission.microphone.status]);
 
   Future<Access> requestMicrophone() async =>
       _fold([await Permission.microphone.request()]);

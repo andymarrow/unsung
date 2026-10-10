@@ -4,7 +4,8 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:unsung/features/studio/domain/pitch.dart';
 
-Uint8List sine(double hz, {int samples = 8192, int rate = 44100, double amp = 0.5}) {
+Uint8List sine(double hz,
+    {int samples = 8192, int rate = 44100, double amp = 0.5}) {
   final b = ByteData(samples * 2);
   for (var i = 0; i < samples; i++) {
     final v = (math.sin(2 * math.pi * hz * i / rate) * amp * 32767).round();

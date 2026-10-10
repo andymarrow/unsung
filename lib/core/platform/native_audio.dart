@@ -166,7 +166,9 @@ class NativeAudio {
 
   Future<List<Map<Object?, Object?>>> querySongs() async {
     final list = await _call<List<Object?>>('querySongs');
-    return [for (final e in list ?? const <Object?>[]) e! as Map<Object?, Object?>];
+    return [
+      for (final e in list ?? const <Object?>[]) e! as Map<Object?, Object?>
+    ];
   }
 
   Future<Uint8List?> artwork(String uri, {int size = 512}) =>
@@ -225,9 +227,11 @@ class NativeAudio {
 
   /// Copies a content:// song into an app file (for uploading).
   Future<String> copyToFile(String source, String outPath) async =>
-      (await _call<String>('copyToFile', {'source': source, 'outPath': outPath}))!;
+      (await _call<String>(
+          'copyToFile', {'source': source, 'outPath': outPath}))!;
 
-  Future<void> cancel(String taskId) => _call<void>('cancel', {'taskId': taskId});
+  Future<void> cancel(String taskId) =>
+      _call<void>('cancel', {'taskId': taskId});
 }
 
 final nativeAudioProvider = Provider<NativeAudio>((_) => NativeAudio());

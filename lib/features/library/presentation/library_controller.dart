@@ -66,8 +66,8 @@ class LibraryController extends AsyncNotifier<LibraryState> {
   }
 }
 
-final libraryProvider =
-    AsyncNotifierProvider<LibraryController, LibraryState>(LibraryController.new);
+final libraryProvider = AsyncNotifierProvider<LibraryController, LibraryState>(
+    LibraryController.new);
 
 /// All songs once loaded, else empty. Handy for lookups by id.
 final songsProvider = Provider<List<Song>>((ref) {
@@ -100,11 +100,13 @@ class LibraryQueryNotifier extends Notifier<LibraryQuery> {
 
   void setText(String text) => state = state.copyWith(text: text);
 
-  void setFilter(LibraryFilter filter) => state = state.copyWith(filter: filter);
+  void setFilter(LibraryFilter filter) =>
+      state = state.copyWith(filter: filter);
 }
 
 final libraryQueryProvider =
-    NotifierProvider<LibraryQueryNotifier, LibraryQuery>(LibraryQueryNotifier.new);
+    NotifierProvider<LibraryQueryNotifier, LibraryQuery>(
+        LibraryQueryNotifier.new);
 
 final artworkProvider =
     FutureProvider.autoDispose.family<Uint8List?, Song>((ref, song) {

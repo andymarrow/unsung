@@ -27,9 +27,8 @@ class LyricsRepository {
   Future<Lyrics> forSong(Song song) async {
     final cached = _cache(song);
     if (cached.existsSync()) {
-      final source = _meta(song).existsSync()
-          ? await _meta(song).readAsString()
-          : null;
+      final source =
+          _meta(song).existsSync() ? await _meta(song).readAsString() : null;
       return Lyrics.parse(
         await cached.readAsString(),
         songDuration: song.duration,
@@ -39,7 +38,8 @@ class LyricsRepository {
     final found = await _fetch(song);
     if (found == null) return Lyrics.empty;
     await _write(song, found, _sourceLrclib);
-    return Lyrics.parse(found, songDuration: song.duration, source: _sourceLrclib);
+    return Lyrics.parse(found,
+        songDuration: song.duration, source: _sourceLrclib);
   }
 
   /// Saves user-provided lyrics (LRC or plain text).
@@ -117,9 +117,11 @@ class LyricsRepository {
         });
       return _pick(candidates.first);
     } on SocketException {
-      throw const OfflineFailure("Lyrics need a connection the first time. They're saved after that.");
+      throw const OfflineFailure(
+          "Lyrics need a connection the first time. They're saved after that.");
     } on http.ClientException {
-      throw const OfflineFailure("Lyrics need a connection the first time. They're saved after that.");
+      throw const OfflineFailure(
+          "Lyrics need a connection the first time. They're saved after that.");
     } on FormatException {
       return null;
     }

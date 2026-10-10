@@ -81,9 +81,11 @@ void main() {
 
   for (final b in Brightness.values) {
     testWidgets('library ${b.name}', (tester) async {
-      await pumpScreen(tester, const LibraryScreen(), brightness: b, overrides: libraryOverrides());
+      await pumpScreen(tester, const LibraryScreen(),
+          brightness: b, overrides: libraryOverrides());
       await tester.pump(const Duration(seconds: 1));
-      await expectLater(find.byType(LibraryScreen), matchesGoldenFile('library_${b.name}.png'));
+      await expectLater(find.byType(LibraryScreen),
+          matchesGoldenFile('library_${b.name}.png'));
     });
   }
 
@@ -97,7 +99,8 @@ void main() {
       ],
     );
     await tester.pump(const Duration(seconds: 1));
-    await expectLater(find.byType(Scaffold), matchesGoldenFile('song_sheet_unsinging.png'));
+    await expectLater(
+        find.byType(Scaffold), matchesGoldenFile('song_sheet_unsinging.png'));
   });
 
   testWidgets('song sheet ready', (tester) async {
@@ -107,7 +110,8 @@ void main() {
       overrides: libraryOverrides(),
     );
     await tester.pump(const Duration(seconds: 1));
-    await expectLater(find.byType(Scaffold), matchesGoldenFile('song_sheet_ready.png'));
+    await expectLater(
+        find.byType(Scaffold), matchesGoldenFile('song_sheet_ready.png'));
   });
 
   for (final b in Brightness.values) {
@@ -115,9 +119,11 @@ void main() {
       final history = PitchHistory();
       for (var i = 0; i < history.length; i++) {
         final t = i / history.length;
-        history.push(i % 37 < 4 ? null : 57 + 3 * t + (i % 23 < 12 ? 0.05 : 0.4));
+        history
+            .push(i % 37 < 4 ? null : 57 + 3 * t + (i % 23 < 12 ? 0.05 : 0.4));
       }
-      final lyrics = Lyrics.parse(_lrc, songDuration: const Duration(seconds: 30));
+      final lyrics =
+          Lyrics.parse(_lrc, songDuration: const Duration(seconds: 30));
       await pumpScreen(
         tester,
         Scaffold(
@@ -141,7 +147,8 @@ void main() {
         brightness: b,
       );
       await tester.pump(const Duration(seconds: 1));
-      await expectLater(find.byType(Scaffold), matchesGoldenFile('studio_surface_${b.name}.png'));
+      await expectLater(find.byType(Scaffold),
+          matchesGoldenFile('studio_surface_${b.name}.png'));
     });
   }
 
@@ -152,6 +159,7 @@ void main() {
       overrides: [takesProvider.overrideWith(_Takes.new)],
     );
     await tester.pump(const Duration(seconds: 1));
-    await expectLater(find.byType(TakesScreen), matchesGoldenFile('takes_dark.png'));
+    await expectLater(
+        find.byType(TakesScreen), matchesGoldenFile('takes_dark.png'));
   });
 }

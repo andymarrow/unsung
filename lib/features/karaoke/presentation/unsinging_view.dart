@@ -139,14 +139,16 @@ class UnsingingPainter extends CustomPainter {
         continue;
       }
       // Distance behind the head, 0 at the head and 1 at the very start.
-      final age = progress <= 0 ? 0.0 : ((progress - t) / progress).clamp(0.0, 1.0);
+      final age =
+          progress <= 0 ? 0.0 : ((progress - t) / progress).clamp(0.0, 1.0);
       final bandH = math.max(_bar, _at(inst, t) * bandMax);
       paint.color = Color.lerp(voice, band, (age * 6).clamp(0.0, 1.0))!;
       canvas.drawLine(Offset(x, baseline - bandH), Offset(x, baseline), paint);
 
       // The voice ribbon rises with age and with the final settle.
       final lift = (age * 0.5 + settle) * size.height * 0.5;
-      final vy = baseline - bandH - Space.xs - _at(voc, t) * size.height * 0.22 - lift;
+      final vy =
+          baseline - bandH - Space.xs - _at(voc, t) * size.height * 0.22 - lift;
       if (!ribbonStarted) {
         ribbon.moveTo(x, vy);
         ribbonStarted = true;

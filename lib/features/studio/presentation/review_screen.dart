@@ -34,7 +34,8 @@ class ReviewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final take = ref.watch(takeByIdProvider(takeId));
-    final track = take == null ? null : ref.watch(karaokeTrackProvider(take.songId));
+    final track =
+        take == null ? null : ref.watch(karaokeTrackProvider(take.songId));
     if (take == null || track == null) {
       final loading = ref.watch(takesProvider).isLoading ||
           ref.watch(karaokeTracksProvider).isLoading;
@@ -44,7 +45,9 @@ class ReviewScreen extends ConsumerWidget {
             ? const RowSkeletonList(count: 4)
             : EmptyState(
                 kicker: 'Take',
-                title: take == null ? 'This take is gone' : 'The instrumental is missing',
+                title: take == null
+                    ? 'This take is gone'
+                    : 'The instrumental is missing',
                 message: take == null
                     ? 'It may have been deleted.'
                     : 'Unsing "${take.songTitle}" again to edit this take.',
@@ -99,7 +102,8 @@ class _ReviewState extends ConsumerState<_Review> {
             unawaited(_player.pause());
             unawaited(_player.seek(Duration.zero));
           }
-          setState(() => _playing = s.playing && s.processingState != ProcessingState.completed);
+          setState(() => _playing =
+              s.playing && s.processingState != ProcessingState.completed);
         }),
       );
     unawaited(_renderPreview());
@@ -130,7 +134,8 @@ class _ReviewState extends ConsumerState<_Review> {
     try {
       final wasPlaying = _player.playing;
       final at = _player.position;
-      final r = await _repo.render(widget.take, widget.track.path, preview: true, settings: _settings);
+      final r = await _repo.render(widget.take, widget.track.path,
+          preview: true, settings: _settings);
       if (!mounted || gen != _renderGen) return;
       final d = await _player.setFilePath(r.path, initialPosition: at);
       if (wasPlaying) unawaited(_player.play());
@@ -178,7 +183,8 @@ class _ReviewState extends ConsumerState<_Review> {
     } on Object catch (e) {
       if (!mounted) return;
       setState(() => _saving = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(toFailure(e).message)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(toFailure(e).message)));
     }
   }
 
@@ -188,12 +194,16 @@ class _ReviewState extends ConsumerState<_Review> {
       builder: (d) => AlertDialog(
         backgroundColor: d.colors.surface,
         title: Text('Delete this take?', style: d.type.heading),
-        content: Text('The recording and its mix are removed from this phone.', style: d.type.bodyMuted),
+        content: Text('The recording and its mix are removed from this phone.',
+            style: d.type.bodyMuted),
         actions: [
-          TextButton(onPressed: () => Navigator.of(d).pop(false), child: Text('KEEP', style: d.type.label)),
+          TextButton(
+              onPressed: () => Navigator.of(d).pop(false),
+              child: Text('KEEP', style: d.type.label)),
           TextButton(
             onPressed: () => Navigator.of(d).pop(true),
-            child: Text('DELETE', style: d.type.label.copyWith(color: d.colors.cue)),
+            child: Text('DELETE',
+                style: d.type.label.copyWith(color: d.colors.cue)),
           ),
         ],
       ),
@@ -209,7 +219,9 @@ class _ReviewState extends ConsumerState<_Review> {
     final type = context.type;
     final c = context.colors;
     final take = widget.take;
-    final progress = _dur.inMilliseconds == 0 ? 0.0 : (_pos.inMilliseconds / _dur.inMilliseconds).clamp(0.0, 1.0);
+    final progress = _dur.inMilliseconds == 0
+        ? 0.0
+        : (_pos.inMilliseconds / _dur.inMilliseconds).clamp(0.0, 1.0);
 
     return Scaffold(
       appBar: AppBar(
@@ -217,16 +229,23 @@ class _ReviewState extends ConsumerState<_Review> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('YOUR TAKE', style: type.labelMuted),
-            Text(take.songTitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: type.rowTitle),
+            Text(take.songTitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: type.rowTitle),
           ],
         ),
         actions: [
-          RoundIconButton(icon: Icons.delete_outline_rounded, label: 'Delete take', onTap: () => unawaited(_delete())),
+          RoundIconButton(
+              icon: Icons.delete_outline_rounded,
+              label: 'Delete take',
+              onTap: () => unawaited(_delete())),
           const SizedBox(width: Space.xs),
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(Space.gutter, Space.xs, Space.gutter, Space.xxl),
+        padding: const EdgeInsets.fromLTRB(
+            Space.gutter, Space.xs, Space.gutter, Space.xxl),
         children: [
           _Stats(take: take),
           const SizedBox(height: Space.lg),
@@ -237,7 +256,8 @@ class _ReviewState extends ConsumerState<_Review> {
               peaks: _peaks.isEmpty ? widget.track.instrumentalPeaks : _peaks,
               progress: progress,
               height: Sizes.waveformCompact,
-              onSeek: _rendering ? null : (f) => unawaited(_player.seek(_dur * f)),
+              onSeek:
+                  _rendering ? null : (f) => unawaited(_player.seek(_dur * f)),
             ),
           ),
           TimeReadout(position: _pos, duration: _dur),
@@ -246,16 +266,23 @@ class _ReviewState extends ConsumerState<_Review> {
             children: [
               PlayButton(
                 playing: _playing,
-                onTap: _rendering ? null : () => unawaited(_playing ? _player.pause() : _player.play()),
+                onTap: _rendering
+                    ? null
+                    : () =>
+                        unawaited(_playing ? _player.pause() : _player.play()),
               ),
               const SizedBox(width: Space.md),
               Expanded(
                 child: AnimatedSwitcher(
                   duration: Motion.of(context, Motion.base),
                   child: _failure != null
-                      ? Text(_failure!.message, key: const ValueKey('err'), style: type.rowMeta.copyWith(color: c.cue))
+                      ? Text(_failure!.message,
+                          key: const ValueKey('err'),
+                          style: type.rowMeta.copyWith(color: c.cue))
                       : Text(
-                          _rendering ? 'MIXING…' : 'PREVIEW UPDATES AS YOU CHANGE THINGS',
+                          _rendering
+                              ? 'MIXING…'
+                              : 'PREVIEW UPDATES AS YOU CHANGE THINGS',
                           key: ValueKey(_rendering),
                           style: type.labelMuted,
                         ),
@@ -270,7 +297,8 @@ class _ReviewState extends ConsumerState<_Review> {
             label: 'Voice',
             value: _settings.vocalGain / _maxVoiceGain,
             display: '${(_settings.vocalGain * 100).round()}%',
-            onChanged: (v) => _change(_settings.copyWith(vocalGain: v * _maxVoiceGain)),
+            onChanged: (v) =>
+                _change(_settings.copyWith(vocalGain: v * _maxVoiceGain)),
           ),
           LevelSlider(
             label: 'Music',
@@ -290,11 +318,14 @@ class _ReviewState extends ConsumerState<_Review> {
           const SizedBox(height: Space.md),
           Row(
             children: [
-              SizedBox(width: Sizes.sliderLabel, child: Text('SYNC', style: type.labelMuted)),
+              SizedBox(
+                  width: Sizes.sliderLabel,
+                  child: Text('SYNC', style: type.labelMuted)),
               RoundIconButton(
                 icon: Icons.remove_rounded,
                 label: 'Voice earlier',
-                onTap: () => _change(_settings.copyWith(offsetMs: _settings.offsetMs + _syncStepMs)),
+                onTap: () => _change(_settings.copyWith(
+                    offsetMs: _settings.offsetMs + _syncStepMs)),
               ),
               Expanded(
                 child: Text(
@@ -306,7 +337,8 @@ class _ReviewState extends ConsumerState<_Review> {
               RoundIconButton(
                 icon: Icons.add_rounded,
                 label: 'Voice later',
-                onTap: () => _change(_settings.copyWith(offsetMs: _settings.offsetMs - _syncStepMs)),
+                onTap: () => _change(_settings.copyWith(
+                    offsetMs: _settings.offsetMs - _syncStepMs)),
               ),
             ],
           ),
@@ -320,7 +352,9 @@ class _ReviewState extends ConsumerState<_Review> {
           const SizedBox(height: Space.md),
           Row(
             children: [
-              SizedBox(width: Sizes.sliderLabel, child: Text('KEY', style: type.labelMuted)),
+              SizedBox(
+                  width: Sizes.sliderLabel,
+                  child: Text('KEY', style: type.labelMuted)),
               TapeLabel(
                 _settings.semitones == 0
                     ? 'Original key'
@@ -330,7 +364,9 @@ class _ReviewState extends ConsumerState<_Review> {
           ),
           const SizedBox(height: Space.xl),
           CueButton(
-            label: _saving ? 'Saving ${(_saveProgress * 100).round()}%' : 'Save take',
+            label: _saving
+                ? 'Saving ${(_saveProgress * 100).round()}%'
+                : 'Save take',
             icon: Icons.check_rounded,
             busy: _saving,
             expand: true,
@@ -363,13 +399,15 @@ class _Stats extends StatelessWidget {
             children: [
               Text(label, style: type.labelMuted),
               const SizedBox(height: Space.xxs),
-              Text(value, style: type.title.copyWith(color: accent ? c.cue : c.ink)),
+              Text(value,
+                  style: type.title.copyWith(color: accent ? c.cue : c.ink)),
             ],
           ),
         );
     return Container(
       padding: const EdgeInsets.all(Space.md),
-      decoration: BoxDecoration(color: c.surface, borderRadius: BorderRadius.circular(Radii.card)),
+      decoration: BoxDecoration(
+          color: c.surface, borderRadius: BorderRadius.circular(Radii.card)),
       child: Row(
         children: [
           stat('IN TUNE', '${(take.inTune * 100).round()}%', accent: true),

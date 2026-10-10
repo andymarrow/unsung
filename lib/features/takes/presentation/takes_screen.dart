@@ -30,7 +30,8 @@ class TakesScreen extends ConsumerWidget {
               icon: Icons.graphic_eq_rounded,
               kicker: 'Takes',
               title: 'Your first take is one song away',
-              message: 'Unsing a song from your Library, then tap Sing. Every take lands here, private until you share it.',
+              message:
+                  'Unsing a song from your Library, then tap Sing. Every take lands here, private until you share it.',
               actionLabel: 'Open Library',
               onAction: () => context.go(Routes.library),
             ),
@@ -58,7 +59,8 @@ class _TakeList extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(Space.gutter, Space.lg, Space.gutter, Space.md),
+            padding: const EdgeInsets.fromLTRB(
+                Space.gutter, Space.lg, Space.gutter, Space.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -79,7 +81,8 @@ class _TakeList extends StatelessWidget {
             index: i,
             child: TakeRow(
               take: takes[i],
-              onTap: () => unawaited(context.push(Routes.reviewFor(takes[i].id))),
+              onTap: () =>
+                  unawaited(context.push(Routes.reviewFor(takes[i].id))),
             ),
           ),
         ),
@@ -101,23 +104,30 @@ class TakeRow extends StatelessWidget {
     final c = context.colors;
     return Pressable(
       onTap: onTap,
-      semanticLabel: '${take.songTitle}, ${take.isPublic ? 'public' : 'private'} take',
+      semanticLabel:
+          '${take.songTitle}, ${take.isPublic ? 'public' : 'private'} take',
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: Space.gutter),
         padding: const EdgeInsets.all(Space.md),
-        decoration: BoxDecoration(color: c.surface, borderRadius: BorderRadius.circular(Radii.card)),
+        decoration: BoxDecoration(
+            color: c.surface, borderRadius: BorderRadius.circular(Radii.card)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Expanded(
-                  child: Text(take.songTitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: type.rowTitle),
+                  child: Text(take.songTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: type.rowTitle),
                 ),
                 const SizedBox(width: Space.xs),
                 TapeLabel(
                   take.isPublic ? 'Public' : 'Private',
-                  icon: take.isPublic ? Icons.podcasts_rounded : Icons.lock_rounded,
+                  icon: take.isPublic
+                      ? Icons.podcasts_rounded
+                      : Icons.lock_rounded,
                   tone: take.isPublic ? TapeTone.cue : TapeTone.neutral,
                 ),
               ],
@@ -136,9 +146,12 @@ class TakeRow extends StatelessWidget {
               spacing: Space.xs,
               runSpacing: Space.xs,
               children: [
-                TapeLabel(formatDuration(take.duration), tone: TapeTone.outline),
-                TapeLabel('In tune ${(take.inTune * 100).round()}%', tone: TapeTone.outline),
-                if (take.mixPath == null) const TapeLabel('Not mixed yet', tone: TapeTone.outline),
+                TapeLabel(formatDuration(take.duration),
+                    tone: TapeTone.outline),
+                TapeLabel('In tune ${(take.inTune * 100).round()}%',
+                    tone: TapeTone.outline),
+                if (take.mixPath == null)
+                  const TapeLabel('Not mixed yet', tone: TapeTone.outline),
               ],
             ),
           ],

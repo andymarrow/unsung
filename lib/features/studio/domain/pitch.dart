@@ -62,7 +62,8 @@ class PitchTracker {
       energy += v * v;
     }
     if (math.sqrt(energy / _half.length) < silenceRms) return null;
-    return yin(_half, sampleRate / 2, minHz: minHz, maxHz: maxHz, threshold: threshold);
+    return yin(_half, sampleRate / 2,
+        minHz: minHz, maxHz: maxHz, threshold: threshold);
   }
 
   /// YIN on a single buffer. Returns Hz or null.
@@ -122,7 +123,20 @@ double hzToMidi(double hz) => 69 + 12 * (math.log(hz / 440) / math.ln2);
 /// Distance in cents from the nearest equal-tempered note.
 double centsOff(double midi) => (midi - midi.roundToDouble()) * 100;
 
-const _names = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
+const _names = [
+  'C',
+  'C♯',
+  'D',
+  'D♯',
+  'E',
+  'F',
+  'F♯',
+  'G',
+  'G♯',
+  'A',
+  'A♯',
+  'B'
+];
 
 /// "A4", "C♯3".
 String noteName(double midi) {

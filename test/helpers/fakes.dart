@@ -37,7 +37,8 @@ List<double> demoPeaks(int seed, {int n = 160}) {
   final r = math.Random(seed);
   return [
     for (var i = 0; i < n; i++)
-      (0.35 + 0.5 * math.sin(i / 9).abs() + 0.15 * r.nextDouble()).clamp(0.0, 1.0),
+      (0.35 + 0.5 * math.sin(i / 9).abs() + 0.15 * r.nextDouble())
+          .clamp(0.0, 1.0),
   ];
 }
 

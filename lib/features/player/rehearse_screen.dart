@@ -237,7 +237,9 @@ class _RehearseRoomState extends ConsumerState<_RehearseRoom> {
                   expand: true,
                   onTap: () async {
                     Navigator.of(sheet).pop();
-                    await ref.read(lyricsRepositoryProvider).forget(widget.song);
+                    await ref
+                        .read(lyricsRepositoryProvider)
+                        .forget(widget.song);
                     ref.invalidate(lyricsProvider(widget.song));
                   },
                 ),
@@ -328,7 +330,8 @@ class _Deck extends StatelessWidget {
                     onTap: state.ready ? onPlay : null,
                   ),
                   const Spacer(),
-                  CueButton(label: 'Sing', icon: Icons.mic_rounded, onTap: onSing),
+                  CueButton(
+                      label: 'Sing', icon: Icons.mic_rounded, onTap: onSing),
                 ],
               ),
               const SizedBox(height: Space.xs),

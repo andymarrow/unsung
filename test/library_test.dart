@@ -7,7 +7,8 @@ import 'helpers/pump.dart';
 
 void main() {
   testWidgets('lists songs and marks ready ones', (tester) async {
-    await pumpScreen(tester, const LibraryScreen(), overrides: libraryOverrides());
+    await pumpScreen(tester, const LibraryScreen(),
+        overrides: libraryOverrides());
     await tester.pump(const Duration(seconds: 1));
     expect(find.text('Paper Moons'), findsOneWidget);
     expect(find.text('READY'), findsWidgets);
@@ -15,7 +16,8 @@ void main() {
   });
 
   testWidgets('filters to ready songs', (tester) async {
-    await pumpScreen(tester, const LibraryScreen(), overrides: libraryOverrides());
+    await pumpScreen(tester, const LibraryScreen(),
+        overrides: libraryOverrides());
     await tester.pump(const Duration(seconds: 1));
     await tester.tap(find.textContaining('READY  3'));
     await tester.pump(const Duration(seconds: 1));
@@ -23,7 +25,8 @@ void main() {
     expect(find.text('Paper Moons'), findsOneWidget);
   });
 
-  testWidgets('asks for access when music permission is missing', (tester) async {
+  testWidgets('asks for access when music permission is missing',
+      (tester) async {
     await pumpScreen(
       tester,
       const LibraryScreen(),

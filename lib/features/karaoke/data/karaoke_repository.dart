@@ -71,9 +71,8 @@ class KaraokeRepository {
     void Function(TaskProgress) onProgress,
   ) async {
     final taskId = taskIdFor(song);
-    final sub = _audio.progress
-        .where((p) => p.taskId == taskId)
-        .listen(onProgress);
+    final sub =
+        _audio.progress.where((p) => p.taskId == taskId).listen(onProgress);
     try {
       final r = await _audio.unsing(
         taskId: taskId,
@@ -123,9 +122,8 @@ class KaraokeRepository {
         ..headers['User-Agent'] = Env.userAgent
         ..files.add(await http.MultipartFile.fromPath('file', upload));
       report(0.4);
-      final response = await _client
-          .send(request)
-          .timeout(const Duration(minutes: 10));
+      final response =
+          await _client.send(request).timeout(const Duration(minutes: 10));
       if (response.statusCode != 200) {
         throw AudioFailure(
           'The studio server said no (${response.statusCode}). Try Quick.',

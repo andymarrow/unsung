@@ -93,7 +93,10 @@ class Lyrics {
               ? songDuration
               : start + const Duration(seconds: 5));
       lines.add(
-        LyricLine(start: start, end: next, words: _timedWords(text, start, next, wordTag)),
+        LyricLine(
+            start: start,
+            end: next,
+            words: _timedWords(text, start, next, wordTag)),
       );
     }
     return Lyrics(lines: lines, synced: true, source: source);

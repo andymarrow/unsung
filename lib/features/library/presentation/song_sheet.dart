@@ -290,7 +290,8 @@ class _Failed extends StatelessWidget {
         const SizedBox(height: Space.xs),
         Text(message, style: type.body),
         const SizedBox(height: Space.lg),
-        CueButton(label: 'Try again', icon: Icons.refresh_rounded, onTap: onRetry),
+        CueButton(
+            label: 'Try again', icon: Icons.refresh_rounded, onTap: onRetry),
       ],
     );
   }
@@ -339,7 +340,8 @@ class _Ready extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.info_outline_rounded, size: Sizes.iconSm, color: c.inkMuted),
+              Icon(Icons.info_outline_rounded,
+                  size: Sizes.iconSm, color: c.inkMuted),
               const SizedBox(width: Space.xs),
               Expanded(
                 child: Text(

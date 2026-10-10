@@ -119,7 +119,8 @@ class _LyricsViewState extends State<LyricsView>
       return EmptyState(
         kicker: 'No lyrics yet',
         title: 'Sing it from memory?',
-        message: "We couldn't find lyrics for this song. Paste them in and they'll be saved with it. LRC timestamps make them follow the music.",
+        message:
+            "We couldn't find lyrics for this song. Paste them in and they'll be saved with it. LRC timestamps make them follow the music.",
         icon: Icons.lyrics_outlined,
         actionLabel: widget.onAddLyrics == null ? null : 'Add lyrics',
         onAction: widget.onAddLyrics,
@@ -146,7 +147,8 @@ class _LyricsViewState extends State<LyricsView>
                   const SizedBox(width: Space.xs),
                 ],
                 if (lyrics.source != null)
-                  TapeLabel('Lyrics · ${lyrics.source}', tone: TapeTone.outline),
+                  TapeLabel('Lyrics · ${lyrics.source}',
+                      tone: TapeTone.outline),
                 const Spacer(),
                 if (lyrics.synced)
                   _Intro(lyrics: lyrics, now: _now, active: _active),
@@ -205,7 +207,8 @@ class _Intro extends StatelessWidget {
 }
 
 class _SyncedLine extends StatelessWidget {
-  const _SyncedLine({required this.line, required this.slot, required this.now});
+  const _SyncedLine(
+      {required this.line, required this.slot, required this.now});
 
   final LyricLine line;
 

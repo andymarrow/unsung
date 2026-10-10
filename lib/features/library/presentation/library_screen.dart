@@ -52,8 +52,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
       body: SafeArea(
         bottom: false,
         child: switch (library) {
-          AsyncData(value: LibraryNeedsAccess(:final blocked)) =>
-            _NeedsAccess(
+          AsyncData(value: LibraryNeedsAccess(:final blocked)) => _NeedsAccess(
               blocked: blocked,
               onAllow: () =>
                   unawaited(ref.read(libraryProvider.notifier).requestAccess()),
@@ -262,7 +261,8 @@ class ReadySongPicker extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ready = ref.watch(karaokeTracksProvider).valueOrNull ?? const {};
-    final songs = ref.watch(songsProvider).where((s) => ready.containsKey(s.id)).toList();
+    final songs =
+        ref.watch(songsProvider).where((s) => ready.containsKey(s.id)).toList();
     if (songs.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(Space.gutter),

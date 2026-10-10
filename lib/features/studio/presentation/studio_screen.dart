@@ -47,7 +47,8 @@ class StudioScreen extends ConsumerWidget {
             : EmptyState(
                 kicker: 'Studio',
                 title: 'Unsing this song first',
-                message: 'The studio needs the instrumental. Open the song in your Library and tap "Unsing it".',
+                message:
+                    'The studio needs the instrumental. Open the song in your Library and tap "Unsing it".',
                 actionLabel: 'Go to Library',
                 onAction: () => context.go(Routes.library),
               ),
@@ -89,7 +90,8 @@ class _StudioState extends ConsumerState<_Studio> {
 
   Future<void> _record() async {
     await _s.countIn(Motion.beat, (n) {
-      unawaited(n == 1 ? HapticFeedback.heavyImpact() : HapticFeedback.lightImpact());
+      unawaited(
+          n == 1 ? HapticFeedback.heavyImpact() : HapticFeedback.lightImpact());
     });
   }
 
@@ -108,7 +110,8 @@ class _StudioState extends ConsumerState<_Studio> {
       builder: (d) => AlertDialog(
         backgroundColor: d.colors.surface,
         title: Text('Throw this take away?', style: d.type.heading),
-        content: Text("You're mid-song. Leaving now discards it.", style: d.type.bodyMuted),
+        content: Text("You're mid-song. Leaving now discards it.",
+            style: d.type.bodyMuted),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(d).pop(false),
@@ -116,7 +119,8 @@ class _StudioState extends ConsumerState<_Studio> {
           ),
           TextButton(
             onPressed: () => Navigator.of(d).pop(true),
-            child: Text('DISCARD', style: d.type.label.copyWith(color: d.colors.cue)),
+            child: Text('DISCARD',
+                style: d.type.label.copyWith(color: d.colors.cue)),
           ),
         ],
       ),
@@ -160,7 +164,9 @@ class _StudioState extends ConsumerState<_Studio> {
                         message: _s.micBlocked
                             ? 'Microphone access is off. Turn it on in settings, then come back.'
                             : 'To record your voice over the music, allow microphone access.',
-                        actionLabel: _s.micBlocked ? 'Open settings' : 'Allow microphone',
+                        actionLabel: _s.micBlocked
+                            ? 'Open settings'
+                            : 'Allow microphone',
                         onAction: () => unawaited(_s.retryMic()),
                       ),
                     StudioPhase.failed => ErrorState(
@@ -197,12 +203,14 @@ class _StudioState extends ConsumerState<_Studio> {
                                   ),
                                 ),
                                 if (phase == StudioPhase.countdown)
-                                  Positioned.fill(child: _Countdown(n: _s.countdown)),
+                                  Positioned.fill(
+                                      child: _Countdown(n: _s.countdown)),
                               ],
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: Space.gutter),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: Space.gutter),
                             child: PitchRibbon(history: _s.history),
                           ),
                           _Controls(
@@ -243,7 +251,8 @@ class _TopBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(Space.xs, Space.xs, Space.gutter, 0),
       child: Row(
         children: [
-          RoundIconButton(icon: Icons.close_rounded, label: 'Close studio', onTap: onClose),
+          RoundIconButton(
+              icon: Icons.close_rounded, label: 'Close studio', onTap: onClose),
           const SizedBox(width: Space.xs),
           Expanded(
             child: Column(
@@ -323,7 +332,8 @@ class _Controls extends StatelessWidget {
     final recording = phase == StudioPhase.recording;
     final busy = phase == StudioPhase.preparing || phase == StudioPhase.saving;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(Space.gutter, Space.sm, Space.gutter, Space.md),
+      padding: const EdgeInsets.fromLTRB(
+          Space.gutter, Space.sm, Space.gutter, Space.md),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -388,7 +398,8 @@ class _Controls extends StatelessWidget {
 
 /// Signature 3 lands here: the cue disc that the spotlight opens from.
 class _RecordButton extends StatelessWidget {
-  const _RecordButton({required this.recording, required this.busy, required this.onTap});
+  const _RecordButton(
+      {required this.recording, required this.busy, required this.onTap});
 
   final bool recording;
   final bool busy;
@@ -414,7 +425,8 @@ class _RecordButton extends StatelessWidget {
             color: recording ? c.ink : c.cue,
             boxShadow: [
               BoxShadow(
-                color: c.cue.withValues(alpha: recording ? Alphas.glowStrong : Alphas.glow),
+                color: c.cue.withValues(
+                    alpha: recording ? Alphas.glowStrong : Alphas.glow),
                 blurRadius: Space.xl,
               ),
             ],
@@ -423,7 +435,8 @@ class _RecordButton extends StatelessWidget {
             child: busy
                 ? SizedBox.square(
                     dimension: Sizes.icon,
-                    child: CircularProgressIndicator(strokeWidth: Sizes.stroke, color: c.onCue),
+                    child: CircularProgressIndicator(
+                        strokeWidth: Sizes.stroke, color: c.onCue),
                   )
                 : AnimatedContainer(
                     duration: d,
@@ -432,7 +445,8 @@ class _RecordButton extends StatelessWidget {
                     height: recording ? Sizes.icon : Sizes.iconLg,
                     decoration: BoxDecoration(
                       color: recording ? c.cue : c.onCue,
-                      borderRadius: BorderRadius.circular(recording ? Radii.chip : Radii.full),
+                      borderRadius: BorderRadius.circular(
+                          recording ? Radii.chip : Radii.full),
                     ),
                   ),
           ),

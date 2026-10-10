@@ -8,7 +8,8 @@ import 'package:unsung/core/widgets/buttons.dart';
 import 'package:unsung/features/library/domain/song.dart';
 import 'package:unsung/features/lyrics/data/lyrics_repository.dart';
 
-Future<void> showLyricsEditor(BuildContext context, Song song, {String initial = ''}) {
+Future<void> showLyricsEditor(BuildContext context, Song song,
+    {String initial = ''}) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -91,7 +92,8 @@ class _LyricsEditorSheetState extends ConsumerState<LyricsEditorSheet> {
               icon: Icons.check_rounded,
               expand: true,
               busy: _saving,
-              onTap: _text.text.trim().isEmpty ? null : () => unawaited(_save()),
+              onTap:
+                  _text.text.trim().isEmpty ? null : () => unawaited(_save()),
             ),
           ),
         ],
