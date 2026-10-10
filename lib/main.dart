@@ -12,7 +12,7 @@ Future<void> main() async {
   if (Env.hasBackend) {
     await Supabase.initialize(
       url: Env.supabaseUrl,
-      anonKey: Env.supabaseAnonKey,
+      publishableKey: Env.supabaseAnonKey,
     );
   }
   final (prefs, files) = await (

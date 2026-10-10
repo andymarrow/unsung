@@ -62,15 +62,17 @@ class SocialRepository {
     if (m.contains('expired') || m.contains('invalid')) {
       return "That code didn't work. Check it, or ask for a new one.";
     }
-    if (m.contains('rate'))
+    if (m.contains('rate')) {
       return 'Too many tries. Wait a minute and try again.';
+    }
     return e.message;
   }
 
   static String _dbMessage(PostgrestException e) {
     if (e.code == '23505') return 'That handle is taken. Try another.';
-    if (e.code == '23514')
+    if (e.code == '23514') {
       return "Something you typed doesn't fit. Check the lengths.";
+    }
     return "The Stage didn't respond properly. Try again.";
   }
 
@@ -127,8 +129,9 @@ class SocialRepository {
 
   Future<List<Post>> _withLikes(List<Map<String, dynamic>> rows) async {
     final me = userId;
-    if (rows.isEmpty || me == null)
+    if (rows.isEmpty || me == null) {
       return [for (final r in rows) Post.fromJson(r)];
+    }
     final ids = [for (final r in rows) r['id']! as String];
     final liked = await _db
         .from('likes')
@@ -233,8 +236,9 @@ class SocialRepository {
   /// Signed URL for playback, cached until shortly before it expires.
   Future<String> audioUrl(Post post) => _guard(() async {
         final cached = _urls[post.audioPath];
-        if (cached != null && cached.$2.isAfter(DateTime.now()))
+        if (cached != null && cached.$2.isAfter(DateTime.now())) {
           return cached.$1;
+        }
         const ttl = Duration(hours: 1);
         final url = await _db.storage
             .from(_bucket)

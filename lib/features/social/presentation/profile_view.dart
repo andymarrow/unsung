@@ -34,7 +34,8 @@ class ProfileView extends ConsumerWidget {
             ref
               ..invalidate(profileProvider(userId))
               ..invalidate(statsProvider(userId));
-            await ref.refresh(postsByProvider(userId).future);
+            ref.invalidate(postsByProvider(userId));
+            await ref.read(postsByProvider(userId).future);
           },
           child: CustomScrollView(
             slivers: [
@@ -198,8 +199,9 @@ class _FollowButtonState extends ConsumerState<FollowButton> {
     });
     try {
       final repo = ref.read(socialRepositoryProvider);
-      if (repo.userId == null)
+      if (repo.userId == null) {
         throw const AuthFailure('Sign in to follow singers.');
+      }
       await (following
           ? repo.unfollow(widget.userId)
           : repo.follow(widget.userId));

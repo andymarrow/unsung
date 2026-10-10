@@ -6,7 +6,7 @@ import 'helpers/pump.dart';
 
 void main() {
   test('post parses from a joined row', () {
-    final p = Post.fromJson({
+    final p = Post.fromJson(const {
       'id': 'p',
       'author': {'id': 'u', 'handle': 'sam', 'display_name': '', 'bio': ''},
       'song_title': 'Blue',

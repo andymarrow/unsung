@@ -104,8 +104,9 @@ class LikesController extends Notifier<Map<String, (bool, int)>> {
     state = {...state, p.id: next};
     try {
       final repo = ref.read(socialRepositoryProvider);
-      if (repo.userId == null)
+      if (repo.userId == null) {
         throw const AuthFailure('Sign in to like takes.');
+      }
       await (liked ? repo.unlike(p.id) : repo.like(p.id));
       return null;
     } on Object catch (e) {
