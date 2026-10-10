@@ -175,17 +175,17 @@ class UnsingingPainter extends CustomPainter {
       canvas
         ..drawPath(ribbon, stroke)
         ..drawPath(
-        ribbon,
-        stroke
-          ..strokeWidth = _bar * 4
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6)
-          ..shader = LinearGradient(
-            colors: [
-              voice.withValues(alpha: 0),
-              voice.withValues(alpha: fade * Alphas.glow),
-            ],
-          ).createShader(bounds),
-      );
+          ribbon,
+          stroke
+            ..strokeWidth = _bar * 4
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6)
+            ..shader = LinearGradient(
+              colors: [
+                voice.withValues(alpha: 0),
+                voice.withValues(alpha: fade * Alphas.glow),
+              ],
+            ).createShader(bounds),
+        );
     }
 
     // The progress head.
