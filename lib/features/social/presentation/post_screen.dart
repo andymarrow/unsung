@@ -180,8 +180,10 @@ class _OwnerPanelState extends ConsumerState<_OwnerPanel> {
           const EdgeInsets.fromLTRB(Space.gutter, Space.md, Space.gutter, 0),
       padding: const EdgeInsets.all(Space.md),
       decoration: BoxDecoration(
-          color: context.colors.raised,
-          borderRadius: BorderRadius.circular(Radii.card)),
+        color: context.colors.surface,
+        border: Border.all(color: context.colors.hairline),
+        borderRadius: BorderRadius.circular(Radii.card),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

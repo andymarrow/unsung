@@ -96,19 +96,23 @@ abstract final class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: c.glass,
+        fillColor: c.surface,
         hintStyle: type.bodyMuted,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: Space.md,
           vertical: Space.sm,
         ),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(Radii.card)),
-          borderSide: BorderSide.none,
+        border: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(Radii.card)),
+          borderSide: BorderSide(color: c.hairline),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(Radii.card)),
+          borderSide: BorderSide(color: c.hairline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: const BorderRadius.all(Radius.circular(Radii.card)),
-          borderSide: BorderSide(color: c.cue, width: 1.5),
+          borderSide: BorderSide(color: c.ink.withValues(alpha: 0.4)),
         ),
       ),
       textSelectionTheme: TextSelectionThemeData(

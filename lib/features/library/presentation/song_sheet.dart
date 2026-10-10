@@ -173,7 +173,7 @@ class _Idle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('UNSING THIS SONG', style: type.labelMuted),
+        Text('Unsing this song', style: type.section),
         const SizedBox(height: Space.xs),
         Text(
           mode == SeparationMode.quick
@@ -275,7 +275,7 @@ class _Failed extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('HIT A WRONG NOTE', style: type.labelMuted),
+        Text('Hit a wrong note', style: type.section),
         const SizedBox(height: Space.xs),
         Text(message, style: type.body),
         const SizedBox(height: Space.lg),
@@ -351,18 +351,27 @@ class _Ready extends StatelessWidget {
           style: type.rowMeta,
         ),
         const SizedBox(height: Space.lg),
-        CueButton(
-          label: 'Sing',
-          icon: Icons.mic_rounded,
-          expand: true,
-          onTap: onSing,
-        ),
-        const SizedBox(height: Space.sm),
-        QuietButton(
-          label: 'Rehearse first',
-          icon: Icons.headphones_rounded,
-          expand: true,
-          onTap: onRehearse,
+        // One decision, two equal keys; only Sing is lit.
+        Row(
+          children: [
+            Expanded(
+              child: CueButton(
+                label: 'Sing',
+                icon: Icons.mic_rounded,
+                expand: true,
+                onTap: onSing,
+              ),
+            ),
+            const SizedBox(width: Space.sm),
+            Expanded(
+              child: QuietButton(
+                label: 'Rehearse',
+                icon: Icons.headphones_rounded,
+                expand: true,
+                onTap: onRehearse,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: Space.lg),
         Container(height: Sizes.hairline, color: c.hairline),
@@ -425,7 +434,7 @@ class _SettlingState extends State<_Settling> {
   }
 }
 
-/// Secondary action: icon + mono label, no fill, full tap target.
+/// Secondary action: icon + muted label, no fill, full tap target.
 class _MoreAction extends StatelessWidget {
   const _MoreAction({
     required this.icon,
@@ -452,7 +461,7 @@ class _MoreAction extends StatelessWidget {
           children: [
             Icon(icon, size: Sizes.iconMd, color: c.inkMuted),
             const SizedBox(width: Space.xs),
-            Text(label.toUpperCase(), style: context.type.labelMuted),
+            Text(label, style: context.type.rowMeta),
           ],
         ),
       ),
@@ -480,6 +489,7 @@ class _Header extends StatelessWidget {
             title: song.title,
             bytes: art,
             size: Sizes.artworkSheet,
+            radius: Radii.card,
           ),
         ),
         const SizedBox(width: Space.md),

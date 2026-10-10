@@ -39,6 +39,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
     required this.hero,
     required this.title,
     required this.heading,
+    required this.section,
     required this.lyricActive,
     required this.lyricNext,
     required this.lyricPast,
@@ -92,20 +93,23 @@ class UnsungType extends ThemeExtension<UnsungType> {
     }
 
     return UnsungType(
-      hero: display(56, 800, width: 78, height: 0.95, tracking: -0.02),
-      title: display(32, 700, width: 85, height: 1.05, tracking: -0.01),
-      heading: display(22, 650, width: 90),
-      lyricActive: display(34, 750, width: 82, height: 1.1, tracking: -0.01),
-      lyricNext: display(26, 600, width: 90),
-      lyricPast: display(24, 600, width: 90, color: c.inkFaint),
+      // Calmer than a poster: a touch of width contraction for character,
+      // tight tracking, weights that stop short of black.
+      hero: display(48, 760, width: 86, height: 1, tracking: -0.025),
+      title: display(30, 700, width: 94, height: 1.1, tracking: -0.02),
+      heading: display(20, 640, height: 1.2, tracking: -0.01),
+      section: display(17, 640, height: 1.25, tracking: -0.005),
+      lyricActive: display(34, 740, width: 82, height: 1.1, tracking: -0.015),
+      lyricNext: display(26, 620, width: 92, tracking: -0.01),
+      lyricPast: display(24, 600, width: 92, color: c.inkFaint),
       body: display(16, 420, height: 1.45),
       bodyMuted: display(16, 420, height: 1.45, color: c.inkMuted),
-      rowTitle: display(17, 620, width: 92, height: 1.2),
-      rowMeta: display(13, 420, height: 1.3, color: c.inkMuted),
-      label: mono(11, 600, tracking: 0.12),
-      labelMuted: mono(11, 600, tracking: 0.12, color: c.inkMuted),
-      button: mono(13, 700, tracking: 0.1),
-      nav: mono(10, 600, tracking: 0.06),
+      rowTitle: display(16, 600, height: 1.25, tracking: -0.005),
+      rowMeta: display(13.5, 430, height: 1.3, color: c.inkMuted),
+      label: mono(10.5, 560, tracking: 0.08),
+      labelMuted: mono(10.5, 560, tracking: 0.08, color: c.inkMuted),
+      button: display(15, 640, height: 1.2),
+      nav: display(11, 560, height: 1.2),
       numeral: mono(13, 500),
     );
   }
@@ -113,6 +117,9 @@ class UnsungType extends ThemeExtension<UnsungType> {
   final TextStyle hero;
   final TextStyle title;
   final TextStyle heading;
+
+  /// Section titles inside a screen ("Start with a classic").
+  final TextStyle section;
   final TextStyle lyricActive;
   final TextStyle lyricNext;
   final TextStyle lyricPast;
@@ -127,10 +134,10 @@ class UnsungType extends ThemeExtension<UnsungType> {
   final TextStyle label;
   final TextStyle labelMuted;
 
-  /// Button labels: the label voice, one step bigger and bolder.
+  /// Button labels: sentence case in the display face.
   final TextStyle button;
 
-  /// Tab bar labels: the label voice, sized to fit a fifth of the bar.
+  /// Tab bar labels: sentence case, sized to fit a fifth of the bar.
   final TextStyle nav;
   final TextStyle numeral;
 
@@ -139,6 +146,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
     TextStyle? hero,
     TextStyle? title,
     TextStyle? heading,
+    TextStyle? section,
     TextStyle? lyricActive,
     TextStyle? lyricNext,
     TextStyle? lyricPast,
@@ -156,6 +164,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
       hero: hero ?? this.hero,
       title: title ?? this.title,
       heading: heading ?? this.heading,
+      section: section ?? this.section,
       lyricActive: lyricActive ?? this.lyricActive,
       lyricNext: lyricNext ?? this.lyricNext,
       lyricPast: lyricPast ?? this.lyricPast,
@@ -178,6 +187,7 @@ class UnsungType extends ThemeExtension<UnsungType> {
       hero: TextStyle.lerp(hero, other.hero, t)!,
       title: TextStyle.lerp(title, other.title, t)!,
       heading: TextStyle.lerp(heading, other.heading, t)!,
+      section: TextStyle.lerp(section, other.section, t)!,
       lyricActive: TextStyle.lerp(lyricActive, other.lyricActive, t)!,
       lyricNext: TextStyle.lerp(lyricNext, other.lyricNext, t)!,
       lyricPast: TextStyle.lerp(lyricPast, other.lyricPast, t)!,

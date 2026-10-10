@@ -49,7 +49,7 @@ class PostCard extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: Space.gutter),
         child: GlassSurface(
           frost: false,
-          padding: const EdgeInsets.all(Space.md),
+          padding: const EdgeInsets.all(Space.gutter),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -73,7 +73,7 @@ class PostCard extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                     style: type.body),
               ],
-              const SizedBox(height: Space.sm),
+              const SizedBox(height: Space.md),
               Row(
                 children: [
                   _MiniPlay(
@@ -120,8 +120,8 @@ class PostCard extends ConsumerWidget {
                   const SizedBox(width: Space.xs),
                   if (!post.isPublic)
                     const TapeLabel('Only you', icon: Icons.lock_rounded),
-                  TapeLabel('${(post.inTune * 100).round()}% in tune',
-                      tone: TapeTone.outline),
+                  Text('${(post.inTune * 100).round()}% IN TUNE',
+                      style: type.labelMuted),
                 ],
               ),
             ],

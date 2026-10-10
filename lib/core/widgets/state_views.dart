@@ -52,10 +52,11 @@ class EmptyState extends StatelessWidget {
                   width: Sizes.tap + Space.md,
                   height: Sizes.tap + Space.md,
                   decoration: BoxDecoration(
-                    color: c.raised,
+                    color: c.surface,
                     shape: BoxShape.circle,
+                    border: Border.all(color: c.hairline),
                   ),
-                  child: Icon(icon, color: c.cue, size: Sizes.icon),
+                  child: Icon(icon, color: c.ink, size: Sizes.icon),
                 ),
                 const SizedBox(height: Space.lg),
               ],

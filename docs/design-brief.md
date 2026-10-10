@@ -16,20 +16,20 @@ Alternatives considered:
 - *Neon club* (magenta/cyan glow). Rejected as the generic default of the category.
 
 ## Colour (light and dark)
-Dark is the primary experience (singing happens at night, OLED-friendly). Light is fully implemented.
+Dark is the primary experience (singing happens at night, OLED-friendly). Light is fully implemented. Since v0.3.2 the greys are neutral graphite (no warm cast), so the cue is the only colour on screen.
 
 | Token | Hex (light) | Hex (dark) | Role | Contrast check |
 |---|---|---|---|---|
-| stage | #F4EEE6 | #0F0D0C | page background | — |
-| surface | #FBF8F3 | #1A1716 | cards, rows | — |
-| raised | #EAE2D6 | #24201E | chips, inputs, pressed | — |
-| ink | #161311 | #F4EEE6 | primary text | 16.1 / 16.8 ✅ |
-| inkMuted | #5E5650 | #A8A09A | secondary text | 6.2 / 7.5 ✅ (6.3 on raised) |
-| inkFaint | #8F8780 | #6E6661 | sung lyrics, disabled, large text only | 3.1 / 3.5 ✅ large only |
-| cue (accent) | #B0380B | #FF5B24 | the spotlight: active lyric, record, primary CTA | 5.3 / 6.3 ✅ |
-| onCue | #FFFFFF | #0F0D0C | text on accent | 6.1 / 6.3 ✅ |
-| tune | #0E8A4F | #5BF0A0 | "on pitch" signal, graphics only | 3.8 / 13.3 ✅ (non-text 3:1) |
-| hairline | ink @ 10% | ink @ 10% | 1px dividers | decorative |
+| stage | #F6F5F3 | #0D0D0E | page background | — |
+| surface | #FFFFFF | #17171A | cards, rows | — |
+| raised | #EDECE9 | #222226 | chips, inputs, pressed | — |
+| ink | #141415 | #F2F2F0 | primary text | 16.9 / 17.3 ✅ |
+| inkMuted | #66666C | #9D9DA3 | secondary text | 5.2 / 7.2 ✅ (4.8 / 5.9 on raised) |
+| inkFaint | #85858B | #64646A | sung lyrics, disabled, large text only | 3.4 / 3.3 ✅ large only |
+| cue (accent) | #C2410C | #FF5B24 | the spotlight: active lyric, record, primary CTA | 4.8 / 6.3 ✅ |
+| onCue | #FFFFFF | #0D0D0E | text on accent | 5.2 / 6.3 ✅ |
+| tune | #0E8A4F | #5BF0A0 | "on pitch" signal, graphics only | 4.0 / 13.3 ✅ (non-text 3:1) |
+| hairline | ink @ 8% | ink @ 9% | 1px borders on cards, chips, inputs | decorative |
 
 Rule: **one accent**. `tune` exists only inside the pitch ribbon.
 
@@ -40,19 +40,24 @@ Two open-licence (SIL OFL 1.1) variable families, bundled in `assets/fonts` with
 
 | Style | Family | Size | Weight | wdth | Tracking | Line height |
 |---|---|---|---|---|---|---|
-| hero | Bricolage | 56 | 800 | 78 | -2% | 0.95 |
-| title | Bricolage | 32 | 700 | 85 | -1% | 1.05 |
-| heading | Bricolage | 22 | 650 | 90 | 0 | 1.15 |
-| lyricActive | Bricolage | 34 | 750 | 82→100 animated | -1% | 1.1 |
-| lyricNext | Bricolage | 26 | 600 | 90 | 0 | 1.15 |
+| hero | Bricolage | 48 | 760 | 86 | -2.5% | 1.0 |
+| title | Bricolage | 30 | 700 | 94 | -2% | 1.1 |
+| heading | Bricolage | 20 | 640 | 100 | -1% | 1.2 |
+| section | Bricolage | 17 | 640 | 100 | -0.5% | 1.25 |
+| lyricActive | Bricolage | 34 | 740 | 82→100 animated | -1.5% | 1.1 |
+| lyricNext | Bricolage | 26 | 620 | 92 | -1% | 1.15 |
 | body | Bricolage | 16 | 420 | 100 | 0 | 1.45 |
-| label | JetBrains Mono | 11 | 600 | — | +12%, uppercase | 1.2 |
+| rowTitle | Bricolage | 16 | 600 | 100 | -0.5% | 1.25 |
+| button / chip | Bricolage | 15 / 13.5 | 640 | 100 | 0, sentence case | 1.2 |
+| label | JetBrains Mono | 10.5 | 560 | — | +8%, uppercase | 1.2 |
 | numeral | JetBrains Mono | 13 | 500 | — | 0, tabular | 1.2 |
+
+v0.3.2: buttons, chips, tab labels and section titles moved from uppercase mono to sentence-case Bricolage. Mono is kept for metadata only (counts, durations, READY / PRIVATE tags, timecodes), so it reads as the tape-machine detail rather than the main voice.
 
 ## Spacing, radii, shadows
 - Spacing: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64. Page gutter 20.
-- Radii: 6 (chips), 14 (cards), 28 (sheets), full (record button, avatars). Square-cornered "tape labels" (radius 2) for metadata tags, an intentional contrast.
-- No drop shadows on dark. Depth comes from surface steps and the cue glow (a soft radial cue light, 24% alpha) behind the one focal element.
+- Radii: 12 (row artwork), 20 (cards, sheet artwork), 28 (sheets), full (buttons, chips, search, Sing, avatars). Near-square "tape labels" (radius 3) for metadata tags, an intentional contrast.
+- No drop shadows, no glows. Depth comes from one surface step and a hairline border.
 
 ## Navigation model and key screens
 Bottom bar with 4 destinations around a central Sing affordance: **Library**, **Stage** (social feed) | Sing | **Takes**, **Me**. Studio and Player are full-screen pushes.
@@ -88,6 +93,15 @@ Owner direction: colour is an accent, never a background; no glows, no shadows, 
 - **Tab bar**: docked to the bottom edge, full width, hairline on top. No floating capsule, no sliding lens.
 - **No** glow, drop shadow, coloured gradient or ambient light anywhere, including the Spotlight (a clean circular reveal), the record button, the pitch ribbon, the Unsinging ribbon and the splash.
 
+## Clean & premium (v0.3.2)
+From the owner's references (see Inspiration): the same neutral rules, tightened.
+- **One lit choice per decision.** Paired actions are equal-sized pills side by side (Sing | Rehearse); only one is cue. Secondary is a neutral raised pill, not a ghost.
+- **Pills everywhere you touch:** search field, filter chips (resting = hairline outline, selected = ink fill), buttons, the round Sing key in the bar.
+- **Quiet meta lines.** One muted line ("3:34 · IN TUNE 78% · NOT MIXED YET") instead of a row of boxed tags; boxes are kept for state (READY, ON STAGE, PRIVATE).
+- **Section titles in sentence case** with a small mono hint on the right ("Start with a classic — FROM YOUTUBE").
+- **Generous card padding** (20) and larger corner radii; header icon buttons are surface discs with a hairline ring.
+- Rejected from the references: floating pill tab bars, gradient buttons, product drop shadows, full-bleed orange screens.
+
 ## Loading
 - Skeletons shimmer with one shared band of light that crosses the whole screen, not per block.
 - Anything waiting on music (library scan, lyrics lookup, link fetch, a take buffering) shows the equalizer: four bars out of phase that ease down to rest instead of freezing.
@@ -113,6 +127,12 @@ House style not learned yet (`house-style.md` is empty). Designed from this brie
 | [Teenage Engineering design analysis](https://blakecrosley.com/es/guides/design/teenage-engineering) (outside category) | One confident orange, monospaced uppercase labels with wide tracking, tabular numerals, functional graphics that show real audio state (waveforms, meters). |
 | [Smule user feedback analysis](https://kimola.com/reports/unlock-smule-app-insights-from-user-feedback-to-future-strategies-google-play-en-us-145145) | Pain points to beat: locked song catalogues, hard uploads, effects frozen after recording. Unsung uses your own library and keeps effects editable forever. |
 | [2026 mobile UI trends (VP0)](https://vp0.com/blogs/mobile-app-ui-design-inspiration-2026) | Thumb-zone primary actions, bottom sheets, deliberate dark mode, glass only on temporary layers, functional micro-interactions with haptics. |
+| [Owner pick: fashion e-commerce (Pinterest)](https://www.pinterest.com/pin/924082417309102222/) | Off-white canvas, white hairline cards, one orange used only on the main action and the selected state; near-black secondary CTA; pill chips and a pill search with a round filter key. |
+| [Owner pick: clothing shop app (Pinterest)](https://www.pinterest.com/pin/893964594794357650/) | Big soft radii, round header icon buttons, generous whitespace and calm sentence-case headings with "See all". (Its gradients and shadows are not taken.) |
+| [Monochrome player "Unsayable / Charcoal" (Pinterest search: music player app ui)](https://www.pinterest.com/search/pins/?q=music%20player%20app%20ui) | Two equal action pills (dark Play, grey Shuffle); numbered rows with "Artist · 4:21" meta; colour-free UI that lets artwork carry. |
+| [Dark player "Low Life" (Pinterest search: minimal dark music app ui)](https://www.pinterest.com/search/pins/?q=minimal%20dark%20music%20app%20ui) | Neutral graphite surfaces where the single orange element is the play/pause key and the progress line. |
+| [Artist page "Astrid S" (same search)](https://www.pinterest.com/search/pins/?q=minimal%20dark%20music%20app%20ui) | Small uppercase kicker over a bold title, a single muted stats line, clear section heads. |
+| [Apple Music Sing lyrics (Pinterest search: karaoke lyrics app screen)](https://www.pinterest.com/search/pins/?q=karaoke%20lyrics%20app%20screen) | Large left-aligned lyric lines; the active line is the only bright thing, past and future recede. |
 
 No images, logos or layouts were copied; only principles.
 

@@ -183,7 +183,8 @@ class _AccessBanner extends StatelessWidget {
           const EdgeInsets.fromLTRB(Space.gutter, 0, Space.gutter, Space.sm),
       padding: const EdgeInsets.all(Space.md),
       decoration: BoxDecoration(
-        color: context.colors.raised,
+        color: context.colors.surface,
+        border: Border.all(color: context.colors.hairline),
         borderRadius: BorderRadius.circular(Radii.card),
       ),
       child: Column(
@@ -311,10 +312,17 @@ class _SongListState extends ConsumerState<_SongList> {
                 style: context.type.body,
                 decoration: InputDecoration(
                   hintText: 'Search songs, artists, albums',
+                  isDense: true,
+                  constraints:
+                      const BoxConstraints.tightFor(height: Sizes.field),
                   prefixIcon: Icon(
                     Icons.search_rounded,
+                    size: Sizes.icon,
                     color: context.colors.inkMuted,
                   ),
+                  border: _pill(context),
+                  enabledBorder: _pill(context),
+                  focusedBorder: _pill(context, focused: true),
                 ),
               ),
             ),
@@ -323,7 +331,7 @@ class _SongListState extends ConsumerState<_SongList> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
                 Space.gutter,
-                Space.sm,
+                Space.md,
                 Space.gutter,
                 Space.xs,
               ),
@@ -403,6 +411,16 @@ class _SongListState extends ConsumerState<_SongList> {
       ],
     );
   }
+}
+
+/// The search field is a pill, like the filter pills under it.
+OutlineInputBorder _pill(BuildContext context, {bool focused = false}) {
+  final c = context.colors;
+  return OutlineInputBorder(
+    borderRadius: BorderRadius.circular(Radii.full),
+    borderSide:
+        BorderSide(color: focused ? c.ink.withValues(alpha: 0.4) : c.hairline),
+  );
 }
 
 /// Exposed for the Sing button: pick a ready song quickly.

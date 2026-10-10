@@ -14,7 +14,7 @@ void main() {
         overrides: libraryOverrides());
     await tester.pump(const Duration(seconds: 1));
     expect(find.textContaining('8 SONGS · 3 READY'), findsOneWidget);
-    expect(find.text('START WITH A CLASSIC'), findsOneWidget);
+    expect(find.text('Start with a classic'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Paper Moons'), 200,
         scrollable: find.byWidgetPredicate(
             (w) => w is Scrollable && w.axisDirection == AxisDirection.down));
@@ -26,7 +26,7 @@ void main() {
     await pumpScreen(tester, const LibraryScreen(),
         overrides: libraryOverrides());
     await tester.pump(const Duration(seconds: 1));
-    await tester.tap(find.textContaining('READY  3'));
+    await tester.tap(find.text('Ready'));
     await tester.pump(const Duration(seconds: 1));
     expect(find.text('Kerosene Summer'), findsNothing);
     expect(find.text('Paper Moons'), findsOneWidget);
@@ -41,7 +41,7 @@ void main() {
     );
     await tester.pump(const Duration(seconds: 1));
     expect(find.text('Let Unsung see your music'), findsOneWidget);
-    expect(find.text('ALLOW MUSIC ACCESS'), findsOneWidget);
+    expect(find.text('Allow music access'), findsOneWidget);
   });
 
   testWidgets('library survives 200% text scale', (tester) async {

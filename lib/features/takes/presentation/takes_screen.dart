@@ -78,7 +78,7 @@ class _TakeList extends StatelessWidget {
         ),
         SliverList.separated(
           itemCount: takes.length,
-          separatorBuilder: (_, __) => const SizedBox(height: Space.xs),
+          separatorBuilder: (_, __) => const SizedBox(height: Space.sm),
           itemBuilder: (context, i) => Entrance(
             index: i,
             child: TakeRow(
@@ -113,9 +113,12 @@ class TakeRow extends StatelessWidget {
           '${take.songTitle}, ${take.isPublic ? 'public' : 'private'} take',
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: Space.gutter),
-        padding: const EdgeInsets.all(Space.md),
+        padding: const EdgeInsets.all(Space.gutter),
         decoration: BoxDecoration(
-            color: c.surface, borderRadius: BorderRadius.circular(Radii.card)),
+          color: c.surface,
+          border: Border.all(color: c.hairline),
+          borderRadius: BorderRadius.circular(Radii.card),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -149,17 +152,16 @@ class TakeRow extends StatelessWidget {
             const SizedBox(height: Space.sm),
             Waveform(peaks: take.peaks.isEmpty ? const [0.2, 0.2] : take.peaks),
             const SizedBox(height: Space.sm),
-            Wrap(
-              spacing: Space.xs,
-              runSpacing: Space.xs,
-              children: [
-                TapeLabel(formatDuration(take.duration),
-                    tone: TapeTone.outline),
-                TapeLabel('In tune ${(take.inTune * 100).round()}%',
-                    tone: TapeTone.outline),
-                if (take.mixPath == null)
-                  const TapeLabel('Not mixed yet', tone: TapeTone.outline),
-              ],
+            // One quiet meta line instead of a row of boxed tags.
+            Text(
+              [
+                formatDuration(take.duration),
+                'IN TUNE ${(take.inTune * 100).round()}%',
+                if (take.mixPath == null) 'NOT MIXED YET',
+              ].join('  ·  '),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: type.labelMuted,
             ),
           ],
         ),

@@ -135,7 +135,7 @@ class _TabItem extends StatelessWidget {
             ),
             const SizedBox(height: Space.xxs),
             Text(
-              label.toUpperCase(),
+              label,
               maxLines: 1,
               overflow: TextOverflow.fade,
               softWrap: false,
@@ -161,10 +161,10 @@ class _TabItem extends StatelessWidget {
   }
 }
 
-/// The record affordance: a solid cue pill.
+/// The record affordance: a solid cue disc, the one lit key in the bar.
 class SingButton extends StatelessWidget {
   const SingButton(
-      {required this.onTap, this.size = Sizes.recordButton, super.key});
+      {required this.onTap, this.size = Sizes.singButton, super.key});
 
   final VoidCallback onTap;
   final double size;
@@ -181,11 +181,8 @@ class SingButton extends StatelessWidget {
         flightShuttleBuilder: spotlightShuttle,
         child: Container(
           width: size,
-          height: size * 0.72,
-          decoration: BoxDecoration(
-            color: c.cue,
-            borderRadius: BorderRadius.circular(Radii.full),
-          ),
+          height: size,
+          decoration: BoxDecoration(color: c.cue, shape: BoxShape.circle),
           child: Icon(Icons.mic_rounded, color: c.onCue, size: Sizes.iconLg),
         ),
       ),

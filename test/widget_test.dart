@@ -9,12 +9,12 @@ void main() {
   testWidgets('onboarding walks through three beats', (tester) async {
     await pumpScreen(tester, const OnboardingScreen());
     expect(find.textContaining('karaoke track'), findsOneWidget);
-    await tester.tap(find.text('NEXT'));
+    await tester.tap(find.text('Next'));
     await settleFrames(tester);
     expect(find.textContaining('every take'), findsOneWidget);
-    await tester.tap(find.text('NEXT'));
+    await tester.tap(find.text('Next'));
     await settleFrames(tester);
-    expect(find.text("LET'S SING"), findsOneWidget);
+    expect(find.text("Let's sing"), findsOneWidget);
   });
 
   testWidgets('onboarding survives 200% text scale without overflow',

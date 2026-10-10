@@ -4,7 +4,7 @@ import 'package:unsung/core/theme/motion.dart';
 import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/pressable.dart';
 
-/// Mono filter chip. Selected = ink fill, animates between states.
+/// Filter pill. Selected = ink fill; resting = hairline outline only.
 class ToggleChip extends StatelessWidget {
   const ToggleChip({
     required this.label,
@@ -35,19 +35,35 @@ class ToggleChip extends StatelessWidget {
           height: Sizes.chip,
           padding: const EdgeInsets.symmetric(horizontal: Space.md),
           decoration: BoxDecoration(
-            color: selected ? c.ink : c.raised,
+            color: selected ? c.ink : Colors.transparent,
             borderRadius: BorderRadius.circular(Radii.full),
+            border: Border.all(color: selected ? c.ink : c.hairline),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                count == null
-                    ? label.toUpperCase()
-                    : '${label.toUpperCase()}  $count',
-                style: context.type.label.copyWith(color: fg),
-              ),
-            ],
+          child: Center(
+            widthFactor: 1,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  label,
+                  style: context.type.button.copyWith(
+                    color: fg,
+                    fontSize: context.type.rowMeta.fontSize,
+                  ),
+                ),
+                if (count != null) ...[
+                  const SizedBox(width: Space.xs),
+                  Text(
+                    '$count',
+                    style: context.type.numeral.copyWith(
+                      color: selected ? fg : c.inkMuted,
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
       ),

@@ -8,7 +8,6 @@ import 'package:unsung/core/theme/tokens.dart';
 import 'package:unsung/core/widgets/entrance.dart';
 import 'package:unsung/core/widgets/glass.dart';
 import 'package:unsung/core/widgets/pressable.dart';
-import 'package:unsung/core/widgets/tape_label.dart';
 import 'package:unsung/features/library/presentation/library_controller.dart';
 import 'package:unsung/features/links/domain/starters.dart';
 import 'package:unsung/features/links/presentation/link_sheet.dart';
@@ -33,8 +32,17 @@ class StarterShelf extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(
-              Space.gutter, Space.md, Space.gutter, Space.sm),
-          child: Text('START WITH A CLASSIC', style: type.labelMuted),
+              Space.gutter, Space.lg, Space.gutter, Space.sm),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Expanded(
+                child: Text('Start with a classic', style: type.section),
+              ),
+              Text('FROM YOUTUBE', style: type.labelMuted),
+            ],
+          ),
         ),
         SizedBox(
           height: Sizes.shelfCard / Sizes.videoAspect +
@@ -105,30 +113,12 @@ class _StarterCard extends StatelessWidget {
                           color: c.inkFaint,
                           size: Sizes.iconLg),
                     ),
-                    // Fade to glass at the bottom so the text sits on calm.
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.center,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            c.glass.withValues(alpha: 0),
-                            c.glass,
-                          ],
-                        ),
-                      ),
-                    ),
-                    const Positioned(
-                      left: Space.xs,
-                      top: Space.xs,
-                      child: TapeLabel('YouTube', icon: Icons.link_rounded),
-                    ),
                   ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                    Space.sm, Space.xs, Space.sm, Space.sm),
+                    Space.sm, Space.sm, Space.sm, Space.sm),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

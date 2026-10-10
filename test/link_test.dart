@@ -46,10 +46,10 @@ void main() {
     expect(find.text('Ode to June'), findsOneWidget);
     expect(find.text('3:41'), findsOneWidget);
 
-    await _realIo(tester, () => tester.tap(find.text('BRING IT IN')));
+    await _realIo(tester, () => tester.tap(find.text('Bring it in')));
     expect(source.downloads, 1);
     expect(find.text('IN YOUR LIBRARY'), findsOneWidget);
-    expect(find.text('UNSING IT'), findsOneWidget);
+    expect(find.text('Unsing it'), findsOneWidget);
 
     final song = container.read(songByIdProvider('yt-dQw4w9WgXcQ'));
     expect(song?.title, 'Velvet Hours');
@@ -69,9 +69,9 @@ void main() {
     await _pumpSheet(tester, source);
     await tester.enterText(find.byType(TextField), _link);
     await tester.pumpAndSettle();
-    await _realIo(tester, () => tester.tap(find.text('BRING IT IN')));
+    await _realIo(tester, () => tester.tap(find.text('Bring it in')));
     expect(find.text('This video is private.'), findsOneWidget);
-    await _realIo(tester, () => tester.tap(find.text('TRY AGAIN')));
+    await _realIo(tester, () => tester.tap(find.text('Try again')));
     expect(source.downloads, 2);
   });
 

@@ -52,7 +52,7 @@ class CueButton extends StatelessWidget {
         if (icon != null || busy) const SizedBox(width: Space.xs),
         Flexible(
           child: Text(
-            label.toUpperCase(),
+            label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: context.type.button.copyWith(color: c.onCue),
@@ -78,7 +78,8 @@ class CueButton extends StatelessWidget {
   }
 }
 
-/// Secondary action. Raised surface, ink label.
+/// Secondary action. Same size as [CueButton], on a neutral raised fill, so
+/// a pair reads as one decision with a single lit choice.
 class QuietButton extends StatelessWidget {
   const QuietButton({
     required this.label,
@@ -101,8 +102,8 @@ class QuietButton extends StatelessWidget {
       haptic: PressHaptic.selection,
       semanticLabel: label,
       child: Container(
-        height: Sizes.tap,
-        padding: const EdgeInsets.symmetric(horizontal: Space.md + Space.xxs),
+        height: Sizes.button,
+        padding: const EdgeInsets.symmetric(horizontal: Space.lg),
         decoration: BoxDecoration(
           color: c.raised,
           borderRadius: BorderRadius.circular(Radii.full),
@@ -117,7 +118,7 @@ class QuietButton extends StatelessWidget {
             ],
             Flexible(
               child: Text(
-                label.toUpperCase(),
+                label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: context.type.button,
@@ -130,7 +131,8 @@ class QuietButton extends StatelessWidget {
   }
 }
 
-/// Round icon-only button with a semantic label.
+/// Round icon-only button with a semantic label. [filled] gives it a
+/// surface disc with a hairline ring, for header actions.
 class RoundIconButton extends StatelessWidget {
   const RoundIconButton({
     required this.icon,
@@ -162,8 +164,9 @@ class RoundIconButton extends StatelessWidget {
         width: Sizes.tap,
         height: Sizes.tap,
         decoration: BoxDecoration(
-          color: filled ? c.raised : Colors.transparent,
+          color: filled ? c.surface : Colors.transparent,
           shape: BoxShape.circle,
+          border: filled ? Border.all(color: c.hairline) : null,
         ),
         child: Icon(icon, size: Sizes.icon, color: active ? c.cue : c.ink),
       ),

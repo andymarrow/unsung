@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.2 – clean and premium
+
+- Neutral graphite palette (dark) and a cleaner off-white (light); the cue orange is the only colour on screen.
+- Calmer type: less condensed titles, sentence-case buttons, chips, tabs and section titles in Bricolage; mono kept for metadata.
+- Pills: search field, outlined filter chips (ink when selected), equal-size buttons. The Sing key in the tab bar is a round cue disc.
+- Song sheet: Sing and Rehearse side by side, one lit; quieter secondary actions; larger artwork corners.
+- Takes and Stage cards: more padding, hairline border, one quiet meta line instead of boxed tags.
+- Starter shelf: no fade gradient, clean thumbnail over text, "Start with a classic" section title.
+- Empty states use a neutral icon disc instead of a cue icon.
+
 ## 0.3.1 – quiet surfaces
 
 - Colour is an accent only. The drifting ambient light is gone; the backdrop is the neutral stage colour with a fine static film grain. Light theme moves to a cleaner off-white.

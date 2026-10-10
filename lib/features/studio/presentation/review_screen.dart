@@ -305,7 +305,10 @@ class _Stats extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Space.md),
       decoration: BoxDecoration(
-          color: c.surface, borderRadius: BorderRadius.circular(Radii.card)),
+        color: c.surface,
+        border: Border.all(color: c.hairline),
+        borderRadius: BorderRadius.circular(Radii.card),
+      ),
       child: Row(
         children: [
           stat('IN TUNE', '${(take.inTune * 100).round()}%', accent: true),

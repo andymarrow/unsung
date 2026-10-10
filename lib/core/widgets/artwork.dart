@@ -11,7 +11,7 @@ class Artwork extends StatelessWidget {
     required this.title,
     required this.size,
     this.bytes,
-    this.radius = Radii.card,
+    this.radius = Radii.art,
     super.key,
   });
 
@@ -65,23 +65,17 @@ class _TypeCover extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           ColoredBox(color: c.raised),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: size * 0.18,
-            height: size * 0.06,
-            child: ColoredBox(color: c.hairline),
-          ),
           Center(
             child: Text(
               initials.isEmpty ? '♪' : initials.toUpperCase(),
               style: TextStyle(
                 fontFamily: Fonts.display,
-                fontSize: size * 0.36,
+                fontSize: size * 0.3,
                 height: 1,
-                color: c.ink,
-                fontWeight: FontWeight.w800,
-                fontVariations: Axes.display(weight: 800, width: 75),
+                letterSpacing: -0.02 * size * 0.3,
+                color: c.inkMuted,
+                fontWeight: FontWeight.w600,
+                fontVariations: Axes.display(weight: 600, width: 90),
               ),
             ),
           ),

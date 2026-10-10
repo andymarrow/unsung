@@ -20,35 +20,36 @@ class UnsungColors extends ThemeExtension<UnsungColors> {
     required this.glassSheen,
   });
 
+  // Neutral graphite: no warm cast, so the cue is the only colour on screen.
   static const dark = UnsungColors(
-    stage: Color(0xFF0F0D0C),
-    surface: Color(0xFF1A1716),
-    raised: Color(0xFF24201E),
-    ink: Color(0xFFF4EEE6),
-    inkMuted: Color(0xFFA8A09A),
-    inkFaint: Color(0xFF6E6661),
+    stage: Color(0xFF0D0D0E),
+    surface: Color(0xFF17171A),
+    raised: Color(0xFF222226),
+    ink: Color(0xFFF2F2F0),
+    inkMuted: Color(0xFF9D9DA3),
+    inkFaint: Color(0xFF64646A),
     cue: Color(0xFFFF5B24),
-    onCue: Color(0xFF0F0D0C),
+    onCue: Color(0xFF0D0D0E),
     tune: Color(0xFF5BF0A0),
-    hairline: Color(0x1AF4EEE6),
-    scrim: Color(0xB30F0D0C),
-    glass: Color(0xD91A1716),
-    glassSheen: Color(0x14FFF4EA),
+    hairline: Color(0x17F2F2F0),
+    scrim: Color(0xB30D0D0E),
+    glass: Color(0xE017171A),
+    glassSheen: Color(0x12FFFFFF),
   );
 
   static const light = UnsungColors(
-    stage: Color(0xFFF5F4F1),
+    stage: Color(0xFFF6F5F3),
     surface: Color(0xFFFFFFFF),
-    raised: Color(0xFFE9E7E2),
-    ink: Color(0xFF161311),
-    inkMuted: Color(0xFF5E5650),
-    inkFaint: Color(0xFF8F8780),
-    cue: Color(0xFFB0380B),
+    raised: Color(0xFFEDECE9),
+    ink: Color(0xFF141415),
+    inkMuted: Color(0xFF66666C),
+    inkFaint: Color(0xFF85858B),
+    cue: Color(0xFFC2410C),
     onCue: Color(0xFFFFFFFF),
     tune: Color(0xFF0E8A4F),
-    hairline: Color(0x1A161311),
-    scrim: Color(0x99161311),
-    glass: Color(0xD9FFFFFF),
+    hairline: Color(0x14141415),
+    scrim: Color(0x99141415),
+    glass: Color(0xE6FFFFFF),
     glassSheen: Color(0x66FFFFFF),
   );
 
@@ -167,9 +168,12 @@ abstract final class Space {
 /// Corner radii.
 abstract final class Radii {
   /// Square-ish tape labels (metadata tags).
-  static const double tape = 2;
+  static const double tape = 3;
   static const double chip = 6;
-  static const double card = 14;
+
+  /// Row artwork and thumbnails.
+  static const double art = 12;
+  static const double card = 20;
   static const double sheet = 28;
   static const double full = 999;
 }
@@ -178,15 +182,24 @@ abstract final class Radii {
 abstract final class Sizes {
   /// Minimum tap target.
   static const double tap = 48;
-  static const double chip = 40;
+  static const double chip = 36;
+
+  /// Search field and other single-line inputs.
+  static const double field = 48;
+
+  /// Header icon buttons (link, back, more).
+  static const double iconButton = 44;
   static const double sliderLabel = 104;
-  static const double button = 56;
-  static const double artworkRow = 52;
+  static const double button = 52;
+  static const double artworkRow = 56;
   static const double artworkHero = 220;
-  static const double artworkSheet = 104;
+  static const double artworkSheet = 112;
   static const double avatarSm = 32;
   static const double avatarLg = 88;
   static const double recordButton = 64;
+
+  /// The Sing button in the tab bar: a round cue key.
+  static const double singButton = 52;
   static const double recordButtonLarge = 84;
   static const double navBar = 68;
   static const double hairline = 1;
@@ -230,7 +243,7 @@ abstract final class Sizes {
   static const double shelfCard = 220;
 
   /// Room for a shelf card's two text lines and padding, at 1x text.
-  static const double shelfText = 64;
+  static const double shelfText = 68;
 
   /// The visibility switch.
   static const double switchWidth = 48;
