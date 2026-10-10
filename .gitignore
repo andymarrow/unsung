@@ -1,0 +1,41 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+.vscode/
+coverage/
+**/failures/
+
+# Android
+android/.gradle/
+android/captures/
+android/local.properties
+android/gradlew
+android/gradlew.bat
+android/gradle/wrapper/gradle-wrapper.jar
+android/app/debug
+android/app/profile
+android/app/release
+**/GeneratedPluginRegistrant.*
+
+# iOS (not targeted yet)
+ios/Pods/
+
+# Secrets — never commit
+*.jks
+*.keystore
+key.properties
+.env
+.env.*
+dart_defines.json
+
+# Python server
+server/.venv/
+server/__pycache__/
+*.pyc
