@@ -345,9 +345,12 @@ class _Controls extends StatelessWidget {
                   child: AnimatedOpacity(
                     duration: Motion.of(context, Motion.base),
                     opacity: phase == StudioPhase.ready ? 1 : 0,
-                    child: KeyStepper(
-                      semitones: session.semitones,
-                      onChanged: (k) => unawaited(session.setKey(k)),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: KeyStepper(
+                        semitones: session.semitones,
+                        onChanged: (k) => unawaited(session.setKey(k)),
+                      ),
                     ),
                   ),
                 ),

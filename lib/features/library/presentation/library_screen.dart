@@ -195,7 +195,9 @@ class _SongList extends ConsumerWidget {
                 Space.gutter,
                 Space.xs,
               ),
-              child: Row(
+              child: Wrap(
+                spacing: Space.xs,
+                runSpacing: Space.xs,
                 children: [
                   ToggleChip(
                     label: 'All',
@@ -205,7 +207,6 @@ class _SongList extends ConsumerWidget {
                         .read(libraryQueryProvider.notifier)
                         .setFilter(LibraryFilter.all),
                   ),
-                  const SizedBox(width: Space.xs),
                   ToggleChip(
                     label: 'Ready',
                     count: readyCount,

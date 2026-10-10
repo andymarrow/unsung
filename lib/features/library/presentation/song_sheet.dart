@@ -204,14 +204,15 @@ class _Idle extends StatelessWidget {
         ),
         if (Env.hasStudioSeparation) ...[
           const SizedBox(height: Space.md),
-          Row(
+          Wrap(
+            spacing: Space.xs,
+            runSpacing: Space.xs,
             children: [
               ToggleChip(
                 label: 'Quick',
                 selected: mode == SeparationMode.quick,
                 onTap: () => onMode(SeparationMode.quick),
               ),
-              const SizedBox(width: Space.xs),
               ToggleChip(
                 label: 'Studio',
                 selected: mode == SeparationMode.studio,
@@ -375,13 +376,13 @@ class _Ready extends StatelessWidget {
           ],
         ),
         const SizedBox(height: Space.sm),
-        Row(
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
           children: [
             TextButton(
               onPressed: onRedo,
               child: Text('UNSING AGAIN', style: type.labelMuted),
             ),
-            const Spacer(),
             TextButton(
               onPressed: onRemove,
               child: Text('REMOVE KARAOKE', style: type.labelMuted),

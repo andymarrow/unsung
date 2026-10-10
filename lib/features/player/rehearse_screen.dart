@@ -323,15 +323,35 @@ class _Deck extends StatelessWidget {
               const SizedBox(height: Space.xs),
               Row(
                 children: [
-                  KeyStepper(semitones: state.semitones, onChanged: onKey),
-                  const Spacer(),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: KeyStepper(
+                          semitones: state.semitones,
+                          onChanged: onKey,
+                        ),
+                      ),
+                    ),
+                  ),
                   PlayButton(
                     playing: state.playing,
                     onTap: state.ready ? onPlay : null,
                   ),
-                  const Spacer(),
-                  CueButton(
-                      label: 'Sing', icon: Icons.mic_rounded, onTap: onSing),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: CueButton(
+                          label: 'Sing',
+                          icon: Icons.mic_rounded,
+                          onTap: onSing,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: Space.xs),
